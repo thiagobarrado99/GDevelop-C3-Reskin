@@ -10,7 +10,7 @@ Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
 - Remotes: `upstream` = 4ian/GDevelop, `origin` = thiagobarrado99/GDevelop-C3-Reskin (GitHub fork exists, `gh` is logged in as `thiagobarrado99`).
 - Branch `c3-reskin` (tracks `origin/c3-reskin`). `master` untouched = upstream. Commits prefixed `c3:`.
-- `docs/c3-reference/` holds the 5 Construct 3 screenshots described below; measured palette is in "Style takeaways".
+- `docs/c3-reference/` holds the 5 Construct 3 screenshots described below — **local only**: `/docs` is gitignored upstream and they are Scirra's UI, so they are not in git. Measured palette is in "Style takeaways" so the notes survive without them.
 - `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
 - `TODO.md` holds the per-phase checklist; Phase 0 ticked.
 
