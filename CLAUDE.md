@@ -21,7 +21,8 @@ Pending / next steps, in order:
 5. Commit with `c3:` prefix, push to `origin c3-reskin`.
 
 Gotchas:
-- Windows: use forward slashes; Git Bash is available. Line endings: repo is LF, keep files LF.
+- `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
+- Windows: use forward slashes; Git Bash is available. Line endings: repo is LF, keep files LF. `core.autocrlf=false` is set locally; the working copy was checked out as CRLF, so run prettier / strip `\r` on any file you edit before committing.
 - Node 25 installed locally; CI uses 24. If `npm start` fails with OpenSSL/webpack errors, try `NODE_OPTIONS=--openssl-legacy-provider` or install Node 24 via nvm-windows.
 - `react-app-rewired` + CRA 5; config in `newIDE/app/config-overrides.js`.
 - Do not commit `newIDE/app/resources/`, `node_modules/`, or `build/`.
