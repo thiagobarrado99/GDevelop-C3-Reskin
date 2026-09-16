@@ -111,8 +111,8 @@ Screenshots of the real C3 editor (pt-BR UI — the team works in Portuguese, ke
 
 Style takeaways (sample exact hex from the PNGs when building the theme):
 
-- Dark neutral greys only: window bg ≈ `#2b2b2b`, panel bg ≈ `#333`, cards/fields ≈ `#3d3d3d`, panel title bars slightly darker, active tab light grey with dark text.
-- Single accent: teal/green (`#3ac`-ish icons, green links like "Add event", green tree items for layouts/event sheets, cyan for object types/families).
+- Dark neutral greys only (measured with PIL, region modes): panel bg `#474747`; panel title bar / top toolbar `#4f4f4f`; text fields, search boxes, canvas outside layout, popover bg `#303030`; buttons/dropdowns `#575757`; gaps/borders between panels `#6b6b6b`; canvas layout area `#5e5e5e`; event sheet bg `#282828`; start page bg `#2c2c2c`, its cards `#3b3b3b`; dialog body `#575757`, title bar/buttons `#696969`, fields `#383838`. Selected list row `#f7f7f7` and active doc tab `#fff2cc`, both with dark text; bottom tab strip active `#fff` / inactive `#323232`.
+- Accents: green `#2fcc63` (layouts, event sheets, "Add event" links), cyan `#00b1cc` (object types, families), light-green links `#29e5a2`. Only red is the "Buy" button `#f85753`. Text ≈ `#e0e0e0`, labels/titles ≈ `#9e9e9e`.
 - Flat, square-ish corners (2–3 px), thin 1 px borders, no shadows/elevation, no Material ripple.
 - Panel headers: UPPERCASE small text, pin + ✕ icons right.
 - Properties: two-column label/value rows, collapsible section headers with ▼.
