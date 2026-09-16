@@ -128,7 +128,7 @@ Browser test: Playwright is installed globally (`npx playwright open http://loca
 
 ```
 upstream = https://github.com/4ian/GDevelop.git  (blobless partial clone; full history)
-origin   = (not set yet — create GitHub fork, then: git remote add origin <url>)
+origin   = https://github.com/thiagobarrado99/GDevelop-C3-Reskin.git  (our fork; push c3-reskin here)
 ```
 
 - Work on `c3-reskin` branch off `master`. Keep `master` = upstream.
