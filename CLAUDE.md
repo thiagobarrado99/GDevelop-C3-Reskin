@@ -11,7 +11,7 @@ Done:
 - Remotes: `upstream` = 4ian/GDevelop, `origin` = thiagobarrado99/GDevelop-C3-Reskin (GitHub fork exists, `gh` is logged in as `thiagobarrado99`).
 - Branch `c3-reskin` (tracks `origin/c3-reskin`), 3 commits: CLAUDE.md, reference screenshots, remote note. `master` untouched = upstream.
 - `docs/c3-reference/` holds the 5 Construct 3 screenshots described below.
-- `npm install` in `newIDE/app` was started 2026-09-16 (see "Pending" — verify it finished).
+- `npm install` in `newIDE/app` was started 2026-09-16 ~20:34 and was still downloading at handoff (registry fetches very slow, ~10 min per tarball; not a bug). If `node_modules/.package-lock.json` is absent, the install was interrupted — just rerun it; npm resumes from cache.
 
 Pending / next steps, in order:
 1. Verify install: `ls newIDE/app/node_modules/.package-lock.json`. If missing, rerun `cd newIDE/app && npm install`.
