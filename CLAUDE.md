@@ -6,24 +6,24 @@ Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is re
 
 Last updated: 2026-09-16.
 
-Done:
+Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
 - Remotes: `upstream` = 4ian/GDevelop, `origin` = thiagobarrado99/GDevelop-C3-Reskin (GitHub fork exists, `gh` is logged in as `thiagobarrado99`).
-- Branch `c3-reskin` (tracks `origin/c3-reskin`), 3 commits: CLAUDE.md, reference screenshots, remote note. `master` untouched = upstream.
-- `docs/c3-reference/` holds the 5 Construct 3 screenshots described below.
-- `npm install` in `newIDE/app` was started 2026-09-16 ~20:34 and was still downloading at handoff (registry fetches very slow, ~10 min per tarball; not a bug). If `node_modules/.package-lock.json` is absent, the install was interrupted — just rerun it; npm resumes from cache.
+- Branch `c3-reskin` (tracks `origin/c3-reskin`). `master` untouched = upstream. Commits prefixed `c3:`.
+- `docs/c3-reference/` holds the 5 Construct 3 screenshots described below; measured palette is in "Style takeaways".
+- `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
+- `TODO.md` holds the per-phase checklist; Phase 0 ticked.
 
 Pending / next steps, in order:
-1. Verify install: `ls newIDE/app/node_modules/.package-lock.json`. If missing, rerun `cd newIDE/app && npm install`.
-2. `cd newIDE/app && npm start` → wait for "Compiled successfully" / http://localhost:3000. First run downloads `libGD.js` and copies GDJS runtime into `newIDE/app/resources/` (gitignored). Check it opens in a browser (Playwright: `npx playwright open http://localhost:3000`).
-3. `cd newIDE/electron-app && npm install && npm run start` (with the web server still running) to confirm desktop works.
-4. Create `TODO.md` at the repo root with the Phase 1 checklist and start Phase 1 (theme + terminology + hiding unwanted panels).
-5. Commit with `c3:` prefix, push to `origin c3-reskin`.
+1. Phase 1 (see `TODO.md`): create theme `Construct-like Dark`, terminology overrides, hide JS events / non-HTML5 exporters / storefront home page.
+2. Commit with `c3:` prefix, push to `origin c3-reskin` (not pushed yet since the initial 3 commits).
 
 Gotchas:
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
 - Windows: use forward slashes; Git Bash is available. Line endings: repo is LF, keep files LF. `core.autocrlf=false` is set locally; the working copy was checked out as CRLF, so run prettier / strip `\r` on any file you edit before committing.
-- Node 25 installed locally; CI uses 24. If `npm start` fails with OpenSSL/webpack errors, try `NODE_OPTIONS=--openssl-legacy-provider` or install Node 24 via nvm-windows.
+- Node 25 installed locally; CI uses 24. Works as-is.
+- Launching Electron from a VS Code-spawned shell: `env -u ELECTRON_RUN_AS_NODE npm run start` (VS Code leaks `ELECTRON_RUN_AS_NODE=1`, which makes `electron-is-dev` throw "Not running in an Electron environment").
+- Dev server log check: Playwright headless script pattern in scratchpad worked; `npx playwright open http://localhost:3000` for interactive.
 - `react-app-rewired` + CRA 5; config in `newIDE/app/config-overrides.js`.
 - Do not commit `newIDE/app/resources/`, `node_modules/`, or `build/`.
 - Team language is pt-BR; the reskin must keep the `pt_BR` locale working (lingui catalogs in `newIDE/app/src/locales/pt_BR`).

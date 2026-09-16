@@ -4,10 +4,10 @@ Roadmap and rules: see [CLAUDE.md](CLAUDE.md). Tick items here; add a line under
 
 ## Phase 0 — Baseline
 
-- [ ] `newIDE/app` `npm install` completes (`node_modules/.package-lock.json` exists)
-- [ ] `npm start` → editor opens at http://localhost:3000
-- [ ] `newIDE/electron-app` `npm install && npm run start` → desktop window opens
-- [ ] Note first impressions vs `docs/c3-reference/*.png`
+- [x] `newIDE/app` `npm install` completes (`node_modules/.package-lock.json` exists)
+- [x] `npm start` → editor opens at http://localhost:3000
+- [x] `newIDE/electron-app` `npm install && npm run start` → desktop window opens (unset `ELECTRON_RUN_AS_NODE` when launched from VS Code)
+- [x] Note first impressions vs `docs/c3-reference/*.png` — home page is a marketing/courses storefront (Learn/Create/Play/Shop/Teach, Ask AI, Sign up); purple theme, rounded cards; nothing like C3's flat grey start page. Phase 1 must gut the home page as much as re-theme.
 
 ## Phase 1 — Skin
 
@@ -47,4 +47,4 @@ Hide
 - [ ] Animation editor, shortcut parity, examples, docs
 
 ## Log
-- 2026-09-16: repo forked, CLAUDE.md + references committed, install in progress.
+- 2026-09-16: repo forked, CLAUDE.md + references committed. Phase 0 done: web + desktop run.
