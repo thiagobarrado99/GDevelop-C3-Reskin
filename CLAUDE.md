@@ -72,6 +72,28 @@ Key editor dirs (`newIDE/app/src/`):
 | `ExportAndShare/` | Export dialogs (hide non-HTML5) | |
 | `locales/` | lingui catalogs, 62 locales; `en` is source | |
 
+## Construct 3 visual reference
+
+Screenshots of the real C3 editor (pt-BR UI — the team works in Portuguese, keep `pt_BR` locale working) live in `docs/c3-reference/`. Look at them before styling anything.
+
+| File | Shows | Use for |
+|---|---|---|
+| `01-start-page.png` | Start page: logo top-left; NEW / OPEN wide buttons; columns "Recent projects", "Learn", "Participate", "Explore" as flat grey cards with teal icons; "Recommended examples" thumbnails; top bar = ☰ MENU, save, undo/redo, play, tabs, "Free edition"/user on the right | Home page (`MainFrame/EditorContainers/HomePage`), top bar |
+| `02-new-project-dialog.png` | New project dialog: label-left / field-right form (Name, Preset, Viewport size WxH + ratio, Orientation, Start with, "Optimize for pixel art" checkbox); Help bottom-left, Create/Cancel bottom-right; title bar with ✕ | All dialogs (`UI/Dialog`), `ProjectCreation/` |
+| `03-layout-view.png` | Main editor: **Properties bar left** (collapsible sections LAYOUT / EFFECTS / EDITOR, label-left value-right rows), **layout canvas centre** with 2D/3D/eye toggle floating at top and status "Mouse: (x,y) · Active layer · Zoom" bottom-right, **Project bar top-right** (tree: Layouts, Event sheets, Scripts, Object types, Families, Timelines; search box), **Layers bar bottom-right** (checkbox visibility, lock, name, index), **Asset browser bottom** panel; tabbed doc area (Home / Layout 1 / Event sheet 1); panels have uppercase titles with pin/close icons; bottom-right tab strip "Layers / Mosaic" | Phase 2 shell + Phase 4 layout view; `SceneEditor/MosaicEditorsDisplay`, `PropertiesEditor`, `ProjectManager`, `LayersList` |
+| `04-add-condition-dialog.png` | Add condition dialog step 1: "Choose an object to create a condition from" + search; grid of big object tiles (icon over name, white tile); Cancel/Help left, Next right. Behind it: empty event sheet with "Add event" link top-left, "+ Add…" top-right | `EventsSheet/InstructionEditor/InstructionOrObjectSelector.js` |
+| `05-event-sheet-add-menu.png` | Event sheet "+ Add…" dropdown: Add event / function / custom action / JavaScript / TypeScript / comment / group / global variable / include event sheet / Paste / Event sheet ▸ — icon + label rows, dark popover | `EventsSheet/Toolbar.js`, context menus. Omit JS/TS entries. |
+
+Style takeaways (sample exact hex from the PNGs when building the theme):
+
+- Dark neutral greys only: window bg ≈ `#2b2b2b`, panel bg ≈ `#333`, cards/fields ≈ `#3d3d3d`, panel title bars slightly darker, active tab light grey with dark text.
+- Single accent: teal/green (`#3ac`-ish icons, green links like "Add event", green tree items for layouts/event sheets, cyan for object types/families).
+- Flat, square-ish corners (2–3 px), thin 1 px borders, no shadows/elevation, no Material ripple.
+- Panel headers: UPPERCASE small text, pin + ✕ icons right.
+- Properties: two-column label/value rows, collapsible section headers with ▼.
+- Dialogs: centred, title bar with ✕, grey buttons, Help bottom-left.
+- Font: system sans (Segoe UI on Windows), ~13 px.
+
 ## Setup / run / test
 
 Node: CI uses 24; local has 25 (works). npm, not yarn.
