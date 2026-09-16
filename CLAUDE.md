@@ -1,0 +1,129 @@
+# GDevelop-C3-Reskin
+
+Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is reworked to look and feel like Scirra's **Construct 3**, so a team already fluent in Construct can switch with near-zero relearning. Open source, no feature limits, browser + desktop, HTML5 export only.
+
+## Goals
+
+1. Construct-3-like editor: panel layout, terminology, event sheet look, layout-view feel, dialogs flow.
+2. Event-based only. No user-facing JS/TS code events (hide them, don't remove them from Core).
+3. Ship targets: web (`newIDE/app`) and desktop (`newIDE/electron-app`). HTML5 export only in the UI; other exporters hidden.
+4. Stay **upstream-mergeable**: all changes live in `newIDE/`. Merge `upstream/master` regularly.
+
+## Non-goals / rules
+
+- **Do not modify `Core/`, `GDJS/`, `GDevelop.js/`, `Extensions/`** unless a decision is logged below. Editing C++ means an Emscripten build and losing easy upstream sync.
+- Do not copy Construct 3 code, assets, icons, docs, or the "Construct" name. Clone concepts and workflow only.
+- Keep GDevelop's expression syntax (`Sprite.X()`, `ToString()`), project format (`.json`), and object model (objects per scene + global objects). Work around, don't rewrite.
+- Prefer a **new theme + new locale + layout config** over touching component logic. Escalate to component edits only when needed for the C3 feel.
+
+## Terminology map (C3 → GDevelop)
+
+| Construct 3 | GDevelop | Notes |
+|---|---|---|
+| Layout | Scene | rename in UI only |
+| Event sheet | Events (scene events / external events) | |
+| Object type | Object (scene or global) | GD objects default per-scene; nudge users to global objects |
+| Family | Object group | |
+| Instance variable | Object variable | |
+| Global/local variable | Global / scene / local variable | |
+| Behavior | Behavior | same |
+| Layer | Layer | same |
+| Container | Linked objects extension (approx.) | |
+| Else | Else event | exists upstream (`BuiltinCommonInstructions::Else`) |
+| Trigger once | Trigger once | exists |
+| Or block | Or condition | exists |
+| Function | Events function (extension) | |
+| Project bar | Project manager | |
+| Properties bar | Properties panel | |
+| Image/animation editor | Sprite editor + Piskel | |
+
+Rename via lingui strings first (see i18n), not by editing source identifiers.
+
+## Repo map
+
+```
+Core/             C++ project/event model, code generator → WASM (libGD.js). DO NOT TOUCH.
+GDJS/Runtime/     JS game runtime (Pixi.js/Three.js). DO NOT TOUCH.
+Extensions/       Behaviors & objects (Platformer, TopDown, Physics2, Tween, Pathfinding, Draggable, Anchor…). DO NOT TOUCH.
+GDevelop.js/      Emscripten bindings; libGD.js is auto-downloaded by newIDE (no local C++ build needed).
+newIDE/app/       The editor (React 18, Material-UI v4, Flow types, Pixi canvas). ALL OUR WORK IS HERE.
+newIDE/electron-app/  Desktop wrapper (Electron 32). Needs `newIDE/app` dev server running.
+```
+
+Key editor dirs (`newIDE/app/src/`):
+
+| Path | What | Size |
+|---|---|---|
+| `MainFrame/index.js` | App shell, tabs, toolbar, menus, panes | 6.5k lines |
+| `MainFrame/EditorTabs`, `PanesContainer`, `Toolbar` | Tab bar / docking / top toolbar | |
+| `MainFrame/EditorContainers/` | Scene / events / external layout containers | |
+| `SceneEditor/index.js` | Layout editor orchestrator | 3.7k |
+| `SceneEditor/MosaicEditorsDisplay/index.js` | **Panel layout** (`initialMosaicEditorNodes`: properties 23% left, canvas, objects list right — already C3-ish) | 600 |
+| `InstancesEditor/` | Pixi canvas: selection, move/resize/rotate, grid, status bar | 2k |
+| `EventsSheet/index.js` | Event sheet orchestrator | 3.2k |
+| `EventsSheet/EventsTree/` | Event rows; `Renderers/StandardEvent.js`, `Instruction.js`, `ConditionsActionsColumns.js`, `style.css`, `SortableEventsTree.css` | 1.3k |
+| `EventsSheet/InstructionEditor/` | Add/edit condition/action dialog (`InstructionOrObjectSelector.js` → `InstructionParametersEditor.js`) | |
+| `EventsSheet/ParameterFields/` | Parameter inputs + expression autocomplete | |
+| `ObjectsList/`, `ObjectGroupsList/`, `LayersList/`, `PropertiesEditor/`, `CompactPropertiesEditor/` | Side panels | |
+| `ObjectEditor/` | Object/sprite/animation editor | |
+| `ProjectManager/` | Project tree | |
+| `UI/Theme/` | Themes (`<Name>Theme/theme.json` + `index.js`, `ThemeRegistry.js`) | |
+| `UI/` | Shared MUI wrappers | |
+| `ExportAndShare/` | Export dialogs (hide non-HTML5) | |
+| `locales/` | lingui catalogs, 62 locales; `en` is source | |
+
+## Setup / run / test
+
+Node: CI uses 24; local has 25 (works). npm, not yarn.
+
+```bash
+cd newIDE/app
+npm install
+npm start                 # web editor on localhost:3000 + GDJS runtime watcher; downloads libGD.js
+npm run electron-app      # desktop, in a 2nd terminal, with npm start still running
+npm test                  # jest (react-app-rewired test --env=node)
+npm run flow              # type check (Flow, not TS)
+npm run format            # prettier on src/
+npm run lint              # eslint, zero warnings allowed
+npm run storybook         # component playground
+npm run build-theme-resources   # after editing any theme.json
+npm run create-new-theme "<Theme Name>"
+npm run build             # production web build
+```
+
+Browser test: Playwright is installed globally (`npx playwright open http://localhost:3000`).
+
+## Conventions
+
+- Flow-typed JS (`// @flow`), Prettier, eslint max-warnings=0. Run `npm run format && npm run flow` before committing.
+- All user-visible strings go through lingui: `<Trans>…</Trans>` or `t\`…\`` from `@lingui/macro`. Never import `Trans` from `@lingui/react`.
+- Match surrounding code style; MUI v4 (`@material-ui/core` 4.11), not v5.
+- Themes: edit `theme.json`, run `build-theme-resources`, never hand-edit generated `.css`/`.json`.
+- Panel layout is a react-mosaic tree — change `initialMosaicEditorNodes` / `defaultPanelConfigByEditor`, don't fork the mosaic component.
+- Commits: small, one concern each. Prefix `c3:` for reskin work so upstream merges are easy to review.
+
+## Git workflow
+
+```
+upstream = https://github.com/4ian/GDevelop.git  (blobless partial clone; full history)
+origin   = (not set yet — create GitHub fork, then: git remote add origin <url>)
+```
+
+- Work on `c3-reskin` branch off `master`. Keep `master` = upstream.
+- Sync: `git fetch upstream && git checkout master && git merge --ff-only upstream/master && git checkout c3-reskin && git merge master`.
+
+## Roadmap
+
+Phase 0 — Baseline: `npm start` works, note first impressions vs C3 side-by-side.
+Phase 1 — Skin (days): `Construct-like Dark` theme in `UI/Theme`; C3 terminology via a custom `en` catalog override; hide JS code events, non-HTML5 exporters, marketing/asset-store/AI panels the team won't use.
+Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, properties left, layout center, layers/objects right, bottom tabs), toolbar, tab styling, ribbon-less menu.
+Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
+Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
+Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
+
+Progress is tracked in `TODO.md` (create when Phase 1 starts).
+
+## Decisions
+
+- 2026-09-16: Fork GDevelop rather than write an engine; UI-only changes in `newIDE/` to stay mergeable.
+- 2026-09-16: Keep GDevelop expression syntax and per-scene object model.
