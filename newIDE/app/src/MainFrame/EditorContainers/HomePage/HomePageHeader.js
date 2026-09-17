@@ -1,7 +1,6 @@
 // @flow
 import * as React from 'react';
 import { I18n } from '@lingui/react';
-import { t } from '@lingui/macro';
 import TranslateIcon from '@material-ui/icons/Translate';
 import { Column, Line } from '../../../UI/Grid';
 import { LineStackLayout } from '../../../UI/Layout';
@@ -9,7 +8,6 @@ import TextButton from '../../../UI/TextButton';
 import IconButton from '../../../UI/IconButton';
 import { useResponsiveWindowSize } from '../../../UI/Responsive/ResponsiveWindowMeasurer';
 import SaveProjectIcon from '../../SaveProjectIcon';
-import HistoryIcon from '../../../UI/CustomSvgIcons/History';
 import { type FileMetadata } from '../../../ProjectsStorage';
 
 type Props = {|
@@ -44,23 +42,13 @@ export const HomePageHeader = ({
         >
           <Column noMargin>
             <Line noMargin>
+              {/* c3: no version history (cloud only). */}
               {!!hasProject && (
-                <>
-                  <IconButton
-                    size="small"
-                    id="main-toolbar-history-button"
-                    onClick={onOpenVersionHistory}
-                    tooltip={t`Open version history`}
-                    color="default"
-                  >
-                    <HistoryIcon />
-                  </IconButton>
-                  <SaveProjectIcon
-                    id="main-toolbar-save-button"
-                    onSave={onSave}
-                    canSave={canSave}
-                  />
-                </>
+                <SaveProjectIcon
+                  id="main-toolbar-save-button"
+                  onSave={onSave}
+                  canSave={canSave}
+                />
               )}
             </Line>
           </Column>

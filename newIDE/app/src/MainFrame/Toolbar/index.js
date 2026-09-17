@@ -1,13 +1,9 @@
 // @flow
-import { t } from '@lingui/macro';
 import * as React from 'react';
 import { Toolbar, ToolbarGroup } from '../../UI/Toolbar';
 import PreviewAndShareButtons, {
   type PreviewAndShareButtonsProps,
 } from './PreviewAndShareButtons';
-import IconButton from '../../UI/IconButton';
-import { Spacer } from '../../UI/Grid';
-import HistoryIcon from '../../UI/CustomSvgIcons/History';
 import OpenedVersionStatusChip from '../../VersionHistory/OpenedVersionStatusChip';
 import type { OpenedVersionStatus } from '../../VersionHistory';
 import GDevelopThemeContext from '../../UI/Theme/GDevelopThemeContext';
@@ -55,6 +51,7 @@ type LeftButtonsToolbarGroupProps = {|
   toolbarButtons: Array<ToolbarButtonConfig>,
   projectPath: ?string,
   triggerNpmScript: TriggerNpmScript,
+  children?: React.Node, // c3
 |};
 
 const LeftButtonsToolbarGroup = React.memo<LeftButtonsToolbarGroupProps>(
@@ -65,20 +62,14 @@ const LeftButtonsToolbarGroup = React.memo<LeftButtonsToolbarGroupProps>(
     return (
       <>
         <ToolbarGroup firstChild>
-          <IconButton
-            size="small"
-            id="toolbar-history-button"
-            onClick={props.onOpenVersionHistory}
-            tooltip={t`Open version history`}
-            color="default"
-          >
-            <HistoryIcon />
-          </IconButton>
+          {/* c3: no version history (cloud only); preview & export sit next
+              to save, like Construct's Save · Preview. */}
           <SaveProjectIcon
             id="toolbar-save-button"
             onSave={props.onSave}
             canSave={props.canSave}
           />
+          {props.children}
           {toolbarButtons.map((button, index) => (
             <CustomToolbarButton
               key={index}
@@ -149,12 +140,8 @@ export default (React.forwardRef<MainFrameToolbarProps, ToolbarInterface>(
               toolbarButtons={props.toolbarButtons}
               projectPath={props.projectPath}
               triggerNpmScript={props.triggerNpmScript}
-            />
-            {/* When there is no preview button (a gameplay test), the editor
-            toolbar provides its own centered group taking its place. */}
-            {props.showPreviewAndShareButtons && (
-              <ToolbarGroup>
-                <Spacer />
+            >
+              {props.showPreviewAndShareButtons && (
                 <PreviewAndShareButtons
                   onPreviewWithoutHotReload={props.onPreviewWithoutHotReload}
                   onOpenDebugger={props.onOpenDebugger}
@@ -171,9 +158,8 @@ export default (React.forwardRef<MainFrameToolbarProps, ToolbarInterface>(
                   openShareDialog={props.openShareDialog}
                   isSharingEnabled={props.isSharingEnabled}
                 />
-                <Spacer />
-              </ToolbarGroup>
-            )}
+              )}
+            </LeftButtonsToolbarGroup>
           </>
         ) : null}
         {editorToolbar || <ToolbarGroup />}

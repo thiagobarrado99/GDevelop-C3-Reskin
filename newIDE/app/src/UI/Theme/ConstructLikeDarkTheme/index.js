@@ -2,6 +2,7 @@ import { createGdevelopTheme } from '../CreateTheme';
 
 import styles from './ConstructLikeDarkThemeVariables.json';
 import './ConstructLikeDarkThemeVariables.css';
+import './ConstructLikeDark.css';
 
 // c3: flat dark greys with a single cyan/green accent, palette measured from
 // the Construct 3 reference screenshots (see CLAUDE.md "Style takeaways").

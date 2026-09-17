@@ -40,9 +40,11 @@ Hide
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
 - [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
-- [ ] Panel arrangement (project bar + properties left, canvas centre, objects/layers right, bottom tabs) via `initialMosaicEditorNodes`
-- [ ] Panel headers: uppercase title, pin/close icons
-- [ ] Top toolbar + tab strip per `01-start-page.png`
+- [x] Panel arrangement: properties left, canvas centre, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js` `initialMosaicEditorNodes`; users with a saved layout keep theirs)
+- [ ] Project bar as a docked panel (still the ☰-era drawer, reachable from View ▸ Project bar)
+- [x] Panel headers: 13 px plain title, square bars (`ConstructLikeDarkTheme/ConstructLikeDark.css`, scoped to the theme's body class)
+- [x] Toolbar: Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); version-history buttons removed (cloud only)
+- [ ] Tab strip: active tab cream like Construct; merge tab strip and toolbar into one row?
 - [ ] Dialog chrome per `02-new-project-dialog.png` (title bar ✕, Help bottom-left, grey buttons)
 
 ## Phase 3 — Event sheet (see survey)

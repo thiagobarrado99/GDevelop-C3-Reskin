@@ -1,0 +1,14 @@
+/* c3: theme-scoped tweaks (body gets the theme's root class name).
+   Panel title bars like Construct's bars: small plain-text title, square. */
+.ConstructLikeDarkTheme .mosaic-gd-theme .mosaic-window .mosaic-window-title {
+  font-size: 13px;
+}
+.ConstructLikeDarkTheme .mosaic-gd-theme .mosaic-window-toolbar {
+  border-radius: 0 !important;
+}
+.ConstructLikeDarkTheme
+  .mosaic-gd-theme
+  .mosaic-editor-instances-list
+  .mosaic-window-body {
+  border-radius: 0 !important;
+}

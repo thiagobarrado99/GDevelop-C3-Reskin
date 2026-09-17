@@ -36,15 +36,22 @@ import { preventGameFramePointerEvents } from '../../EmbeddedGame/EmbeddedGameFr
 import { EmbeddedGameFrameHole } from '../../EmbeddedGame/EmbeddedGameFrameHole';
 import { exceptionallyGuardAgainstDeadObject } from '../../Utils/IsNullPtr';
 
+// c3: Construct-like arrangement - properties bar left, layout in the centre,
+// objects top-right (where Construct has its project bar) and layers below.
 const initialMosaicEditorNodes = {
   direction: 'row',
   first: 'properties',
-  splitPercentage: 23,
+  splitPercentage: 20,
   second: {
     direction: 'row',
     first: 'instances-editor',
-    second: 'objects-list',
-    splitPercentage: 77,
+    second: {
+      direction: 'column',
+      first: 'objects-list',
+      second: 'layers-list',
+      splitPercentage: 60,
+    },
+    splitPercentage: 78,
   },
 };
 
