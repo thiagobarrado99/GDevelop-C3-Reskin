@@ -6289,7 +6289,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       {renderSaveReminder()}
       {renderExtensionLoadErrorDialog()}
       <CloseConfirmDialog
-        shouldPrompt={!!state.currentProject}
+        shouldPrompt={!!state.currentProject && hasUnsavedChanges} // c3: only ask when something is unsaved
         i18n={props.i18n}
         language={props.i18n.language}
         hasUnsavedChanges={hasUnsavedChanges}

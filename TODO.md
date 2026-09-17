@@ -42,7 +42,7 @@ Hide
 - [x] Assemble3 icon everywhere (favicons, PWA, Electron ico/icns/appx, window icon, start page, About)
 - [x] Start page polish: Assemble3 logo + name, uniform cards (same size, icon/text placement)
 - [ ] Start page: recent-project context menu (remove from list)
-- [ ] Closing the browser tab / window asks for confirmation only when the project has unsaved changes (`UI/CloseConfirmDialog.js`, wired in `MainFrame/index.js` with `shouldPrompt={!!state.currentProject}` — change to `&& hasUnsavedChanges`; note it is skipped in dev via `Window.isDev()`, so test on `npm run build` or Electron)
+- [x] Closing the browser tab / window asks for confirmation only when the project has unsaved changes (`UI/CloseConfirmDialog.js`, wired in `MainFrame/index.js` with `shouldPrompt={!!state.currentProject}` — change to `&& hasUnsavedChanges`; note it is skipped in dev via `Window.isDev()`, so test on `npm run build` or Electron)
 - [x] New projects keep their game size on startup (`CreateProject.js`, Construct default)
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
