@@ -4,6 +4,7 @@
   flex-direction: column;
   flex: 1;
   min-height: 0;
+  font-family: var(--gdevelop-modern-font-family, sans-serif);
 }
 .c3-tile-grid-body {
   flex: 1;
@@ -21,7 +22,7 @@
   flex-wrap: wrap;
   gap: 4px;
 }
-.c3-tile {
+.c3-tile-grid .c3-tile {
   display: flex !important;
   flex-direction: column;
   align-items: center;
@@ -34,14 +35,14 @@
   color: var(--c3-tile-color);
   text-align: center;
 }
-.c3-tile:hover {
+.c3-tile-grid .c3-tile:hover {
   background: rgba(255, 255, 255, 0.08);
 }
-.c3-tile.selected {
+.c3-tile-grid .c3-tile.selected {
   background: rgba(255, 255, 255, 0.14);
   border-color: var(--c3-tile-color);
 }
-.c3-tile.disabled {
+.c3-tile-grid .c3-tile.disabled {
   opacity: 0.35;
 }
 .c3-tile-name {

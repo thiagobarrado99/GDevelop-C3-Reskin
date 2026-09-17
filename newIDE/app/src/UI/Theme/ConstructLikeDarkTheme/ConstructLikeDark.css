@@ -8,6 +8,9 @@
   --c3-event-sheet-color: #2fcc63;
   --c3-behavior-color: #f75651; /* sampled from C3-Icons/behaviour_icons */
   --c3-object-color: #00768e; /* sampled from C3-Icons/object_icons */
+  /* The icon cyan is ≈ 2:1 on the grey panels, so text uses Construct's
+     lighter object-type cyan (measured in the reference screenshots). */
+  --c3-object-label-color: #00b1cc;
   --c3-effect-color: #c39bff;
 }
 

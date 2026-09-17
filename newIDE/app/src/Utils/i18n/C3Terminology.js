@@ -25,6 +25,7 @@ const reskinPtBr: { [string]: string } = {
   'Shared by every instance of the object.':
     'Compartilhado por todas as instâncias do objeto.',
   'Show all GDevelop behaviors': 'Mostrar todos os comportamentos do GDevelop',
+  'Show all GDevelop objects': 'Mostrar todos os objetos do GDevelop',
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',
   'Add layer below': 'Adicionar camada abaixo',

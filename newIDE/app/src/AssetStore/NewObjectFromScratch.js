@@ -22,6 +22,9 @@ import { type ObjectShortHeader } from '../Utils/GDevelopServices/Extension';
 import { ObjectStoreContext, type ObjectCategory } from './ObjectStoreContext';
 import { ListSearchResults } from '../UI/Search/ListSearchResults';
 import { ObjectListItem } from './ObjectListItem';
+import C3TileGrid from '../UI/C3TileGrid'; // c3
+import { C3_OBJECTS } from '../Utils/C3Objects'; // c3
+import { c3Label } from '../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
 import { ColumnStackLayout, LineStackLayout } from '../UI/Layout';
 import PreferencesContext from '../MainFrame/Preferences/PreferencesContext';
@@ -248,6 +251,8 @@ export default function NewObjectFromScratch({
   );
 
   const filteredSearchResults = searchResults ? searchResults : null;
+  const useC3Grid: boolean = true; // c3: Construct's add-object tiles
+  const [showAllObjects, setShowAllObjects] = React.useState(false); // c3
 
   const getExtensionsMatches = React.useCallback(
     (extensionShortHeader: ObjectShortHeader): SearchMatch[] => {
@@ -306,6 +311,13 @@ export default function NewObjectFromScratch({
                   </IconButton>
                 }
                 buildMenuTemplate={(i18n: I18nType) => [
+                  // c3: escape hatch out of the Construct list.
+                  {
+                    type: 'checkbox',
+                    label: i18n._(t`Show all GDevelop objects`),
+                    checked: showAllObjects,
+                    click: () => setShowAllObjects(!showAllObjects),
+                  },
                   {
                     label: preferences.values.showExperimentalExtensions
                       ? i18n._(t`Hide experimental objects`)
@@ -322,49 +334,85 @@ export default function NewObjectFromScratch({
           </ResponsiveLineStackLayout>
           {DismissableTutorialMessage}
         </ColumnStackLayout>
-        <ListSearchResults
-          disableAutoTranslate // Search results text highlighting conflicts with dom handling by browser auto-translations features. Disables auto translation to prevent crashes.
-          onRetry={fetchObjects}
-          error={error}
-          searchItems={
-            filteredSearchResults &&
-            filteredSearchResults.map(({ item }) => item)
-          }
-          getSearchItemUniqueId={getObjectType}
-          // $FlowFixMe[missing-local-annot]
-          renderSearchItem={(objectShortHeaderOrCategory, onHeightComputed) => {
-            if (objectShortHeaderOrCategory.categoryId) {
+        {useC3Grid && !showAllObjects && filteredSearchResults ? ( // c3
+          <C3TileGrid
+            colorVariable="--c3-object-label-color"
+            onChoose={id => {
+              const tile = C3_OBJECTS.find(tile => tile.id === id);
+              const header = filteredSearchResults
+                .map(({ item }) => item)
+                .find(item => tile && item.type === tile.type);
+              if (header) {
+                sendNewObjectCreated(header.name);
+                onObjectTypeSelected(header);
+              }
+            }}
+            tiles={C3_OBJECTS.map(tile => ({
+              tile,
+              item: filteredSearchResults
+                .map(({ item }) => item)
+                .find(item => item.type === tile.type),
+            }))
+              .filter(({ item }) => !!item && !item.categoryId)
+              .map(({ tile, item }) => ({
+                id: tile.id,
+                name: c3Label(tile.name, preferences.values.language),
+                description: item.description,
+                iconUrl: item.previewIconUrl,
+                category: c3Label(tile.category, preferences.values.language),
+                enabled: true,
+              }))}
+          />
+        ) : (
+          <ListSearchResults
+            disableAutoTranslate // Search results text highlighting conflicts with dom handling by browser auto-translations features. Disables auto translation to prevent crashes.
+            onRetry={fetchObjects}
+            error={error}
+            searchItems={
+              filteredSearchResults &&
+              filteredSearchResults.map(({ item }) => item)
+            }
+            getSearchItemUniqueId={getObjectType}
+            // $FlowFixMe[missing-local-annot]
+            renderSearchItem={(
+              objectShortHeaderOrCategory,
+              onHeightComputed
+            ) => {
+              if (objectShortHeaderOrCategory.categoryId) {
+                return (
+                  <TitleListItem
+                    value={objectShortHeaderOrCategory.name}
+                    onHeightComputed={onHeightComputed}
+                  />
+                );
+              }
+              const objectShortHeader: ObjectShortHeader =
+                //$FlowFixMe[incompatible-type] It can't be a category at this point
+                objectShortHeaderOrCategory;
               return (
-                <TitleListItem
-                  value={objectShortHeaderOrCategory.name}
+                <ObjectListItem
+                  id={
+                    'object-item-' + objectShortHeader.type.replace(/:/g, '-')
+                  }
+                  key={objectShortHeader.type}
                   onHeightComputed={onHeightComputed}
+                  objectShortHeader={objectShortHeader}
+                  matches={getExtensionsMatches(objectShortHeader)}
+                  onChoose={() => {
+                    sendNewObjectCreated(objectShortHeader.name);
+                    onObjectTypeSelected(objectShortHeader);
+                  }}
+                  onShowDetails={() => {
+                    if (objectShortHeader.headerUrl) {
+                      setSelectedObjectShortHeader(objectShortHeader);
+                    }
+                  }}
+                  platform={project.getCurrentPlatform()}
                 />
               );
-            }
-            const objectShortHeader: ObjectShortHeader =
-              //$FlowFixMe[incompatible-type] It can't be a category at this point
-              objectShortHeaderOrCategory;
-            return (
-              <ObjectListItem
-                id={'object-item-' + objectShortHeader.type.replace(/:/g, '-')}
-                key={objectShortHeader.type}
-                onHeightComputed={onHeightComputed}
-                objectShortHeader={objectShortHeader}
-                matches={getExtensionsMatches(objectShortHeader)}
-                onChoose={() => {
-                  sendNewObjectCreated(objectShortHeader.name);
-                  onObjectTypeSelected(objectShortHeader);
-                }}
-                onShowDetails={() => {
-                  if (objectShortHeader.headerUrl) {
-                    setSelectedObjectShortHeader(objectShortHeader);
-                  }
-                }}
-                platform={project.getCurrentPlatform()}
-              />
-            );
-          }}
-        />
+            }}
+          />
+        )}
       </ColumnStackLayout>
       {!!selectedObjectShortHeader && (
         <ExtensionInstallDialog

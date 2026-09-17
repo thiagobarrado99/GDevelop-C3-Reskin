@@ -45,7 +45,7 @@ const C3TileGrid = ({ tiles, onChoose, colorVariable }: Props): React.Node => {
                 .map(tile => (
                   <ButtonBase
                     key={tile.id}
-                    id={tile.id}
+                    id={`c3-tile-${tile.id}`}
                     className={
                       'c3-tile' +
                       (tile.id === selectedId ? ' selected' : '') +
