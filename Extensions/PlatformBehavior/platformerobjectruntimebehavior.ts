@@ -436,12 +436,14 @@ namespace gdjs {
           !this.shouldIgnoreDefaultControls() &&
           inputManager.isKeyPressed(RIGHTKEY));
 
+      // c3: the up arrow also jumps, as in Construct 3's Platform behavior.
       this._jumpKey ||
         (this._jumpKey =
           !this.shouldIgnoreDefaultControls() &&
           (inputManager.isKeyPressed(LSHIFTKEY) ||
             inputManager.isKeyPressed(RSHIFTKEY) ||
-            inputManager.isKeyPressed(SPACEKEY)));
+            inputManager.isKeyPressed(SPACEKEY) ||
+            inputManager.isKeyPressed(UPKEY)));
       // Check if the jump key is continuously held since
       // the beginning of the jump.
       if (!this._jumpKey) {

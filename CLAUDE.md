@@ -43,7 +43,7 @@ Gotchas:
 
 ## Non-goals / rules
 
-- **Do not modify `Core/`, `GDJS/`, `GDevelop.js/`, `Extensions/`** unless a decision is logged below. Editing C++ means an Emscripten build and losing easy upstream sync.
+- **Do not modify `Core/`, `GDJS/`, `GDevelop.js/`, `Extensions/`** unless a decision is logged below (see 2026-09-18 for the one existing runtime edit). Editing C++ means an Emscripten build and losing easy upstream sync; runtime `.ts` in `GDJS/Runtime` and `Extensions/` only needs the esbuild step the dev server already runs.
 - Do not copy Construct 3 code, assets, icons, docs, or the "Construct" name. Clone concepts and workflow only.
 - Keep GDevelop's expression syntax (`Sprite.X()`, `ToString()`), project format (`.json`), and object model (objects per scene + global objects). Work around, don't rewrite.
 - Prefer a **new theme + new locale + layout config** over touching component logic. Escalate to component edits only when needed for the C3 feel.
@@ -193,4 +193,5 @@ Progress is tracked in `TODO.md`.
 
 - 2026-09-16: Fork GDevelop rather than write an engine; UI-only changes in `newIDE/` to stay mergeable.
 - 2026-09-16: Keep GDevelop expression syntax and per-scene object model.
+- 2026-09-18: **One runtime edit outside `newIDE/`** — `Extensions/PlatformBehavior/platformerobjectruntimebehavior.ts`: the up arrow also triggers a jump (Construct 3's Platform behavior default; Space/Shift kept). It is TypeScript compiled by `GDJS/scripts/build.js` (esbuild, no C++), and the `npm start` watcher rebuilds `newIDE/app/resources/GDJS` automatically. Keep such runtime edits to one-liners with a `// c3:` comment and log them here; `Core/` (C++) stays untouched.
 - 2026-09-17: Terminology is rewritten at runtime (`C3Terminology.js`) rather than in catalogs, because `.po` sources are Crowdin-only. Storefront/AI features are hidden by forcing upstream's classroom `hide*` flags to `true` at each check site, so upstream changes to those features merge cleanly.
