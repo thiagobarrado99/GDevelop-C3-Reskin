@@ -251,6 +251,8 @@ import { extractGDevelopApiErrorStatusAndCode } from '../Utils/GDevelopServices/
 import { type CourseChapter } from '../Utils/GDevelopServices/Asset';
 import useVersionHistory from '../VersionHistory/UseVersionHistory';
 import { ProjectManagerDrawer } from '../ProjectManager/ProjectManagerDrawer';
+import ContextMenu, { type ContextMenuInterface } from '../UI/Menu/ContextMenu'; // c3
+import { buildC3MainMenuTemplate } from './C3MainMenu'; // c3
 import DiagnosticReportDialog from '../ExportAndShare/DiagnosticReportDialog';
 import MemoryTrackedRegistryDialog from './MemoryTrackedRegistryDialog';
 import { scanProjectForValidationErrors } from '../Utils/EventsValidationScanner';
@@ -1737,6 +1739,18 @@ const MainFrame = (props: Props): React.MixedElement => {
     },
     [openProjectManager]
   );
+
+  // c3: the ☰ button opens a Construct-like menu, anchored under it.
+  const c3MainMenuRef = React.useRef<?ContextMenuInterface>(null);
+  const openC3MainMenu = React.useCallback(() => {
+    const button = document.getElementById(
+      'main-toolbar-project-manager-button'
+    );
+    const menu = c3MainMenuRef.current;
+    if (!button || !menu) return;
+    const { left, bottom } = button.getBoundingClientRect();
+    menu.open(left, bottom, {});
+  }, []);
 
   const deleteLayout = (layout: gdLayout) => {
     const { currentProject } = state;
@@ -5853,7 +5867,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       !!_previewLauncher.current &&
       _previewLauncher.current.canDoNetworkPreview(),
     gamesPlatformFrameTools: gamesPlatformFrameTools,
-    toggleProjectManager: toggleProjectManager,
+    toggleProjectManager: openC3MainMenu, // c3
     setEditorTabs: setEditorTabs,
     saveProject: saveProject,
     saveProjectAsWithStorageProvider: saveProjectAsWithStorageProvider,
@@ -6006,6 +6020,27 @@ const MainFrame = (props: Props): React.MixedElement => {
         fileMetadata={currentFileMetadata}
         storageProvider={getStorageProvider()}
         i18n={i18n}
+      />
+      <ContextMenu
+        ref={c3MainMenuRef}
+        buildMenuTemplate={() =>
+          buildC3MainMenuTemplate({
+            i18n,
+            project: state.currentProject,
+            canSaveProjectAs,
+            previewEnabled:
+              !!state.currentProject &&
+              state.currentProject.getLayoutsCount() > 0,
+            recentProjectFiles: preferences.getRecentProjectFiles({
+              limit: 10,
+            }),
+            callbacks: mainMenuCallbacks,
+            onLaunchPreview: launchNewPreview,
+            onLaunchDebugPreview: launchDebuggerAndPreview,
+            onBrowseExamples: () =>
+              openNewProjectDialog({ browseExamples: true }),
+          })
+        }
       />
       <ProjectManagerDrawer
         projectManagerOpen={projectManagerOpen}

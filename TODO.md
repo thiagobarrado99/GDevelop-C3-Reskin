@@ -13,7 +13,7 @@ Roadmap and rules: see [CLAUDE.md](CLAUDE.md). Tick items here; add a line under
 
 Theme
 - [x] `src/UI/Theme/ConstructLikeDarkTheme/` from the measured palette; default theme; `flat` option in `CreateTheme.js` (2 px radius, no shadows, no ripple)
-- [ ] Font: Segoe UI / system sans ~13 px instead of Fira Sans (global `GdevelopModernFontFamily`)
+- [x] Font: system sans (Segoe UI on Windows) — `gdevelop.modern-font-family` overridden in `ConstructLikeDarkTheme/theme.json`
 - [ ] Panel headers uppercase; review MUI overrides (buttons, dialogs, tabs) against `02-new-project-dialog.png`
 
 Language & terminology
@@ -28,7 +28,8 @@ Hide
 - [x] Home page: only Create tab; AI prompt and credits wallet removed (`HomePageMenu.js`, `CreateSection/index.js`)
 - [x] Ask AI / announcements / paid products: classroom `hide*` flags forced on (9 sites, grep `// c3:`)
 - [x] "Baixe o app" header button removed; "Compartilhar" → "Exportar" (whole-string rule); default names Layout 1 / Folha de eventos 1 / Camada 0 via `C3Terminology.js`
-- [ ] Remaining storefront: login/signup header buttons (kept: cloud saves need login); "Browse examples" still opens GDevelop's template dialog with the Remix row
+- [x] Login/signup header chips removed (`HomePageHeader.js`)
+- [ ] "Browse examples" still opens GDevelop's template dialog with the Remix row
 
 ## Phase 2 — Shell (see `docs/c3-reference/ui-survey.md`)
 - [x] Start page per survey (`HomePage/C3StartPage.js`): NEW / OPEN / BROWSE EXAMPLES, RECENT PROJECTS, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
@@ -36,7 +37,7 @@ Hide
 - [x] Local files only: Cloud provider removed, `BrowserFileStorageProvider` gives the web build a real Open picker (.json / .zip) and direct download-on-save; start page hover/pointer, white NOVO/ABRIR, "Explorar exemplos" button removed
 - [x] Web build: device files are inlined as `data:` URLs for non-cloud projects (`FileToCloudProjectResourceUploader.js`, `// c3:`), so they travel inside `game.json`
 - [ ] Start page polish: real logo image, recent-project context menu (remove from list); recent list no longer receives web projects (BrowserFile has no `onSaveProject`)
-- [ ] Main menu tree: Project ▸ (Save, Save as, Preview, Export, Close project, New, Open) · View ▸ · Settings · Help · About
+- [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
 - [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
 - [ ] Panel arrangement (project bar + properties left, canvas centre, objects/layers right, bottom tabs) via `initialMosaicEditorNodes`

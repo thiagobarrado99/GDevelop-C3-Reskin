@@ -67,6 +67,13 @@ const reskinPtBr: { [string]: string } = {
   '4K landscape': 'Paisagem 4K',
   '4K portrait': 'Retrato 4K',
   'Local file': 'Arquivo local',
+  'Start page': 'Página inicial',
+  Debug: 'Depurar',
+  Export: 'Exportar',
+  'Open recent': 'Abrir recente',
+  'Project bar': 'Barra do projeto',
+  'Example browser': 'Explorar exemplos',
+  About: 'Sobre',
 };
 const escapeRegExp = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -100,6 +107,8 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Eventos externos sem título$/, 'Folha de eventos 1'],
     [/^Camada base$/, 'Camada 0'],
     [/^Compartilhar$/, 'Exportar'],
+    [/^Projecto$/, 'Projeto'],
+    [/^Exibição$/, 'Exibir'],
     // cena (f.) → layout (m.)
     r(/\bnovas cenas\b/gi, 'novos layouts'),
     r(/\btodas as cenas\b/gi, 'todos os layouts'),
