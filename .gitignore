@@ -1,4 +1,8 @@
-/docs
+# c3: /docs/* instead of /docs so our reskin notes can be tracked (screenshots stay ignored).
+/docs/*
+!/docs/c3-reference/
+/docs/c3-reference/*
+!/docs/c3-reference/*.md
 /docs-wiki
 /ExtLibs/SFML
 /ExtLibs/*.7z

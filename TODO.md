@@ -27,21 +27,31 @@ Hide
 - [x] Non-HTML5 exporters: Share dialog opens on HTML5, no platform chooser (`ShareDialog/index.js`, `PublishHome.js`)
 - [x] Home page: only Create tab; AI prompt and credits wallet removed (`HomePageMenu.js`, `CreateSection/index.js`)
 - [x] Ask AI / announcements / paid products: classroom `hide*` flags forced on (9 sites, grep `// c3:`)
-- [ ] Remaining storefront: "Baixe o app" / login / signup header buttons (keep login for cloud saves?), "Remix" quick-customization row, in-editor "Compartilhar" button label → "Exportar"
+- [x] "Baixe o app" header button removed; "Compartilhar" → "Exportar" (whole-string rule); default names Layout 1 / Folha de eventos 1 / Camada 0 via `C3Terminology.js`
+- [ ] Remaining storefront: login/signup header buttons (kept: cloud saves need login), "Remix" quick-customization row
 
-## Phase 2 — Shell
+## Phase 2 — Shell (see `docs/c3-reference/ui-survey.md`)
+- [ ] Start page per survey: NEW / OPEN / BROWSE EXAMPLES buttons, RECENT PROJECTS list, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
+- [ ] Main menu tree: Project ▸ (Save, Save as, Preview, Export, Close project, New, Open) · View ▸ · Settings · Help · About
+- [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
+- [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
 - [ ] Panel arrangement (project bar + properties left, canvas centre, objects/layers right, bottom tabs) via `initialMosaicEditorNodes`
 - [ ] Panel headers: uppercase title, pin/close icons
 - [ ] Top toolbar + tab strip per `01-start-page.png`
 - [ ] Dialog chrome per `02-new-project-dialog.png` (title bar ✕, Help bottom-left, grey buttons)
 
-## Phase 3 — Event sheet
+## Phase 3 — Event sheet (see survey)
+- [ ] Rows: margin number, `[icon Object] condition` block, `Add action` placeholder, per-event `Add…`
+- [ ] Condition context: Edit · Add another condition · Invert · Replace condition · Replace object · Toggle · Cut/Copy/Paste · Delete
+- [ ] Picker step 2: two-column grouped list, category headers, description on top, search; step 3 params with Back/Done and `= Equal to…` operator labels
 - [ ] Compact rows, object icon + text, C3 colours (`EventsTree/style.css`)
 - [ ] Add condition/action flow: object tiles → condition → params (`InstructionOrObjectSelector.js`)
 - [ ] "+ Add…" menu per `05-event-sheet-add-menu.png` (no JS/TS entries)
 - [ ] Right-click menus
 
-## Phase 4 — Layout view
+## Phase 4 — Layout view (see survey)
+- [ ] Properties sections LAYOUT / EFFECTS / EDITOR with C3 row order; instance sections Common / Instance variables / Behaviors / Effects / Properties / Editor
+- [ ] Instance context: Edit · Z Order ▸ · Align ▸ · Lock ▸ · Cut/Copy/Paste · Delete; double-click empty = add object; object picker as tile grid by category
 - [ ] Gizmos, snap/grid defaults, z-order bar, status bar "Mouse · Layer · Zoom"
 - [ ] Dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`); canvas colour is project data, not theme
 - [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
