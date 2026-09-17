@@ -39,7 +39,7 @@ Hide
 - [x] Web build saves to a real local file (File System Access API: picker on first save, direct write on Ctrl+S, handles kept in IndexedDB for recent projects); download fallback for Firefox/Safari
 - [x] `.a3p` project extension (desktop + web, file association in electron-builder config)
 - [x] Brand: Assemble3 everywhere the UI said GDevelop (runtime `brandRules` + `APP_NAME`); logo/icons still GDevelop's
-- [ ] Assemble3 logo + app icons (`public/`, `electron-app/build/`)
+- [x] Assemble3 icon everywhere (favicons, PWA, Electron ico/icns/appx, window icon, start page, About)
 - [ ] Start page polish: real logo image, recent-project context menu (remove from list)
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files

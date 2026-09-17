@@ -312,7 +312,12 @@ const AboutDialog = ({ onClose, updateStatus }: Props) => {
       maxWidth="sm"
       fixedContent={
         <ColumnStackLayout noMargin>
-          <img src="res/GD-logo.png" alt="GDevelop logo" style={styles.logo} />
+          {/* c3: Assemble3 banner */}
+          <img
+            src="res/assemble3-banner.png"
+            alt="Assemble3 logo"
+            style={styles.logo}
+          />
           <Tabs
             value={currentTab}
             onChange={setCurrentTab}
