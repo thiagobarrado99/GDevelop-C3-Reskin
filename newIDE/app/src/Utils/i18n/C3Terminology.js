@@ -74,6 +74,10 @@ const reskinPtBr: { [string]: string } = {
   'Project bar': 'Barra do projeto',
   'Example browser': 'Explorar exemplos',
   About: 'Sobre',
+  'Use "Open" and pick the file again.':
+    'Use "Abrir" e escolha o arquivo novamente.',
+  'The file could not be written. Check the permission you were asked for, or use "Save as".':
+    'Não foi possível gravar o arquivo. Verifique a permissão solicitada ou use "Salvar como".',
 };
 const escapeRegExp = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
