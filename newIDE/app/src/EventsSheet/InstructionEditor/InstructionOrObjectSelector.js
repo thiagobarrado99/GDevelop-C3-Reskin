@@ -199,6 +199,7 @@ type Props = {|
   scope: EventsScope,
   currentTab: TabName,
   onChangeTab: TabName => void,
+  hideTabs?: boolean, // c3: the dialog picks the tab (Construct's "System" tile)
   isCondition: boolean,
   focusOnMount?: boolean,
   chosenInstructionType: ?string,
@@ -226,6 +227,7 @@ const InstructionOrObjectSelector: React.ComponentType<{
       scope,
       currentTab,
       onChangeTab,
+      hideTabs,
       isCondition,
       focusOnMount,
       chosenInstructionType,
@@ -767,7 +769,7 @@ const InstructionOrObjectSelector: React.ComponentType<{
               : t`Search objects or actions`
           }
         />
-        {!isSearching && (
+        {!isSearching && !hideTabs && (
           <Line>
             <Column expand noMargin>
               <Tabs

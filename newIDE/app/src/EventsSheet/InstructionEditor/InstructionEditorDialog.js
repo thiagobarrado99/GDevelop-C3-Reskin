@@ -40,6 +40,7 @@ import { fillBehaviorParameter } from '../../EventsFunctionsExtensionEditor/Even
 import { fillBehaviorProperty } from '../../EventsFunctionsExtensionEditor/EventsBasedBehaviorOrObjectEditor/EventsBasedBehaviorOrObjectPropertiesEditor';
 import { type VariableDialogOpeningProps } from '../../VariablesList/VariablesEditorDialog';
 import { ExtensionStoreContext } from '../../AssetStore/ExtensionStore/ExtensionStoreContext';
+import C3ObjectPicker from './C3ObjectPicker'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -85,6 +86,10 @@ type Props = {|
     | (VariableDialogOpeningProps => void)
     | null,
 |};
+
+// c3: Construct's flow - object tiles, then the list, then the parameters -
+// on every screen size (the small-screen column layout below).
+const useC3Steps: boolean = true;
 
 const getInitialStepName = (isNewInstruction: boolean): StepName => {
   if (isNewInstruction) return 'object-or-free-instructions';
@@ -168,7 +173,10 @@ const InstructionEditorDialog = ({
     setCurrentInstructionOrObjectSelectorTab,
   ] = React.useState(() => getInitialTab(isNewInstruction, hasObjectChosen));
   const { isMobile, windowSize, isMediumScreen } = useResponsiveWindowSize();
-  const isLargeScreen = windowSize === 'large' || windowSize === 'xlarge';
+  const isLargeScreen =
+    !useC3Steps && (windowSize === 'large' || windowSize === 'xlarge'); // c3
+  // c3: "System" tile chosen - step 1 shows the free instructions list.
+  const [systemChosen, setSystemChosen] = React.useState(!isNewInstruction);
   const instructionType: string = instruction.getType();
   const [
     newBehaviorDialogOpen,
@@ -186,7 +194,9 @@ const InstructionEditorDialog = ({
     if (origin === 'parameters' && chosenObjectName) {
       setStep(
         // "medium" displays 2 columns, so "Back" button should go back to the first screen.
-        isMediumScreen ? 'object-or-free-instructions' : 'object-instructions'
+        isMediumScreen && !useC3Steps // c3
+          ? 'object-or-free-instructions'
+          : 'object-instructions'
       );
     } else {
       setStep('object-or-free-instructions');
@@ -348,42 +358,59 @@ const InstructionEditorDialog = ({
     ? instructionMetadata.getHelpPath()
     : undefined;
 
-  const renderInstructionOrObjectSelector = () => (
-    <I18n>
-      {({ i18n }) => (
-        <InstructionOrObjectSelector
-          key="instruction-or-object-selector"
-          style={styles.fullHeightSelector}
-          project={project}
-          projectScopedContainersAccessor={projectScopedContainersAccessor}
-          scope={scope}
-          ref={freeInstructionComponentRef}
-          currentTab={currentInstructionOrObjectSelectorTab}
-          onChangeTab={setCurrentInstructionOrObjectSelectorTab}
-          isCondition={isCondition}
-          chosenInstructionType={
-            !chosenObjectName ? instructionType : undefined
-          }
-          onChooseInstruction={(instructionType: string) => {
-            chooseInstruction(instructionType);
-            setStep('parameters');
-          }}
-          chosenObjectName={chosenObjectName}
-          onChooseObject={(chosenObjectName: string) => {
-            chooseObject(chosenObjectName);
+  const renderInstructionOrObjectSelector = () =>
+    useC3Steps && !systemChosen ? ( // c3
+      <C3ObjectPicker
+        project={project}
+        projectScopedContainersAccessor={projectScopedContainersAccessor}
+        isCondition={isCondition}
+        onChoose={objectName => {
+          if (objectName) {
+            chooseObject(objectName);
             setStep('object-instructions');
-          }}
-          focusOnMount={shouldAutofocusInput && !instructionType}
-          onSearchStartOrReset={forceUpdate}
-          onOpenExtensionStore={props => {
-            setSearchText(props.searchText);
-            setNewExtensionDialogOpen(true);
-          }}
-          i18n={i18n}
-        />
-      )}
-    </I18n>
-  );
+          } else {
+            setCurrentInstructionOrObjectSelectorTab('free-instructions');
+            setSystemChosen(true);
+          }
+        }}
+      />
+    ) : (
+      <I18n>
+        {({ i18n }) => (
+          <InstructionOrObjectSelector
+            key="instruction-or-object-selector"
+            style={styles.fullHeightSelector}
+            project={project}
+            projectScopedContainersAccessor={projectScopedContainersAccessor}
+            scope={scope}
+            ref={freeInstructionComponentRef}
+            currentTab={currentInstructionOrObjectSelectorTab}
+            onChangeTab={setCurrentInstructionOrObjectSelectorTab}
+            hideTabs={useC3Steps} // c3
+            isCondition={isCondition}
+            chosenInstructionType={
+              !chosenObjectName ? instructionType : undefined
+            }
+            onChooseInstruction={(instructionType: string) => {
+              chooseInstruction(instructionType);
+              setStep('parameters');
+            }}
+            chosenObjectName={chosenObjectName}
+            onChooseObject={(chosenObjectName: string) => {
+              chooseObject(chosenObjectName);
+              setStep('object-instructions');
+            }}
+            focusOnMount={shouldAutofocusInput && !instructionType}
+            onSearchStartOrReset={forceUpdate}
+            onOpenExtensionStore={props => {
+              setSearchText(props.searchText);
+              setNewExtensionDialogOpen(true);
+            }}
+            i18n={i18n}
+          />
+        )}
+      </I18n>
+    );
 
   const renderParameters = () => (
     <InstructionParametersEditor
@@ -437,7 +464,20 @@ const InstructionEditorDialog = ({
   return (
     <>
       <Dialog
-        title={isCondition ? <Trans>Condition</Trans> : <Trans>Action</Trans>}
+        title={
+          // c3: Construct titles the dialog by the step.
+          useC3Steps && isNewInstruction && step !== 'parameters' ? (
+            isCondition ? (
+              <Trans>Add condition</Trans>
+            ) : (
+              <Trans>Add action</Trans>
+            )
+          ) : isCondition ? (
+            <Trans>Condition</Trans>
+          ) : (
+            <Trans>Action</Trans>
+          )
+        }
         actions={[
           <FlatButton
             label={<Trans>Cancel</Trans>}
@@ -445,22 +485,30 @@ const InstructionEditorDialog = ({
             onClick={onCancel}
             key="cancel"
           />,
-          <DialogPrimaryButton
-            label={<Trans>Ok</Trans>}
-            primary={true}
-            disabled={!instructionType}
-            onClick={onSubmit}
-            key="ok"
-            id="ok-button"
-          />,
+          // c3: the list steps advance on click, so Ok only shows with the parameters.
+          useC3Steps && step !== 'parameters' ? null : (
+            <DialogPrimaryButton
+              label={useC3Steps ? <Trans>Done</Trans> : <Trans>Ok</Trans>}
+              primary={true}
+              disabled={!instructionType}
+              onClick={onSubmit}
+              key="ok"
+              id="ok-button"
+            />
+          ),
         ]}
         secondaryActions={[
-          (isMobile || isMediumScreen) &&
-          step !== 'object-or-free-instructions' ? (
+          (isMobile || isMediumScreen || useC3Steps) &&
+          (step !== 'object-or-free-instructions' ||
+            (useC3Steps && systemChosen)) ? (
             <FlatButton
               label={<Trans>Back</Trans>}
               primary={false}
-              onClick={() => stepBackFrom(step)}
+              onClick={() =>
+                step === 'object-or-free-instructions'
+                  ? setSystemChosen(false) // c3: back to the object tiles
+                  : stepBackFrom(step)
+              }
               key="back"
             />
           ) : null,
@@ -518,7 +566,8 @@ const InstructionEditorDialog = ({
                   ratio: !chosenObjectName ? 2 : 1,
                 },
               ].filter(Boolean);
-            } else if (isMediumScreen) {
+            } else if (isMediumScreen && !useC3Steps) {
+              // c3
               if (step === 'object-or-free-instructions') {
                 return [
                   {

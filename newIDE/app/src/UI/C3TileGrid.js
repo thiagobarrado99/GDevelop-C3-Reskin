@@ -23,9 +23,15 @@ type Props = {|
   tiles: Array<C3Tile>,
   onChoose: (id: string) => void,
   colorVariable: string, // e.g. '--c3-behavior-color'
+  instant?: boolean, // a single click chooses; no footer
 |};
 
-const C3TileGrid = ({ tiles, onChoose, colorVariable }: Props): React.Node => {
+const C3TileGrid = ({
+  tiles,
+  onChoose,
+  colorVariable,
+  instant,
+}: Props): React.Node => {
   const [selectedId, setSelectedId] = React.useState<?string>(null);
   const selected = tiles.find(tile => tile.id === selectedId);
   const categories = [...new Set(tiles.map(tile => tile.category))].sort();
@@ -38,7 +44,9 @@ const C3TileGrid = ({ tiles, onChoose, colorVariable }: Props): React.Node => {
       <div className="c3-tile-grid-body">
         {categories.map(category => (
           <React.Fragment key={category}>
-            <div className="c3-tile-category">{category}</div>
+            {category ? (
+              <div className="c3-tile-category">{category}</div>
+            ) : null}
             <div className="c3-tile-row">
               {tiles
                 .filter(tile => tile.category === category)
@@ -51,7 +59,11 @@ const C3TileGrid = ({ tiles, onChoose, colorVariable }: Props): React.Node => {
                       (tile.id === selectedId ? ' selected' : '') +
                       (tile.enabled ? '' : ' disabled')
                     }
-                    onClick={() => setSelectedId(tile.id)}
+                    onClick={() =>
+                      instant && tile.enabled
+                        ? onChoose(tile.id)
+                        : setSelectedId(tile.id)
+                    }
                     onDoubleClick={() => tile.enabled && onChoose(tile.id)}
                   >
                     <ListIcon
@@ -67,28 +79,30 @@ const C3TileGrid = ({ tiles, onChoose, colorVariable }: Props): React.Node => {
           </React.Fragment>
         ))}
       </div>
-      <div className="c3-tile-grid-footer">
-        <div className="c3-tile-description">
-          {selected ? (
-            <>
-              <Text noMargin>{selected.name}</Text>
-              <Text noMargin size="body2" color="secondary">
-                {selected.description}
+      {instant ? null : (
+        <div className="c3-tile-grid-footer">
+          <div className="c3-tile-description">
+            {selected ? (
+              <>
+                <Text noMargin>{selected.name}</Text>
+                <Text noMargin size="body2" color="secondary">
+                  {selected.description}
+                </Text>
+              </>
+            ) : (
+              <Text noMargin color="secondary">
+                <Trans>Click an item to see its description.</Trans>
               </Text>
-            </>
-          ) : (
-            <Text noMargin color="secondary">
-              <Trans>Click an item to see its description.</Trans>
-            </Text>
-          )}
+            )}
+          </div>
+          <RaisedButton
+            primary
+            label={<Trans>Add</Trans>}
+            disabled={!selected || !selected.enabled}
+            onClick={() => selected && onChoose(selected.id)}
+          />
         </div>
-        <RaisedButton
-          primary
-          label={<Trans>Add</Trans>}
-          disabled={!selected || !selected.enabled}
-          onClick={() => selected && onChoose(selected.id)}
-        />
-      </div>
+      )}
     </div>
   );
 };
