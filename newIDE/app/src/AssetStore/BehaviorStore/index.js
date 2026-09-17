@@ -13,6 +13,7 @@ import { BehaviorStoreContext } from './BehaviorStoreContext';
 import { ListSearchResults } from '../../UI/Search/ListSearchResults';
 import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
 import C3TileGrid from '../../UI/C3TileGrid'; // c3
+import { C3_BEHAVIORS, c3Label } from '../../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../../UI/Search/UseSearchStructuredItem';
 import { sendExtensionAddedToProject } from '../../Utils/Analytics/EventSender';
 import useDismissableTutorialMessage from '../../Hints/useDismissableTutorialMessage';
@@ -71,7 +72,7 @@ type Props = {|
   installedBehaviorMetadataList: Array<BehaviorShortHeader>,
   deprecatedBehaviorMetadataList: Array<BehaviorShortHeader>,
   onInstall: (behaviorShortHeader: BehaviorShortHeader) => Promise<boolean>,
-  onChoose: (behaviorType: string) => void,
+  onChoose: (behaviorType: string, c3TileId?: string) => void, // c3: tile id carries presets
   shouldCheckCapabilityBehaviors: boolean,
 |};
 
@@ -137,6 +138,7 @@ export const BehaviorStore = ({
 
   const filteredSearchResults = searchResults ? searchResults : null;
   const useC3Grid = true; // c3: tiles like Construct's add-behaviour dialog
+  const [showAllBehaviors, setShowAllBehaviors] = React.useState(false); // c3
 
   const getExtensionsMatches = React.useCallback(
     (extensionShortHeader: BehaviorShortHeader): SearchMatch[] => {
@@ -156,12 +158,12 @@ export const BehaviorStore = ({
   const showExtensionUpdateConfirmation = useExtensionUpdateAlertDialog();
 
   const installAndChoose = React.useCallback(
-    async (behaviorShortHeader: BehaviorShortHeader) => {
+    async (behaviorShortHeader: BehaviorShortHeader, c3TileId?: string) => {
       if (behaviorShortHeader.tier === 'installed') {
         // The extension is not in the repository.
         // It's either built-in or user made.
         // It can't be updated.
-        onChoose(behaviorShortHeader.type);
+        onChoose(behaviorShortHeader.type, c3TileId);
         return;
       }
       const isExtensionAlreadyInstalled =
@@ -178,13 +180,13 @@ export const BehaviorStore = ({
           !semverValid(installedVersion)
         ) {
           // Don't try to update the extension if we don't know which one is more recent.
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
           return;
         }
         // repository version <= installed version
         if (!semverGreaterThan(behaviorShortHeader.version, installedVersion)) {
           // The extension is already up to date.
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
           return;
         }
         if (
@@ -194,7 +196,7 @@ export const BehaviorStore = ({
           )
         ) {
           // Don't suggest to update the extension if the editor can't understand it.
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
           return;
         }
         const breakingChanges = getBreakingChanges(
@@ -203,7 +205,7 @@ export const BehaviorStore = ({
         );
         if (breakingChanges && breakingChanges.length > 0) {
           // Don't suggest to update the extension if it would break the project.
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
           return;
         }
         const shouldUpdateExtension = await showExtensionUpdateConfirmation(
@@ -211,7 +213,7 @@ export const BehaviorStore = ({
           behaviorShortHeader
         );
         if (!shouldUpdateExtension) {
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
           return;
         }
       }
@@ -224,10 +226,10 @@ export const BehaviorStore = ({
         const wasInstalled = await onInstall(behaviorShortHeader);
         // An errorBox is already displayed by `installExtension`.
         if (wasInstalled) {
-          onChoose(behaviorShortHeader.type);
+          onChoose(behaviorShortHeader.type, c3TileId);
         }
       } else {
-        onChoose(behaviorShortHeader.type);
+        onChoose(behaviorShortHeader.type, c3TileId);
       }
     },
     [project, onChoose, showExtensionUpdateConfirmation, onInstall]
@@ -282,6 +284,13 @@ export const BehaviorStore = ({
                       );
                     },
                   },
+                  // c3: escape hatch out of the 1:1 Construct list.
+                  {
+                    type: 'checkbox',
+                    label: i18n._(t`Show all GDevelop behaviors`),
+                    checked: showAllBehaviors,
+                    click: () => setShowAllBehaviors(!showAllBehaviors),
+                  },
                   {
                     label: showDeprecated
                       ? i18n._(
@@ -303,13 +312,23 @@ export const BehaviorStore = ({
         {useC3Grid && filteredSearchResults ? ( // c3: Construct-style tiles
           <C3TileGrid
             colorVariable="--c3-behavior-color"
-            onChoose={type => {
+            onChoose={id => {
+              const tile = C3_BEHAVIORS.find(tile => tile.id === id);
+              const type = tile ? tile.type : id;
               const header = filteredSearchResults
                 .map(({ item }) => item)
                 .find(item => item.type === type);
-              if (header) installAndChoose(header);
+              if (header) installAndChoose(header, tile ? tile.id : undefined);
             }}
-            tiles={filteredSearchResults.map(({ item }) => {
+            tiles={(showAllBehaviors
+              ? filteredSearchResults.map(({ item }) => ({ item, tile: null }))
+              : C3_BEHAVIORS.map(tile => ({
+                  tile,
+                  item: filteredSearchResults
+                    .map(({ item }) => item)
+                    .find(item => item.type === tile.type),
+                })).filter(({ item }) => !!item)
+            ).map(({ item, tile }) => {
               const usable = isBehaviorUsable({
                 objectType,
                 objectBehaviorsTypes,
@@ -318,12 +337,15 @@ export const BehaviorStore = ({
                 behaviorShortHeader: item,
                 platform: project.getCurrentPlatform(),
               });
+              const language = preferences.values.language;
               return {
-                id: item.type,
-                name: item.fullName,
+                id: tile ? tile.id : item.type,
+                name: tile ? c3Label(tile.name, language) : item.fullName,
                 description: item.description,
                 iconUrl: item.previewIconUrl,
-                category: item.category,
+                category: tile
+                  ? c3Label(tile.category, language)
+                  : item.category,
                 enabled:
                   !usable.alreadyAdded &&
                   usable.isObjectCompatible &&

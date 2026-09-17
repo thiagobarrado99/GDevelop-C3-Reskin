@@ -17,7 +17,8 @@ export const addBehaviorToObject = (
   object: gdObject,
   type: string,
   defaultName: string,
-  shouldSkipExistingBehaviorSilently: boolean
+  shouldSkipExistingBehaviorSilently: boolean,
+  presets?: { [string]: string } // c3: property values set right after adding
 ): boolean => {
   if (hasBehaviorWithType(object, type)) {
     if (shouldSkipExistingBehaviorSilently) {
@@ -42,6 +43,12 @@ export const addBehaviorToObject = (
 
   // Show the behavior properties in the editor by default, when just added.
   object.getBehavior(name).setFolded(false);
+  if (presets) {
+    // c3: a Construct tile may be a GDevelop behaviour with fixed settings.
+    const behavior = object.getBehavior(name);
+    for (const property of Object.keys(presets))
+      behavior.updateProperty(property, presets[property]);
+  }
 
   return true;
 };

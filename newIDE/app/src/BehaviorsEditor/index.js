@@ -375,7 +375,7 @@ export const useManageObjectBehaviors = ({
   const showBehaviorOverridingConfirmation = useBehaviorOverridingAlertDialog();
 
   const addBehavior = React.useCallback(
-    (type: string, defaultName: string) => {
+    (type: string, defaultName: string, presets?: { [string]: string }) => {
       let wasAnyBehaviorAdded = false;
       for (const object of objects) {
         const wasBehaviorAdded = addBehaviorToObject(
@@ -383,7 +383,8 @@ export const useManageObjectBehaviors = ({
           object,
           type,
           defaultName,
-          /* shouldSkipExistingBehaviorSilently= */ objects.length > 1
+          /* shouldSkipExistingBehaviorSilently= */ objects.length > 1,
+          presets // c3
         );
         wasAnyBehaviorAdded ||= wasBehaviorAdded;
       }

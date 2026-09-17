@@ -26,6 +26,7 @@ import {
   TRIVIAL_FIRST_EXTENSION,
 } from '../Utils/GDevelopServices/Badge';
 import { mapVector } from '../Utils/MapFor';
+import { getC3Behavior } from '../Utils/C3Behaviors'; // c3
 import Add from '../UI/CustomSvgIcons/Add';
 import { useResponsiveWindowSize } from '../UI/Responsive/ResponsiveWindowMeasurer';
 
@@ -39,7 +40,11 @@ type Props = {|
   isChildObject: boolean,
   open: boolean,
   onClose: () => void,
-  onChoose: (type: string, defaultName: string) => void,
+  onChoose: (
+    type: string,
+    defaultName: string,
+    presets?: { [string]: string } // c3
+  ) => void,
   onWillInstallExtension: (extensionNames: Array<string>) => void,
   onExtensionInstalled: (extensionNames: Array<string>) => void,
   shouldShowCapabilityBehaviors: boolean,
@@ -186,7 +191,11 @@ export default function NewBehaviorDialog({
 
   if (!open || !project) return null;
 
-  const _chooseBehavior = (i18n: I18nType, behaviorType: string) => {
+  const _chooseBehavior = (
+    i18n: I18nType,
+    behaviorType: string,
+    c3TileId?: string // c3
+  ) => {
     if (deprecatedBehaviorsInformation[behaviorType]) {
       showMessageBox(
         i18n._(deprecatedBehaviorsInformation[behaviorType].warning)
@@ -198,7 +207,12 @@ export default function NewBehaviorDialog({
       behaviorType
     );
 
-    return onChoose(behaviorType, behaviorMetadata.getDefaultName());
+    const tile = getC3Behavior(c3TileId); // c3: Construct tile → name + presets
+    return onChoose(
+      behaviorType,
+      tile ? tile.defaultName : behaviorMetadata.getDefaultName(),
+      tile ? tile.presets : undefined
+    );
   };
   const chooseBehavior = addCreateBadgePreHookIfNotClaimed(
     authenticatedUser,
@@ -308,7 +322,9 @@ export default function NewBehaviorDialog({
             isChildObject={isChildObject}
             isInstalling={isInstalling}
             onInstall={shortHeader => onInstallExtension(i18n, shortHeader)}
-            onChoose={behaviorType => chooseBehavior(i18n, behaviorType)}
+            onChoose={(behaviorType, c3TileId) =>
+              chooseBehavior(i18n, behaviorType, c3TileId)
+            }
             installedBehaviorMetadataList={installedBehaviorMetadataList}
             deprecatedBehaviorMetadataList={deprecatedBehaviorMetadataList}
             shouldCheckCapabilityBehaviors={!shouldShowCapabilityBehaviors}
