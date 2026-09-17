@@ -41,11 +41,12 @@ Hide
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
 - [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
 - [x] Panel arrangement: properties left, canvas centre, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js` `initialMosaicEditorNodes`; users with a saved layout keep theirs)
-- [ ] Project bar as a docked panel (still the ☰-era drawer, reachable from View ▸ Project bar)
+- [ ] Project bar as a docked panel — needs a new editor-tab kind for the side panes; for now the drawer opens from the toolbar's first button and View ▸ Project bar, and no longer carries the old File/View/Help row
 - [x] Panel headers: 13 px plain title, square bars (`ConstructLikeDarkTheme/ConstructLikeDark.css`, scoped to the theme's body class)
 - [x] Toolbar: Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); version-history buttons removed (cloud only)
-- [ ] Tab strip: active tab cream like Construct; merge tab strip and toolbar into one row?
-- [ ] Dialog chrome per `02-new-project-dialog.png` (title bar ✕, Help bottom-left, grey buttons)
+- [x] Tabs: cream active tab, square corners (theme CSS)
+- [ ] Merge tab strip and toolbar into one row?
+- [~] Dialog chrome: title + ✕, Help bottom-left already match; grey filled buttons / title bar strip still to do
 
 ## Phase 3 — Event sheet (see survey)
 - [ ] Rows: margin number, `[icon Object] condition` block, `Add action` placeholder, per-event `Add…`

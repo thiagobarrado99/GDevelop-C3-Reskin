@@ -1,6 +1,9 @@
 // @flow
 import * as React from 'react';
+import { t } from '@lingui/macro';
 import { Toolbar, ToolbarGroup } from '../../UI/Toolbar';
+import IconButton from '../../UI/IconButton';
+import ProjectManagerIcon from '../../UI/CustomSvgIcons/ProjectManager';
 import PreviewAndShareButtons, {
   type PreviewAndShareButtonsProps,
 } from './PreviewAndShareButtons';
@@ -24,6 +27,7 @@ export type MainFrameToolbarProps = {|
   |}) => Promise<?FileMetadata>,
   canSave: boolean,
   onOpenVersionHistory: () => void,
+  onOpenProjectManager: () => void, // c3
   checkedOutVersionStatus?: ?OpenedVersionStatus,
   onQuitVersionHistory: () => Promise<void>,
   canQuitVersionHistory: boolean,
@@ -44,6 +48,7 @@ type LeftButtonsToolbarGroupProps = {|
     skipNewVersionWarning: boolean,
   |}) => Promise<?FileMetadata>,
   onOpenVersionHistory: () => void,
+  onOpenProjectManager: () => void, // c3
   checkedOutVersionStatus?: ?OpenedVersionStatus,
   onQuitVersionHistory: () => Promise<void>,
   canQuitVersionHistory: boolean,
@@ -62,8 +67,18 @@ const LeftButtonsToolbarGroup = React.memo<LeftButtonsToolbarGroupProps>(
     return (
       <>
         <ToolbarGroup firstChild>
-          {/* c3: no version history (cloud only); preview & export sit next
-              to save, like Construct's Save · Preview. */}
+          {/* c3: no version history (cloud only); the project bar opens from
+              here; preview & export sit next to save, like Construct's
+              Save · Preview. */}
+          <IconButton
+            size="small"
+            id="toolbar-project-manager-button"
+            onClick={props.onOpenProjectManager}
+            tooltip={t`Project bar`}
+            color="default"
+          >
+            <ProjectManagerIcon />
+          </IconButton>
           <SaveProjectIcon
             id="toolbar-save-button"
             onSave={props.onSave}
@@ -134,6 +149,7 @@ export default (React.forwardRef<MainFrameToolbarProps, ToolbarInterface>(
               onSave={props.onSave}
               canSave={props.canSave}
               onOpenVersionHistory={props.onOpenVersionHistory}
+              onOpenProjectManager={props.onOpenProjectManager}
               checkedOutVersionStatus={props.checkedOutVersionStatus}
               onQuitVersionHistory={props.onQuitVersionHistory}
               canQuitVersionHistory={props.canQuitVersionHistory}

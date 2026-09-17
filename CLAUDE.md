@@ -16,9 +16,11 @@ Done (Phase 0 complete):
 
 Local files only (2026-09-18): `CloudStorageProvider` is removed from both apps' provider lists. Web build opens/saves through `ProjectsStorage/BrowserFileStorageProvider` ("Abrir" = real file picker for `.json` or the `.zip` from "Baixar uma cópia" — assets inlined as `data:` URLs; save = download zip; projects live in memory, so they are not listed in recent projects). `MainFrame/index.js` skips the "where to open/save" dialogs when a single provider is available. On the web build, files picked from the device are inlined as `data:` URLs (`FileToCloudProjectResourceUploader.js`, `// c3:`) so they live inside `game.json` — fine for classroom-size sprites, keep an eye on project size.
 
+Phase 2 shell (2026-09-18): ☰ opens the Construct menu tree (`MainFrame/C3MainMenu.js`, rendered through a `ContextMenu` anchored under the button in `MainFrame/index.js`); toolbar = Project bar · Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); layout editor default mosaic = properties left, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js`); theme-scoped CSS in `ConstructLikeDarkTheme/ConstructLikeDark.css` (body carries the theme's root class) squares bars and tabs; system font via the `gdevelop.modern-font-family` override in `theme.json`. The project manager is still a drawer (`ProjectManager/index.js`, old menu row hidden).
+
 Pending / next steps, in order:
-1. Phase 1 leftovers in `TODO.md` (font, remaining header buttons — login/signup can now go since cloud is gone, terminology review with the team).
-2. Phase 2 shell (main menu tree, panel arrangement, headers, toolbar).
+1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish.
+2. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.

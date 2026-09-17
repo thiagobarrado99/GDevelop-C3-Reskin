@@ -761,6 +761,7 @@ const EditorTabsPane: React.ComponentType<{
         }
         previewState={previewState}
         onOpenVersionHistory={openVersionHistoryPanel}
+        onOpenProjectManager={() => openProjectManager(true)} // c3
         checkedOutVersionStatus={checkedOutVersionStatus}
         onQuitVersionHistory={onQuitVersionHistory}
         canQuitVersionHistory={!isSavingProject}

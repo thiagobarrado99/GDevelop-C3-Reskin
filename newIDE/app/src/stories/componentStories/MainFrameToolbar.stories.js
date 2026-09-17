@@ -61,6 +61,7 @@ const defaultProps: MainFrameToolbarProps = {
   canSave: true,
   onSave: async () => {},
   onOpenVersionHistory: () => {},
+  onOpenProjectManager: () => {}, // c3
   canQuitVersionHistory: true,
   onQuitVersionHistory: async () => {},
   previewState: {
