@@ -61,6 +61,7 @@ const styles = {
   card: {
     display: 'flex',
     alignItems: 'center',
+    justifyContent: 'flex-start', // ButtonBase centres its content.
     gap: 16,
     padding: '0 16px',
     marginBottom: 8,
@@ -69,12 +70,14 @@ const styles = {
     textAlign: 'left',
     boxSizing: 'border-box',
   },
-  cardIcon: { flexShrink: 0 },
+  cardIcon: { flexShrink: 0, display: 'flex' },
+  cardText: { flex: 1, minWidth: 0 },
   cardDescription: {
     display: '-webkit-box',
     WebkitLineClamp: 2,
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
+    height: 32, // Always two lines high, so the title sits at the same place.
   },
   recent: {
     display: 'flex',
@@ -147,7 +150,7 @@ const Card = ({
 |}) => (
   <ButtonBase onClick={onClick} style={{ ...styles.card, background }}>
     <span style={styles.cardIcon}>{icon}</span>
-    <span>
+    <span style={styles.cardText}>
       <div style={styles.sectionTitle}>
         <Text noMargin>{title}</Text>
       </div>
