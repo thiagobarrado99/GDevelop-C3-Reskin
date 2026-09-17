@@ -673,6 +673,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
         newScene.setName(newName);
         newScene.updateBehaviorsSharedData(project);
         addDefaultLightToAllLayers(newScene);
+        newScene.setBackgroundColor(50, 50, 50); // c3: dark default, like Construct
 
         onSceneAdded();
 

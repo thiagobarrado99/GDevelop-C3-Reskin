@@ -4239,6 +4239,7 @@ const MainFrame = (props: Props): React.MixedElement => {
         currentProject.insertNewLayout(layoutName, 0);
         const layout = currentProject.getLayout(layoutName);
         addDefaultLightToAllLayers(layout);
+        layout.setBackgroundColor(50, 50, 50); // c3: dark default, like Construct
       }
       openLayout(
         currentProject.getLayoutAt(0).getName(),
