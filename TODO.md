@@ -37,6 +37,8 @@ Hide
 - [x] Local files only: Cloud provider removed, `BrowserFileStorageProvider` gives the web build a real Open picker (.json / .zip) and direct download-on-save; start page hover/pointer, white NOVO/ABRIR, "Explorar exemplos" button removed
 - [x] Web build: device files are inlined as `data:` URLs for non-cloud projects (`FileToCloudProjectResourceUploader.js`, `// c3:`), so they travel inside `game.json`
 - [x] Web build saves to a real local file (File System Access API: picker on first save, direct write on Ctrl+S, handles kept in IndexedDB for recent projects); download fallback for Firefox/Safari
+- [x] `.a3p` project extension (desktop + web, file association in electron-builder config)
+- [ ] Brand: the app still says "GDevelop" (start page title, window title, About, help links) — rename to Assemble3 once the user confirms
 - [ ] Start page polish: real logo image, recent-project context menu (remove from list)
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files

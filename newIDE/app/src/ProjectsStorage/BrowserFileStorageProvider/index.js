@@ -10,6 +10,10 @@ import {
 import { initializeZipJs } from '../../Utils/Zip.js';
 import { serializeToJSObject } from '../../Utils/Serializer';
 import DownloadFileStorageProvider from '../DownloadFileStorageProvider';
+import {
+  PROJECT_FILE_EXTENSION,
+  PROJECT_FILE_FILTER_NAME,
+} from '../C3ProjectFile';
 
 // c3: on the web app, projects are local files like in Construct 3. With the
 // File System Access API (Chrome, Edge) "Open" and "Save as" show the system
@@ -27,10 +31,12 @@ const handles: Map<string, any> = new Map();
 
 const projectFileTypes = [
   {
-    description: 'GDevelop project',
-    accept: { 'application/json': ['.json'] },
+    description: PROJECT_FILE_FILTER_NAME,
+    accept: { 'application/json': ['.' + PROJECT_FILE_EXTENSION] },
   },
 ];
+const isProjectFileName = (name: string) => /\.(a3p|json)$/i.test(name);
+const stripExtension = (name: string) => name.replace(/\.(a3p|json|zip)$/i, '');
 
 // File handles survive a reload when stored in IndexedDB.
 const withHandleStore = (mode: string, action: (store: any) => any) =>
@@ -100,7 +106,7 @@ const pickFileWithInput = (): Promise<?File> =>
   new Promise(resolve => {
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.json,.zip';
+    input.accept = '.a3p,.json,.zip';
     input.onchange = () => resolve(input.files && input.files[0]);
     input.addEventListener('cancel', () => resolve(null));
     input.click();
@@ -145,7 +151,7 @@ const readProjectFile = async (file: File): Promise<Object> =>
 
 const fileMetadataOf = (file: File): FileMetadata => ({
   fileIdentifier: file.name,
-  name: file.name.replace(/\.(json|zip)$/i, ''),
+  name: stripExtension(file.name),
   lastModifiedDate: file.lastModified,
 });
 
@@ -160,7 +166,7 @@ const writeProject = async (
   rememberHandle(handle.name, handle);
   return {
     fileIdentifier: handle.name,
-    name: handle.name.replace(/\.json$/i, ''),
+    name: stripExtension(handle.name),
     lastModifiedDate: Date.now(),
   };
 };
@@ -168,7 +174,7 @@ const writeProject = async (
 const pickSaveHandle = async (project: gdProject): Promise<?any> => {
   try {
     return await fileSystemAccess.showSaveFilePicker({
-      suggestedName: project.getName() + '.json',
+      suggestedName: project.getName() + '.' + PROJECT_FILE_EXTENSION,
       types: projectFileTypes,
     });
   } catch (error) {
@@ -189,17 +195,18 @@ export default ({
           const [handle] = await fileSystemAccess.showOpenFilePicker({
             types: [
               {
-                description: 'GDevelop project',
+                description: PROJECT_FILE_FILTER_NAME,
                 accept: {
-                  'application/json': ['.json'],
+                  'application/json': ['.' + PROJECT_FILE_EXTENSION, '.json'],
                   'application/zip': ['.zip'],
                 },
               },
             ],
           });
           file = await handle.getFile();
-          // Only a .json can be written back to.
-          if (/\.json$/i.test(handle.name)) rememberHandle(handle.name, handle);
+          // Only a project file (not a .zip) can be written back to.
+          if (isProjectFileName(handle.name))
+            rememberHandle(handle.name, handle);
         } catch (error) {
           if (error.name === 'AbortError') return null; // Cancelled.
           throw error;

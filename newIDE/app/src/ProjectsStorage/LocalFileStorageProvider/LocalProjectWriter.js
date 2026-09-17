@@ -23,6 +23,10 @@ import type { MessageDescriptor } from '../../Utils/i18n/MessageDescriptor.flow'
 import LocalFolderPicker from '../../UI/LocalFolderPicker';
 import SaveAsOptionsDialog from '../SaveAsOptionsDialog';
 import {
+  PROJECT_FILE_EXTENSION,
+  PROJECT_FILE_FILTER_NAME,
+} from '../C3ProjectFile'; // c3
+import {
   type ShowAlertFunction,
   type ShowConfirmFunction,
 } from '../../UI/Alert/AlertContext';
@@ -296,13 +300,19 @@ export const generateOnChooseSaveProjectAsLocation = ({
   const { name } = options;
   if (path && defaultPath && name) {
     const safeFilename = name.replace(/[<>:"/\\|?*]/g, '_');
-    defaultPath = path.join(path.dirname(defaultPath), `${safeFilename}.json`);
+    defaultPath = path.join(
+      path.dirname(defaultPath),
+      `${safeFilename}.${PROJECT_FILE_EXTENSION}` // c3
+    );
   }
 
   const browserWindow = remote.getCurrentWindow();
   const saveDialogOptions = {
     defaultPath,
-    filters: [{ name: 'GDevelop 5 project', extensions: ['json'] }],
+    // c3: .a3p
+    filters: [
+      { name: PROJECT_FILE_FILTER_NAME, extensions: [PROJECT_FILE_EXTENSION] },
+    ],
   };
 
   if (!dialog) {
@@ -421,9 +431,11 @@ export const getProjectLocation = ({
     : newProjectsDefaultFolder
     ? newProjectsDefaultFolder
     : '';
-  const projectFileName = projectName
-    ? cleanUpProjectFileName(projectName) + '.json'
-    : 'game.json';
+  // c3: .a3p
+  const projectFileName =
+    (projectName ? cleanUpProjectFileName(projectName) : 'game') +
+    '.' +
+    PROJECT_FILE_EXTENSION;
   return {
     fileIdentifier: path.join(outputPath, projectFileName),
   };

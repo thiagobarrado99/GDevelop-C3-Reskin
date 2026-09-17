@@ -9,6 +9,10 @@ const config = {
     buildResources: 'build',
     output: 'dist',
   },
+  // c3: double-clicking an Assemble3 project opens it in the app.
+  fileAssociations: [
+    { ext: 'a3p', name: 'Assemble3 project', role: 'Editor' },
+  ],
   extraResources: [
     {
       from: '../app/resources/GDJS',

@@ -3,6 +3,10 @@ import optionalRequire from '../../Utils/OptionalRequire';
 import { type FileMetadata } from '../index';
 import { unsplit } from '../../Utils/ObjectSplitter';
 import { openFilePicker, readJSONFile } from '../../Utils/FileSystem';
+import {
+  OPENABLE_PROJECT_FILE_EXTENSIONS,
+  PROJECT_FILE_FILTER_NAME,
+} from '../C3ProjectFile'; // c3
 const fs = optionalRequire('fs');
 const path = optionalRequire('path');
 
@@ -12,7 +16,13 @@ export const onOpenWithPicker = (): Promise<?FileMetadata> => {
     properties: ['openFile'],
     message:
       'If you want to open your GDevelop 4 project, be sure to save it as a .json file',
-    filters: [{ name: 'GDevelop 5 project', extensions: ['json'] }],
+    // c3: .a3p (and .json)
+    filters: [
+      {
+        name: PROJECT_FILE_FILTER_NAME,
+        extensions: OPENABLE_PROJECT_FILE_EXTENSIONS,
+      },
+    ],
     // $FlowFixMe[incompatible-type]
   }).then(filePath => (filePath ? { fileIdentifier: filePath } : null));
 };
