@@ -77,6 +77,7 @@ Hide
 - [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
 - [ ] Simplistic placeholder icons for behaviours/objects, single lookup point (user replaces every icon later)
 - [ ] Naming parity: `Platform` behaviour → "Solid"/"Sólido", jump-thru → "Jump-thru"; whole-string rules in `C3Terminology.js` (libGD names go through the patched `i18n._`)
+- [ ] Instance properties panel: show non-overridable behaviours (Physics…) and the object's effects, editing through to the object; else an "Edit on object" button using `editObjectInPropertiesPanel` (`CompactInstancePropertiesEditor/index.js`)
 - [ ] Survey Construct's behaviour list vs GDevelop built-ins/extensions; fill the parity table in CLAUDE.md; rename or bundle what students expect (8 Direction, Drag & Drop, Bullet, Sine, Fade, …)
 
 ## Phase 5 — Polish

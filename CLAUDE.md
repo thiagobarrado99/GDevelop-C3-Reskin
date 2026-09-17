@@ -154,6 +154,8 @@ Shades are CSS variables on the theme root in `ConstructLikeDarkTheme/ConstructL
 
 **Add-behaviour dialog** (`BehaviorsEditor/NewBehaviorDialog.js`, currently a vertical list with descriptions) must become Construct's: a horizontal grid of tiles (icon on top, name below), grouped by category, side by side; the description of the clicked tile appears at the bottom of the dialog; Add/Cancel. Same idea later for the object picker ("Create new object type" survey notes).
 
+**Instance panel shows everything from the object (user request, 2026-09-18)**: clicking an instance in the layout must show *all* its behaviours and effects, like Construct. Today `InstancesEditor/CompactInstancePropertiesEditor/index.js` lists the behaviours but non-overridable ones (Physics2/Physics3D/Physics, `notOverridableBehaviorTypes`) only say "This behavior can't be setup per instance", and object effects are not listed at all. Preferred: render those with the object-level editor so edits go to the object's behaviour/effect (`object.getBehavior(name)` / `object.getEffects()`, same code path as `CompactObjectPropertiesEditor`), clearly labelled as shared by every instance. Fallback if that gets hairy: an "Edit on object" button per behaviour/effect that jumps to the object in the properties panel via the existing `editObjectInPropertiesPanel(objectName)` callback. Not started.
+
 **Icons**: the user will replace every object and behaviour icon later (Construct-like, simplistic). Until then use simple monochrome icons and keep icon lookups in one place so the swap is a file drop, not code edits.
 
 **Behaviour naming parity with Construct 3** — students must not meet a GDevelop name that means something else in Construct:
@@ -218,7 +220,7 @@ Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, propertie
 Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
 Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
 Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
-Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; simplistic icons (full icon replacement by the user later); behaviour naming parity (Platform → Solid first). Spec in "Colour coding, behaviours and icons".
+Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; simplistic icons (full icon replacement by the user later); behaviour naming parity (Platform → Solid first); instance panel shows the object's non-overridable behaviours and effects (edit-through or "Edit on object" button). Spec in "Colour coding, behaviours and icons".
 
 Progress is tracked in `TODO.md`.
 
