@@ -207,3 +207,15 @@
   color: var(--c3-event-sheet-color);
   opacity: 0.9;
 }
+
+/* Add-condition/action step 2: Construct's two-column grouped list. */
+.ConstructLikeDarkTheme #object-instruction-selector ul[class*='MuiList-root'] {
+  column-count: 2;
+  column-gap: 16px;
+}
+.ConstructLikeDarkTheme
+  #object-instruction-selector
+  ul[class*='MuiList-root']
+  > * {
+  break-inside: avoid;
+}
