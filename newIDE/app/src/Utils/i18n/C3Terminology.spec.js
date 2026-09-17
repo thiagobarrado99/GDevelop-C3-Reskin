@@ -31,7 +31,16 @@ describe('applyC3Terminology', () => {
       'New object group': 'Novo grupo de objetos',
       'Scene variables': 'Variáveis de cena',
       Scenery: 'Cenário',
+      'Start by adding new external events':
+        'Comece adicionando novos eventos externos',
+      'Add a new external events': 'Adicionar um novo evento externo',
     });
+    expect(i18n._('Start by adding new external events')).toBe(
+      'Comece adicionando novas folhas de eventos'
+    );
+    expect(i18n._('Add a new external events')).toBe(
+      'Adicionar uma nova folha de eventos'
+    );
     expect(i18n._('Scene')).toBe('Layout');
     expect(i18n._('Add a new scene')).toBe('Adicionar um novo layout');
     expect(i18n._('Go to the scene')).toBe('Ir para o layout');

@@ -171,8 +171,18 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     // variáveis de objeto → de instância
     r(/\bvariáveis de objetos?\b/gi, 'variáveis de instância'),
     r(/\bvariável de objetos?\b/gi, 'variável de instância'),
-    // eventos externos → folhas de eventos
+    // eventos externos (m.) → folhas de eventos (f.)
+    r(/\bnovos eventos externos\b/gi, 'novas folhas de eventos'),
+    r(/\bos eventos externos\b/gi, 'as folhas de eventos'),
+    r(/\bdos eventos externos\b/gi, 'das folhas de eventos'),
+    r(/\bnos eventos externos\b/gi, 'nas folhas de eventos'),
     r(/\beventos externos\b/gi, 'folhas de eventos'),
+    r(/\bum novo evento externo\b/gi, 'uma nova folha de eventos'),
+    r(/\bnovo evento externo\b/gi, 'nova folha de eventos'),
+    r(/\bum evento externo\b/gi, 'uma folha de eventos'),
+    r(/\bo evento externo\b/gi, 'a folha de eventos'),
+    r(/\bdo evento externo\b/gi, 'da folha de eventos'),
+    r(/\bno evento externo\b/gi, 'na folha de eventos'),
     r(/\bevento externo\b/gi, 'folha de eventos'),
     r(/\bgerenciador de projetos?\b/gi, 'barra do projeto'),
   ],

@@ -12,3 +12,9 @@
   .mosaic-window-body {
   border-radius: 0 !important;
 }
+
+/* Document tabs: square, like Construct's. The tab wrapper only has inline
+   styles, so target it by its id prefix. */
+.ConstructLikeDarkTheme span[id^='tab-'].title-bar-non-draggable-part {
+  border-radius: 0 !important;
+}
