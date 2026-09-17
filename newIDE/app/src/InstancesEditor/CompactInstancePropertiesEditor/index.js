@@ -75,6 +75,7 @@ export const StatefulCollapsibleSubPanel = ({
   title,
   titleIcon,
   titleBarButtons,
+  color,
 }: {|
   renderContent: () => React.Node,
   isInitiallyFolded: boolean,
@@ -82,6 +83,7 @@ export const StatefulCollapsibleSubPanel = ({
   titleIcon?: ?React.Node,
   title: string,
   titleBarButtons?: Array<TitleBarButton>,
+  color?: string, // c3
 |}): React.Node => {
   const [isFolded, setIsFolded] = React.useState(isInitiallyFolded);
 
@@ -103,6 +105,7 @@ export const StatefulCollapsibleSubPanel = ({
       title={title}
       titleIcon={titleIcon}
       titleBarButtons={titleBarButtons}
+      color={color}
     />
   );
 };
@@ -400,6 +403,7 @@ export const CompactInstancePropertiesEditor = ({
           {allVisibleBehaviors ? (
             <TopLevelCollapsibleSection
               title={<Trans>Behaviors</Trans>}
+              color="var(--c3-behavior-color, inherit)"
               isFolded={isBehaviorsFolded}
               toggleFolded={() => setIsBehaviorsFolded(!isBehaviorsFolded)}
               renderContent={() => (
@@ -519,6 +523,7 @@ export const CompactInstancePropertiesEditor = ({
                           ) : null
                         }
                         title={behaviorName}
+                        color="var(--c3-behavior-color, inherit)"
                       />
                     );
                   })}

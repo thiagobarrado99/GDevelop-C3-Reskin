@@ -292,7 +292,12 @@ const InnerDialog = (props: InnerDialogProps) => {
               value: 'properties',
             },
             {
-              label: <Trans>Behaviors</Trans>,
+              label: (
+                // c3: colour coding
+                <span style={{ color: 'var(--c3-behavior-color, inherit)' }}>
+                  <Trans>Behaviors</Trans>
+                </span>
+              ),
               value: 'behaviors',
               id: 'behaviors-tab',
             },
@@ -304,7 +309,12 @@ const InnerDialog = (props: InnerDialogProps) => {
               'EffectCapability::EffectBehavior'
             )
               ? {
-                  label: <Trans>Effects</Trans>,
+                  label: (
+                    // c3: colour coding
+                    <span style={{ color: 'var(--c3-effect-color, inherit)' }}>
+                      <Trans>Effects</Trans>
+                    </span>
+                  ),
                   value: 'effects',
                 }
               : null,

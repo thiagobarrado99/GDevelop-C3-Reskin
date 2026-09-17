@@ -1,5 +1,16 @@
-/* c3: theme-scoped tweaks (body gets the theme's root class name).
-   Panel title bars like Construct's bars: small plain-text title, square. */
+/* c3: theme-scoped tweaks (body gets the theme's root class name). */
+
+/* One colour per kind of thing, like Construct 3 (see CLAUDE.md "Colour
+   coding"). Components use `var(--c3-…-color, inherit)`, so other themes are
+   unaffected. */
+.ConstructLikeDarkTheme {
+  --c3-layout-color: #ffd54f;
+  --c3-event-sheet-color: #2fcc63;
+  --c3-behavior-color: #ff7a7a;
+  --c3-effect-color: #c39bff;
+}
+
+/* Panel title bars like Construct's bars: small plain-text title, square. */
 .ConstructLikeDarkTheme .mosaic-gd-theme .mosaic-window .mosaic-window-title {
   font-size: 13px;
 }

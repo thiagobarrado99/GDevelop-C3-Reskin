@@ -142,6 +142,7 @@ export const CompactEffectsListEditor = ({
 
   return (
     <TopLevelCollapsibleSection
+      color="var(--c3-effect-color, inherit)"
       title={
         target === 'object' ? (
           <Trans>Effects</Trans>
@@ -242,6 +243,7 @@ export const CompactEffectsListEditor = ({
                 forceUpdate();
               }}
               title={effect.getName()}
+              color="var(--c3-effect-color, inherit)"
               titleBarButtons={[
                 {
                   id: 'effect-visibility',

@@ -22,6 +22,7 @@ type Props = {
   noContentMargin?: boolean,
   onOpenFullEditor?: () => void,
   onAdd?: (() => void) | null,
+  color?: string, // c3: colour coding of the section title
 };
 
 export const TopLevelCollapsibleSection = ({
@@ -33,6 +34,7 @@ export const TopLevelCollapsibleSection = ({
   noContentMargin,
   onOpenFullEditor,
   onAdd,
+  color,
 }: Props): React.Node => (
   <>
     <Separator />
@@ -46,9 +48,16 @@ export const TopLevelCollapsibleSection = ({
               <ChevronArrowDownWithRoundedBorder style={styles.icon} />
             )}
           </IconButton>
-          <Text size="sub-title" noMargin style={textEllipsisStyle}>
-            {title}
-          </Text>
+          <span style={{ display: 'contents', color }}>
+            <Text
+              size="sub-title"
+              noMargin
+              style={textEllipsisStyle}
+              color={color ? 'inherit' : undefined}
+            >
+              {title}
+            </Text>
+          </span>
         </LineStackLayout>
         <Line alignItems="center" noMargin>
           {onOpenFullEditor && (

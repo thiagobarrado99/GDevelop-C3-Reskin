@@ -109,6 +109,7 @@ export const CollapsibleSubPanel = ({
   title,
   titleIcon,
   titleBarButtons,
+  color,
 }: {|
   renderContent: () => React.Node,
   isFolded: boolean,
@@ -116,6 +117,7 @@ export const CollapsibleSubPanel = ({
   titleIcon?: ?React.Node,
   title: string,
   titleBarButtons?: Array<TitleBarButton>,
+  color?: string, // c3: colour coding of the title
 |}): React.Node => (
   <Paper background="medium">
     <Line expand>
@@ -132,9 +134,16 @@ export const CollapsibleSubPanel = ({
 
             {titleIcon}
             {titleIcon && <Spacer />}
-            <Text noMargin size="body" style={textEllipsisStyle}>
-              {title}
-            </Text>
+            <span style={{ display: 'contents', color }}>
+              <Text
+                noMargin
+                size="body"
+                style={textEllipsisStyle}
+                color={color ? 'inherit' : undefined}
+              >
+                {title}
+              </Text>
+            </span>
           </Line>
           <Line noMargin>
             {titleBarButtons &&
@@ -756,6 +765,7 @@ export const CompactObjectPropertiesEditor = ({
           />
           <TopLevelCollapsibleSection
             title={<Trans>Behaviors</Trans>}
+            color="var(--c3-behavior-color, inherit)"
             isFolded={isSectionFolded('behaviors')}
             toggleFolded={() => toggleSectionFolded('behaviors')}
             onOpenFullEditor={() => onEditObject(object, 'behaviors')}
@@ -820,6 +830,7 @@ export const CompactObjectPropertiesEditor = ({
                         ) : null
                       }
                       title={behavior.getName()}
+                      color="var(--c3-behavior-color, inherit)"
                       titleBarButtons={
                         isBehaviorListLocked
                           ? []

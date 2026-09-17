@@ -69,10 +69,11 @@ Hide
 - [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
-- [ ] Theme tokens: one colour per kind — layouts yellow, event sheets green, behaviours red, effects purple (`ConstructLikeDarkTheme/theme.json`)
+- [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` / `--c3-effect-color` (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
 - [ ] Project bar rows tinted per kind (`ProjectManager/*TreeViewItemContent.js`)
 - [ ] Open editor tab background matches its kind (`EditorTabs/DraggableEditorTabs.js`, `UI/ClosableTabs.js`, by tab `kind`)
-- [ ] Behaviour and effect rows/tiles tinted (`BehaviorsEditor/`, `EffectsList/`)
+- [x] Properties panel: Behaviors/Effects section titles and each behaviour/effect name tinted; object editor dialog tabs too (`TopLevelCollapsibleSection`/`CollapsibleSubPanel` got a `color` prop)
+- [ ] Add-behaviour / add-effect dialogs and the full behaviours editor tinted too
 - [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
 - [ ] Simplistic placeholder icons for behaviours/objects, single lookup point (user replaces every icon later)
 - [ ] Naming parity: `Platform` behaviour → "Solid"/"Sólido", jump-thru → "Jump-thru"; whole-string rules in `C3Terminology.js` (libGD names go through the patched `i18n._`)
