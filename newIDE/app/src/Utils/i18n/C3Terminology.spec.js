@@ -1,0 +1,80 @@
+// @flow
+import { setupI18n } from '@lingui/core';
+import { applyC3Terminology } from './C3Terminology';
+
+const makeI18n = (language: string, messages: { [string]: string }) => {
+  const i18n = setupI18n({
+    language,
+    catalogs: { [language]: { messages } },
+  });
+  applyC3Terminology(i18n);
+  return i18n;
+};
+
+describe('applyC3Terminology', () => {
+  it('rewrites English terms keeping capitalisation', () => {
+    const i18n = makeI18n('en', {});
+    expect(i18n._('Scene')).toBe('Layout');
+    expect(i18n._('Add a new scene')).toBe('Add a new layout');
+    expect(i18n._('Object groups')).toBe('Families');
+    expect(i18n._('Edit object variables')).toBe('Edit instance variables');
+    expect(i18n._('External events')).toBe('Event sheets');
+    expect(i18n._('Project manager')).toBe('Project bar');
+  });
+
+  it('rewrites Portuguese terms with gender agreement', () => {
+    const i18n = makeI18n('pt_BR', {
+      Scene: 'Cena',
+      'Add a new scene': 'Adicionar uma nova cena',
+      'Go to the scene': 'Ir para a cena',
+      'Object groups': 'Grupos de objetos',
+      'New object group': 'Novo grupo de objetos',
+      'Scene variables': 'Variáveis de cena',
+      Scenery: 'Cenário',
+    });
+    expect(i18n._('Scene')).toBe('Layout');
+    expect(i18n._('Add a new scene')).toBe('Adicionar um novo layout');
+    expect(i18n._('Go to the scene')).toBe('Ir para o layout');
+    expect(i18n._('Object groups')).toBe('Famílias');
+    expect(i18n._('New object group')).toBe('Nova família');
+    expect(i18n._('Scene variables')).toBe('Variáveis de layout');
+    expect(i18n._('Scenery')).toBe('Cenário');
+  });
+
+  it('never rewrites interpolated values', () => {
+    const i18n = makeI18n('en', {});
+    expect(i18n._('Add {name} to the scene', { name: 'My scene object' })).toBe(
+      'Add My scene object to the layout'
+    );
+    expect(
+      i18n._({
+        id: 'Delete scene {name}?',
+        values: { name: 'Scene 1' },
+      })
+    ).toBe('Delete layout Scene 1?');
+  });
+
+  it('leaves other languages untouched', () => {
+    const i18n = makeI18n('fr_FR', { Scene: 'Scène' });
+    expect(i18n._('Scene')).toBe('Scène');
+  });
+});
+
+describe('applyC3Terminology pt_BR agreement', () => {
+  it('fixes participles after the noun', () => {
+    const i18n = makeI18n('pt_BR', {
+      a: 'Eventos quando uma cena for pausada (outra cena é executada).',
+      b: 'A cena _PARAM1_ foi pré-carregada',
+      c: 'construir cenas inteiras para você',
+      d: 'Adicionar na minha cena',
+      e: 'no layout cada frame',
+    });
+    expect(i18n._('a')).toBe(
+      'Eventos quando um layout for pausado (outro layout é executado).'
+    );
+    expect(i18n._('b')).toBe('O layout _PARAM1_ foi pré-carregado');
+    expect(i18n._('c')).toBe('construir layouts inteiros para você');
+    expect(i18n._('d')).toBe('Adicionar no meu layout');
+    expect(i18n._('e')).toBe('no layout cada frame');
+  });
+});

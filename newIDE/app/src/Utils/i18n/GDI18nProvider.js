@@ -3,6 +3,7 @@ import * as React from 'react';
 import { I18nProvider } from '@lingui/react';
 import { setupI18n } from '@lingui/core';
 import { getTranslationFunction } from './getTranslationFunction';
+import { applyC3Terminology } from './C3Terminology';
 import { type I18n as I18nType } from '@lingui/core';
 const gd = global.gd;
 
@@ -66,14 +67,16 @@ export default class GDI18nProvider extends React.Component<Props, State> {
 
   async _loadLanguage(language: string) {
     const catalogs = await this._loadCatalog(language);
+    const i18n = setupI18n({
+      language: language,
+      catalogs,
+    });
+    applyC3Terminology(i18n);
     this.setState(
       {
         language,
         catalogs,
-        i18n: setupI18n({
-          language: language,
-          catalogs,
-        }),
+        i18n,
       },
       () => {
         const { i18n } = this.state;
