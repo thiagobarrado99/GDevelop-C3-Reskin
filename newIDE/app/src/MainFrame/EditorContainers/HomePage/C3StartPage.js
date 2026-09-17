@@ -57,17 +57,25 @@ const styles = {
     gap: 24,
   },
   sectionTitle: { textTransform: 'uppercase', letterSpacing: 1 },
+  // Same size for every card whatever the description length.
   card: {
     display: 'flex',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 16,
-    padding: 16,
+    padding: '0 16px',
     marginBottom: 8,
     width: '100%',
+    height: 84,
     textAlign: 'left',
     boxSizing: 'border-box',
   },
-  cardIcon: { flexShrink: 0, marginTop: 2 },
+  cardIcon: { flexShrink: 0 },
+  cardDescription: {
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
+    overflow: 'hidden',
+  },
   recent: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -143,9 +151,11 @@ const Card = ({
       <div style={styles.sectionTitle}>
         <Text noMargin>{title}</Text>
       </div>
-      <Text noMargin color="secondary" size="body-small">
-        {description}
-      </Text>
+      <div style={styles.cardDescription}>
+        <Text noMargin color="secondary" size="body-small">
+          {description}
+        </Text>
+      </div>
     </span>
   </ButtonBase>
 );
