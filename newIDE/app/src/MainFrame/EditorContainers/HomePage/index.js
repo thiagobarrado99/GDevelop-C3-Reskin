@@ -17,12 +17,12 @@ import {
 import LearnSection from './LearnSection';
 import { type LearnCategory } from './LearnSection/Utils';
 import PlaySection from './PlaySection';
-import CreateSection from './CreateSection';
+import C3StartPage from './C3StartPage';
 import StoreSection from './StoreSection';
 import { TutorialContext } from '../../../Tutorial/TutorialContext';
 import { ExampleStoreContext } from '../../../AssetStore/ExampleStore/ExampleStoreContext';
 import { HomePageHeader } from './HomePageHeader';
-import { HomePageMenu, type HomeTab } from './HomePageMenu';
+import { type HomeTab } from './HomePageMenu';
 import AuthenticatedUserContext from '../../../Profile/AuthenticatedUserContext';
 import { type ExampleShortHeader } from '../../../Utils/GDevelopServices/Example';
 import { type ResourceManagementProps } from '../../../ResourcesList/ResourceSource';
@@ -154,7 +154,9 @@ type Props = {|
   onCloseAskAi: () => void,
 
   // Project creation
-  onOpenNewProjectSetupDialog: () => void,
+  onOpenNewProjectSetupDialog: (options?: {|
+    browseExamples?: boolean,
+  |}) => void,
   onCreateProjectFromExample: (
     exampleProjectSetup: ExampleProjectSetup
   ) => Promise<CreateProjectResult>,
@@ -290,17 +292,11 @@ export const HomePage: React.ComponentType<Props> = React.memo<Props>(
       const { fetchCreditsPackages } = React.useContext(
         CreditsPackageStoreContext
       );
-      const [openedGameId, setOpenedGameId] = React.useState<?string>(null);
-      const {
-        games,
-        fetchGames,
-        gamesFetchingError,
-        onGameUpdated,
-      } = gamesList;
-      const [
-        gameDetailsCurrentTab,
-        setGameDetailsCurrentTab,
-      ] = React.useState<GameDetailsTab>('details');
+      const [, setOpenedGameId] = React.useState<?string>(null);
+      const { games, fetchGames } = gamesList;
+      const [, setGameDetailsCurrentTab] = React.useState<GameDetailsTab>(
+        'details'
+      );
       const { routeArguments, removeRouteArguments } = React.useContext(
         RouterContext
       );
@@ -364,13 +360,6 @@ export const HomePage: React.ComponentType<Props> = React.memo<Props>(
         initialBundleCategoryForLearn,
         setInitialBundleCategoryForLearn,
       ] = React.useState<?string>(null);
-      const openedGame = React.useMemo(
-        () =>
-          !openedGameId || !games
-            ? null
-            : games.find(game => game.id === openedGameId),
-        [games, openedGameId]
-      );
 
       // Open the store and a pack or game template if asked to do so, either at
       // app opening, either when the route changes (when clicking on an announcement
@@ -611,41 +600,14 @@ export const HomePage: React.ComponentType<Props> = React.memo<Props>(
               <div style={isMobile ? styles.mobileContainer : styles.container}>
                 <div style={styles.scrollableContainer}>
                   {activeTab === 'create' && (
-                    <CreateSection
-                      project={project}
-                      currentFileMetadata={fileMetadata}
-                      onOpenProject={onOpenRecentFile}
-                      storageProviders={storageProviders}
-                      storageProvider={storageProvider}
-                      resourceManagementProps={resourceManagementProps}
-                      onCreateEmptyProject={onCreateEmptyProject}
-                      onOpenLayout={onOpenLayout}
-                      onWillInstallExtension={onWillInstallExtension}
-                      onExtensionInstalled={onExtensionInstalled}
-                      onCloseAskAi={onCloseAskAi}
-                      onOpenAskAi={onOpenAskAi}
-                      closeProject={closeProject}
-                      games={games}
-                      onRefreshGames={fetchGames}
-                      onGameUpdated={onGameUpdated}
-                      gamesFetchingError={gamesFetchingError}
-                      openedGame={openedGame}
-                      setOpenedGameId={setOpenedGameId}
-                      currentTab={gameDetailsCurrentTab}
-                      setCurrentTab={setGameDetailsCurrentTab}
+                    // c3: Construct-like start page instead of GDevelop's
+                    // create section.
+                    <C3StartPage
                       canOpen={canOpen}
-                      onOpenProfile={onOpenProfile}
-                      askToCloseProject={askToCloseProject}
-                      onCreateProjectFromExample={onCreateProjectFromExample}
-                      onSelectExampleShortHeader={onSelectExampleShortHeader}
-                      onSelectPrivateGameTemplateListingData={
-                        onSelectPrivateGameTemplateListingData
-                      }
-                      i18n={i18n}
                       onOpenNewProjectSetupDialog={onOpenNewProjectSetupDialog}
                       onChooseProject={onChooseProject}
-                      onSaveProject={onSave}
-                      canSaveProject={canSave}
+                      onOpenRecentFile={onOpenRecentFile}
+                      onSelectExampleShortHeader={onSelectExampleShortHeader}
                     />
                   )}
                   {activeTab === 'learn' && (
@@ -735,12 +697,6 @@ export const HomePage: React.ComponentType<Props> = React.memo<Props>(
                       />
                     ))}
                 </div>
-                <HomePageMenu
-                  activeTab={activeTab}
-                  setActiveTab={setActiveTab}
-                  onOpenPreferences={onOpenPreferences}
-                  onOpenAbout={onOpenAbout}
-                />
               </div>
             </TeamProvider>
           )}

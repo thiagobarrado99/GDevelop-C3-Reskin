@@ -197,7 +197,9 @@ export type RenderEditorContainerProps = {|
   ) => void,
 
   // Project creation
-  onOpenNewProjectSetupDialog: () => void,
+  onOpenNewProjectSetupDialog: (options?: {|
+    browseExamples?: boolean,
+  |}) => void,
   onCreateProjectFromExample: (
     exampleProjectSetup: ExampleProjectSetup
   ) => Promise<CreateProjectResult>,
