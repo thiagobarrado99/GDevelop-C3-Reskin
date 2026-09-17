@@ -14,7 +14,7 @@ Roadmap and rules: see [CLAUDE.md](CLAUDE.md). Tick items here; add a line under
 Theme
 - [x] `src/UI/Theme/ConstructLikeDarkTheme/` from the measured palette; default theme; `flat` option in `CreateTheme.js` (2 px radius, no shadows, no ripple)
 - [x] Font: system sans (Segoe UI on Windows) — `gdevelop.modern-font-family` overridden in `ConstructLikeDarkTheme/theme.json`
-- [~] Panel headers: 13 px plain titles, square bars/tabs done (survey: bar titles are plain text); MUI overrides for buttons/dialogs still to review against `02-new-project-dialog.png`
+- [x] Panel headers: 13 px plain titles, square bars/tabs; dialog buttons/fields restyled in Phase 2
 
 Language & terminology
 - [x] `pt_BR` is the default language (no browser autodetect); English stays selectable
@@ -53,7 +53,7 @@ Hide
 - [x] Toolbar: Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); version-history buttons removed (cloud only)
 - [x] Tabs: cream active tab, square corners (theme CSS)
 - [ ] Merge tab strip and toolbar into one row?
-- [~] Dialog chrome: title + ✕, Help bottom-left already match; grey filled buttons / title bar strip still to do
+- [x] Dialog chrome: grey title strip with centred title + ✕, dark filled fields, grey buttons (`Dialog.js` gets a `c3-dialog-title` class, rules in `ConstructLikeDark.css`)
 
 ## Phase 3 — Event sheet (see survey)
 - [ ] Rows: margin number, `[icon Object] condition` block, `Add action` placeholder, per-event `Add…`

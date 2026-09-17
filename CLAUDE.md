@@ -24,7 +24,7 @@ Defaults changed to match Construct (2026-09-18): new projects keep their game s
 
 Pending / next steps, in order:
 0. **Waiting on the user**: whether `C3-Icons/` (Scirra's icon PNGs, untracked at the repo root) may be committed to the public fork or must stay local with look-alikes drawn for git. Do not `git add` it before that answer. Also confirm whether `#00768e` (object cyan, sampled from the icons) is fine for *text* labels — it is only ≈ 2:1 contrast on the `#474747` panels; icons are fine, labels may want a lighter shade.
-1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish. Close-tab confirmation on unsaved changes only is done (`MainFrame/index.js`, `// c3:`; invisible in dev because `CloseConfirmDialog` skips `Window.isDev()`).
+1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), layers bar polish. Done 2026-09-18 (night): close-tab confirmation on unsaved changes only, project bar order, recent-project context menu, dialog chrome (title strip + filled fields + grey buttons, all theme CSS keyed on the `c3-dialog-title` class in `UI/Dialog.js`). Close-tab confirmation on unsaved changes only is done (`MainFrame/index.js`, `// c3:`; invisible in dev because `CloseConfirmDialog` skips `Window.isDev()`).
 2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming, `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there).
 3. Phase 3 event sheet (see survey + TODO).
 

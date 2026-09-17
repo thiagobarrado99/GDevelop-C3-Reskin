@@ -462,6 +462,7 @@ const DialogWithoutWindowSizeProvider = ({
       )}
       <div style={dialogContainerStyle}>
         <div
+          className="c3-dialog-title" // c3: styled as a title strip by the theme CSS
           style={{
             ...styles.titleContainer,
             paddingBottom: title ? dialogTitlePadding : 0, // Keep the title container if there is no title, for the close button to be visible, but don't add padding.
