@@ -127,9 +127,10 @@ export function DraggableEditorTabs({
               renderCustomIcon={editorTab.renderCustomIcon}
               key={editorTab.id}
               id={getTabId(editorTab)}
-              data={
-                editorTab.tabOptions ? editorTab.tabOptions.data : undefined
-              }
+              data={{
+                kind: editorTab.kind, // c3: lets the theme colour tabs by kind
+                ...(editorTab.tabOptions ? editorTab.tabOptions.data : null),
+              }}
               active={isCurrentTab}
               onClick={() => onClickTab(id)}
               onClose={() => onCloseTab(editorTab)}

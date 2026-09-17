@@ -73,8 +73,8 @@ Hide
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
 - [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
-- [ ] Project bar rows tinted per kind (`ProjectManager/*TreeViewItemContent.js`)
-- [ ] Open editor tab background matches its kind (`EditorTabs/DraggableEditorTabs.js`, `UI/ClosableTabs.js`, by tab `kind`)
+- [x] Project bar rows tinted per kind — theme CSS only, keyed on the rows' `data-scene` / `data-external-events` / `data-external-layout` and `#project-manager`; icons redrawn as masks (`/* webpackIgnore: true */ url(/res/…)` so css-loader leaves public URLs alone)
+- [x] Editor tabs tinted by kind: `DraggableEditorTabs.js` adds `data-kind` to the tab button, theme CSS fills the active tab / colours the inactive label
 - [x] Properties panel: Behaviors/Effects section titles and each behaviour/effect name tinted; object editor dialog tabs too (`TopLevelCollapsibleSection`/`CollapsibleSubPanel` got a `color` prop)
 - [ ] Add-behaviour / add-effect dialogs and the full behaviours editor tinted too
 - [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)

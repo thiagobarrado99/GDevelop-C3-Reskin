@@ -94,3 +94,67 @@
 .ConstructLikeDarkTheme .MuiInput-root.Mui-focused {
   outline: 1px solid #00b1cc;
 }
+
+/* Project bar rows tinted by kind (see CLAUDE.md "Colour coding"): the row
+   text takes the kind's colour and the black icon is redrawn as a mask filled
+   with it. Rows carry data-scene / data-external-events / data-external-layout. */
+.ConstructLikeDarkTheme #project-manager [data-scene],
+.ConstructLikeDarkTheme #project-manager [data-external-layout] {
+  color: var(--c3-layout-color);
+}
+.ConstructLikeDarkTheme #project-manager [data-external-events] {
+  color: var(--c3-event-sheet-color);
+}
+.ConstructLikeDarkTheme #project-manager [data-scene][aria-selected='true'],
+.ConstructLikeDarkTheme
+  #project-manager
+  [data-external-layout][aria-selected='true'],
+.ConstructLikeDarkTheme
+  #project-manager
+  [data-external-events][aria-selected='true'] {
+  color: #1f1f1f;
+}
+.ConstructLikeDarkTheme #project-manager [data-scene] div:has(> img),
+.ConstructLikeDarkTheme #project-manager [data-external-layout] div:has(> img),
+.ConstructLikeDarkTheme #project-manager [data-external-events] div:has(> img) {
+  background-color: currentColor;
+  -webkit-mask: var(--c3-row-icon) center / 20px 20px no-repeat;
+  mask: var(--c3-row-icon) center / 20px 20px no-repeat;
+}
+.ConstructLikeDarkTheme #project-manager [data-scene] {
+  --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/scene_black.svg);
+}
+.ConstructLikeDarkTheme #project-manager [data-external-layout] {
+  --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/external_layout_black.svg);
+}
+.ConstructLikeDarkTheme #project-manager [data-external-events] {
+  --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/external_events_black.svg);
+}
+.ConstructLikeDarkTheme #project-manager [data-scene] img,
+.ConstructLikeDarkTheme #project-manager [data-external-layout] img,
+.ConstructLikeDarkTheme #project-manager [data-external-events] img {
+  visibility: hidden;
+}
+
+/* Document tabs tinted by kind: the active tab is filled with the kind's
+   colour (dark text), inactive ones keep the grey tab with coloured text.
+   The tab's inline styles are beaten with !important. */
+.ConstructLikeDarkTheme span[id^='tab-']:has(> [data-kind='layout']),
+.ConstructLikeDarkTheme span[id^='tab-']:has(> [data-kind='external layout']) {
+  --c3-tab-color: var(--c3-layout-color);
+}
+.ConstructLikeDarkTheme span[id^='tab-']:has(> [data-kind='layout events']),
+.ConstructLikeDarkTheme span[id^='tab-']:has(> [data-kind='external events']) {
+  --c3-tab-color: var(--c3-event-sheet-color);
+}
+.ConstructLikeDarkTheme
+  span[id^='tab-']:has(> [data-kind][data-active='true']) {
+  background-color: var(--c3-tab-color, #fff2cc) !important;
+  border-color: var(--c3-tab-color, #fff2cc) !important;
+}
+.ConstructLikeDarkTheme
+  span[id^='tab-']
+  > [data-kind]:not([data-active])
+  > span {
+  color: var(--c3-tab-color, inherit) !important;
+}
