@@ -54,6 +54,22 @@ describe('applyC3Terminology', () => {
     ).toBe('Delete layout Scene 1?');
   });
 
+  it('uses Construct 3 default names and labels', () => {
+    const en = makeI18n('en', {});
+    expect(en._('Untitled scene')).toBe('Layout 1');
+    expect(en._('Base layer')).toBe('Layer 0');
+    expect(en._('Share')).toBe('Export');
+    expect(en._('Share your game')).toBe('Share your game');
+    const pt = makeI18n('pt_BR', {
+      'Untitled scene': 'Cena sem título',
+      'Untitled external events': 'Eventos externos sem título',
+      Share: 'Compartilhar',
+    });
+    expect(pt._('Untitled scene')).toBe('Layout 1');
+    expect(pt._('Untitled external events')).toBe('Folha de eventos 1');
+    expect(pt._('Share')).toBe('Exportar');
+  });
+
   it('leaves other languages untouched', () => {
     const i18n = makeI18n('fr_FR', { Scene: 'Scène' });
     expect(i18n._('Scene')).toBe('Scène');

@@ -19,6 +19,11 @@ const r = (regex: RegExp, to: string): Rule => [
 // Order matters: article/gender-aware phrases first, bare nouns last.
 const rulesByLanguage: { [string]: Array<Rule> } = {
   en: [
+    // Whole-string labels, as named in Construct 3.
+    [/^Untitled scene$/, 'Layout 1'],
+    [/^Untitled external events$/, 'Event sheet 1'],
+    [/^Base layer$/, 'Layer 0'],
+    [/^Share$/, 'Export'],
     r(/\bscenes\b/gi, 'layouts'),
     r(/\bscene\b/gi, 'layout'),
     r(/\bobject groups\b/gi, 'families'),
@@ -29,6 +34,11 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     r(/\bproject manager\b/gi, 'project bar'),
   ],
   pt_BR: [
+    // Whole-string labels, as named in Construct 3 (pt-BR).
+    [/^Cena sem título$/, 'Layout 1'],
+    [/^Eventos externos sem título$/, 'Folha de eventos 1'],
+    [/^Camada base$/, 'Camada 0'],
+    [/^Compartilhar$/, 'Exportar'],
     // cena (f.) → layout (m.)
     r(/\bnovas cenas\b/gi, 'novos layouts'),
     r(/\btodas as cenas\b/gi, 'todos os layouts'),
