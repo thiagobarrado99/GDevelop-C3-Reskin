@@ -4,7 +4,7 @@ Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is re
 
 ## Current state (read first in a new session)
 
-Last updated: 2026-09-16.
+Last updated: 2026-09-17.
 
 Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
@@ -12,11 +12,11 @@ Done (Phase 0 complete):
 - Branch `c3-reskin` (tracks `origin/c3-reskin`). `master` untouched = upstream. Commits prefixed `c3:`.
 - `docs/c3-reference/` holds the 5 Construct 3 screenshots described below — **local only**: `/docs` is gitignored upstream and they are Scirra's UI, so they are not in git. Measured palette is in "Style takeaways" so the notes survive without them.
 - `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
-- `TODO.md` holds the per-phase checklist; Phase 0 ticked.
+- `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them.
 
 Pending / next steps, in order:
-1. Phase 1 (see `TODO.md`): create theme `Construct-like Dark`, terminology overrides, hide JS events / non-HTML5 exporters / storefront home page.
-2. Commit with `c3:` prefix, push to `origin c3-reskin` (not pushed yet since the initial 3 commits).
+1. Phase 1 leftovers in `TODO.md` (font, remaining header buttons, terminology review with the team).
+2. Phase 2 shell (panel arrangement, headers, toolbar).
 
 Gotchas:
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
@@ -26,7 +26,7 @@ Gotchas:
 - Dev server log check: Playwright headless script pattern in scratchpad worked; `npx playwright open http://localhost:3000` for interactive.
 - `react-app-rewired` + CRA 5; config in `newIDE/app/config-overrides.js`.
 - Do not commit `newIDE/app/resources/`, `node_modules/`, or `build/`.
-- Team language is pt-BR; the reskin must keep the `pt_BR` locale working (lingui catalogs in `newIDE/app/src/locales/pt_BR`).
+- Team language is pt-BR: **`pt_BR` is the default language** (user requirement), English must stay selectable. Only compiled catalogs (`src/locales/<locale>/messages.js`) are in git — `.po` sources live on Crowdin and `compile-translations` is skipped on Windows — so terminology changes are done at runtime in `src/Utils/i18n/C3Terminology.js` (regex rules over `i18n._` output, per language, with jest tests), never by editing catalogs.
 
 ## Goals
 
@@ -163,15 +163,16 @@ origin   = https://github.com/thiagobarrado99/GDevelop-C3-Reskin.git  (our fork;
 ## Roadmap
 
 Phase 0 — Baseline: `npm start` works, note first impressions vs C3 side-by-side.
-Phase 1 — Skin (days): `Construct-like Dark` theme in `UI/Theme`; C3 terminology via a custom `en` catalog override; hide JS code events, non-HTML5 exporters, marketing/asset-store/AI panels the team won't use.
+Phase 1 — Skin (days): `Construct-like Dark` theme in `UI/Theme`; C3 terminology via the runtime rewrite in `Utils/i18n/C3Terminology.js`; hide JS code events, non-HTML5 exporters, marketing/asset-store/AI panels the team won't use.
 Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, properties left, layout center, layers/objects right, bottom tabs), toolbar, tab styling, ribbon-less menu.
 Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
 Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
 Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
 
-Progress is tracked in `TODO.md` (create when Phase 1 starts).
+Progress is tracked in `TODO.md`.
 
 ## Decisions
 
 - 2026-09-16: Fork GDevelop rather than write an engine; UI-only changes in `newIDE/` to stay mergeable.
 - 2026-09-16: Keep GDevelop expression syntax and per-scene object model.
+- 2026-09-17: Terminology is rewritten at runtime (`C3Terminology.js`) rather than in catalogs, because `.po` sources are Crowdin-only. Storefront/AI features are hidden by forcing upstream's classroom `hide*` flags to `true` at each check site, so upstream changes to those features merge cleanly.

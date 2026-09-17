@@ -12,20 +12,22 @@ Roadmap and rules: see [CLAUDE.md](CLAUDE.md). Tick items here; add a line under
 ## Phase 1 — Skin
 
 Theme
-- [ ] `npm run create-new-theme "Construct-like Dark"` → `src/UI/Theme/ConstructLikeDarkTheme/`
-- [ ] Sample hex from `docs/c3-reference/03-layout-view.png`; fill `theme.json` (greys `#2b2b2b` / `#333` / `#3d3d3d`, teal accent, 2 px radius, no shadows)
-- [ ] `npm run build-theme-resources`; make it the default theme in preferences
-- [ ] Kill Material ripple / elevation globally (`UI/Theme/Global`)
+- [x] `src/UI/Theme/ConstructLikeDarkTheme/` from the measured palette; default theme; `flat` option in `CreateTheme.js` (2 px radius, no shadows, no ripple)
+- [ ] Font: Segoe UI / system sans ~13 px instead of Fira Sans (global `GdevelopModernFontFamily`)
+- [ ] Panel headers uppercase; review MUI overrides (buttons, dialogs, tabs) against `02-new-project-dialog.png`
 
-Terminology (lingui, no identifier edits)
-- [ ] Decide mechanism: `en` catalog override vs. post-process step in `locales/` build
-- [ ] Scene→Layout, Events→Event sheet, Object group→Family, Object variable→Instance variable, Project manager→Project bar, Properties→Properties bar
-- [ ] Same map applied to `pt_BR` (Cena→Layout, Grupo→Família, …)
+Language & terminology
+- [x] `pt_BR` is the default language (no browser autodetect); English stays selectable
+- [x] Runtime terminology rewrite in `src/Utils/i18n/C3Terminology.js` (patches `i18n._`, shields interpolated values): Scene→Layout/Cena→Layout, Object group→Family/Família, Object variable→Instance variable, External events→Event sheets/Folhas de eventos, Project manager→Project bar/Barra do projeto
+- [ ] Review pt-BR agreement glitches in real use; add rules/exceptions to `C3Terminology.js` (tests in `C3Terminology.spec.js`)
+- [ ] Decide Object→"Tipo de objeto"? Events tab label → "Folha de eventos"?
 
 Hide
-- [ ] JS code events: filter `BuiltinCommonInstructions::JsCode` in `src/EventsSheet/EnumerateEventsMetadata.js`
-- [ ] Non-HTML5 exporters: keep only `html5Exporter` in `src/ExportAndShare/BrowserExporters/index.js` and `LocalExporters/index.js`
-- [ ] Asset store, AI panels, marketing/subscription prompts, community/learn tabs on home page
+- [x] JS code events (`EnumerateEventsMetadata.js`)
+- [x] Non-HTML5 exporters: Share dialog opens on HTML5, no platform chooser (`ShareDialog/index.js`, `PublishHome.js`)
+- [x] Home page: only Create tab; AI prompt and credits wallet removed (`HomePageMenu.js`, `CreateSection/index.js`)
+- [x] Ask AI / announcements / paid products: classroom `hide*` flags forced on (9 sites, grep `// c3:`)
+- [ ] Remaining storefront: "Baixe o app" / login / signup header buttons (keep login for cloud saves?), "Remix" quick-customization row, in-editor "Compartilhar" button label → "Exportar"
 
 ## Phase 2 — Shell
 - [ ] Panel arrangement (project bar + properties left, canvas centre, objects/layers right, bottom tabs) via `initialMosaicEditorNodes`
@@ -41,6 +43,7 @@ Hide
 
 ## Phase 4 — Layout view
 - [ ] Gizmos, snap/grid defaults, z-order bar, status bar "Mouse · Layer · Zoom"
+- [ ] Dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`); canvas colour is project data, not theme
 - [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
 
 ## Phase 5 — Polish
@@ -48,3 +51,4 @@ Hide
 
 ## Log
 - 2026-09-16: repo forked, CLAUDE.md + references committed. Phase 0 done: web + desktop run.
+- 2026-09-17: Phase 1 core shipped: theme, pt-BR default, runtime terminology, hides.
