@@ -1,0 +1,15 @@
+/* c3: start page buttons and cards react to the mouse like Construct 3's.
+   MainFrame.css sets `cursor: default` on every element, hence the `*`. */
+.c3-start-page button:not(:disabled),
+.c3-start-page button:not(:disabled) * {
+  cursor: pointer;
+}
+.c3-start-page button {
+  transition: filter 0.1s;
+}
+.c3-start-page button:hover:not(:disabled) {
+  filter: brightness(1.25);
+}
+.c3-start-page button:disabled {
+  opacity: 0.5;
+}

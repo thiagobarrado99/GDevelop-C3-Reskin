@@ -4,7 +4,7 @@ Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is re
 
 ## Current state (read first in a new session)
 
-Last updated: 2026-09-17.
+Last updated: 2026-09-18.
 
 Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
@@ -14,9 +14,11 @@ Done (Phase 0 complete):
 - `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
 - `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden), Phase 2 started (Construct-like start page `HomePage/C3StartPage.js` and new-project dialog `ProjectCreation/C3NewProjectDialog.js`). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them. New UI strings get their pt-BR in `reskinPtBr` inside `C3Terminology.js`.
 
+Local files only (2026-09-18): `CloudStorageProvider` is removed from both apps' provider lists. Web build opens/saves through `ProjectsStorage/BrowserFileStorageProvider` ("Abrir" = real file picker for `.json` or the `.zip` from "Baixar uma cópia" — assets inlined as `data:` URLs; save = download zip; projects live in memory, so they are not listed in recent projects). `MainFrame/index.js` skips the "where to open/save" dialogs when a single provider is available. Known limitation: on the web build, resource upload from the device still requires a Cloud project upstream (`FileToCloudProjectResourceUploader`), so web projects can only use asset-store/public-URL resources — see `TODO.md`.
+
 Pending / next steps, in order:
-1. Phase 1 leftovers in `TODO.md` (font, remaining header buttons, terminology review with the team).
-2. Phase 2 shell (panel arrangement, headers, toolbar).
+1. Phase 1 leftovers in `TODO.md` (font, remaining header buttons — login/signup can now go since cloud is gone, terminology review with the team).
+2. Phase 2 shell (main menu tree, panel arrangement, headers, toolbar).
 
 Gotchas:
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.

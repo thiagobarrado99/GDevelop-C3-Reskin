@@ -21,10 +21,11 @@ import Play from '../../../UI/CustomSvgIcons/Play';
 import Controller from '../../../UI/CustomSvgIcons/Controller';
 import Star from '../../../UI/CustomSvgIcons/Star';
 import Web from '../../../UI/CustomSvgIcons/Web';
+import './C3StartPage.css';
 
-// c3: start page laid out like Construct 3 - logo + NEW/OPEN/BROWSE EXAMPLES
-// on top, RECENT PROJECTS on the left, LEARN / PARTICIPATE / EXPLORE card
-// columns on the right and RECOMMENDED EXAMPLES at the bottom.
+// c3: start page laid out like Construct 3 - logo + NEW/OPEN on top, RECENT
+// PROJECTS on the left, LEARN / PARTICIPATE / EXPLORE card columns on the
+// right and RECOMMENDED EXAMPLES at the bottom.
 
 const styles = {
   root: { flex: 1, minHeight: '100%' },
@@ -45,6 +46,7 @@ const styles = {
     fontSize: 14,
     letterSpacing: 1,
     textTransform: 'uppercase',
+    color: '#fff',
   },
   columns: {
     display: 'grid',
@@ -191,6 +193,7 @@ const C3StartPage = ({
     <I18n>
       {({ i18n }) => (
         <div
+          className="c3-start-page"
           style={{
             ...styles.root,
             background: gdevelopTheme.palette.canvasColor,
@@ -215,15 +218,6 @@ const C3StartPage = ({
                 style={{ ...styles.bigButton, background: cardBackground }}
               >
                 <Trans>Open</Trans>
-              </ButtonBase>
-              <ButtonBase
-                id="c3-browse-examples"
-                onClick={() =>
-                  onOpenNewProjectSetupDialog({ browseExamples: true })
-                }
-                style={{ ...styles.bigButton, background: cardBackground }}
-              >
-                <Trans>Browse examples</Trans>
               </ButtonBase>
             </div>
 
