@@ -28,10 +28,12 @@ Hide
 - [x] Home page: only Create tab; AI prompt and credits wallet removed (`HomePageMenu.js`, `CreateSection/index.js`)
 - [x] Ask AI / announcements / paid products: classroom `hide*` flags forced on (9 sites, grep `// c3:`)
 - [x] "Baixe o app" header button removed; "Compartilhar" → "Exportar" (whole-string rule); default names Layout 1 / Folha de eventos 1 / Camada 0 via `C3Terminology.js`
-- [ ] Remaining storefront: login/signup header buttons (kept: cloud saves need login), "Remix" quick-customization row
+- [ ] Remaining storefront: login/signup header buttons (kept: cloud saves need login); "Browse examples" still opens GDevelop's template dialog with the Remix row
 
 ## Phase 2 — Shell (see `docs/c3-reference/ui-survey.md`)
-- [ ] Start page per survey: NEW / OPEN / BROWSE EXAMPLES buttons, RECENT PROJECTS list, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
+- [x] Start page per survey (`HomePage/C3StartPage.js`): NEW / OPEN / BROWSE EXAMPLES, RECENT PROJECTS, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
+- [x] New project dialog per survey (`ProjectCreation/C3NewProjectDialog.js`); GDevelop's dialog kept for examples/templates (`UseNewProjectDialog.js`)
+- [ ] Start page polish: real logo image, recent-project context menu (remove from list), "Open" in the web build is disabled until logged in (cloud)
 - [ ] Main menu tree: Project ▸ (Save, Save as, Preview, Export, Close project, New, Open) · View ▸ · Settings · Help · About
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
 - [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename

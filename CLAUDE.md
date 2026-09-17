@@ -12,7 +12,7 @@ Done (Phase 0 complete):
 - Branch `c3-reskin` (tracks `origin/c3-reskin`). `master` untouched = upstream. Commits prefixed `c3:`.
 - `docs/c3-reference/` holds the 5 Construct 3 screenshots described below — **local only**: `/docs` is gitignored upstream and they are Scirra's UI, so they are not in git. Measured palette is in "Style takeaways" so the notes survive without them.
 - `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
-- `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them.
+- `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden), Phase 2 started (Construct-like start page `HomePage/C3StartPage.js` and new-project dialog `ProjectCreation/C3NewProjectDialog.js`). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them. New UI strings get their pt-BR in `reskinPtBr` inside `C3Terminology.js`.
 
 Pending / next steps, in order:
 1. Phase 1 leftovers in `TODO.md` (font, remaining header buttons, terminology review with the team).
