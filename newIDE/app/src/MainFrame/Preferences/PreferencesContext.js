@@ -395,7 +395,7 @@ export type Preferences = {|
 
 export const initialPreferences = {
   values: {
-    language: 'en',
+    language: 'pt_BR',
     autoDownloadUpdates: true,
     themeName: ((typeof window !== 'undefined' &&
     window.matchMedia('(prefers-color-scheme: dark)').matches

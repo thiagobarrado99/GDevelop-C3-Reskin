@@ -24,11 +24,7 @@ import { type EditorMosaicNode } from '../../UI/EditorMosaic';
 import { type FileMetadataAndStorageProviderName } from '../../ProjectsStorage';
 import defaultShortcuts from '../../KeyboardShortcuts/DefaultShortcuts';
 import { type CommandName } from '../../CommandPalette/CommandsList';
-import {
-  getBrowserLanguageOrLocale,
-  setLanguageInDOM,
-  selectLanguageOrLocale,
-} from '../../Utils/Language';
+import { setLanguageInDOM } from '../../Utils/Language';
 import { type GamesDashboardOrderBy } from '../../GameDashboard/GamesList';
 import {
   CHECK_APP_UPDATES_TIMEOUT,
@@ -146,15 +142,9 @@ export const getInitialPreferences = (): {
   userShortcutMap: {},
   watchProjectFolderFilesForLocalProjects: boolean,
 } => {
-  let languageOrLocale = 'en';
-  const browserLanguageOrLocale = getBrowserLanguageOrLocale();
-  if (browserLanguageOrLocale)
-    languageOrLocale = selectLanguageOrLocale(
-      browserLanguageOrLocale,
-      languageOrLocale
-    );
-
-  return { ...initialPreferences.values, language: languageOrLocale };
+  // c3: the team works in Brazilian Portuguese, so it is the default
+  // regardless of the browser language (English stays selectable).
+  return { ...initialPreferences.values };
 };
 
 const getPreferences = (): PreferencesValues => {
