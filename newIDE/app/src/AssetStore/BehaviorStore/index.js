@@ -13,7 +13,11 @@ import { BehaviorStoreContext } from './BehaviorStoreContext';
 import { ListSearchResults } from '../../UI/Search/ListSearchResults';
 import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
 import C3TileGrid from '../../UI/C3TileGrid'; // c3
-import { C3_BEHAVIORS, c3Label } from '../../Utils/C3Behaviors'; // c3
+import {
+  C3_BEHAVIORS,
+  c3Label,
+  type C3Behavior,
+} from '../../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../../UI/Search/UseSearchStructuredItem';
 import { sendExtensionAddedToProject } from '../../Utils/Analytics/EventSender';
 import useDismissableTutorialMessage from '../../Hints/useDismissableTutorialMessage';
@@ -137,7 +141,7 @@ export const BehaviorStore = ({
   );
 
   const filteredSearchResults = searchResults ? searchResults : null;
-  const useC3Grid = true; // c3: tiles like Construct's add-behaviour dialog
+  const useC3Grid: boolean = true; // c3: tiles like Construct's add-behaviour dialog
   const [showAllBehaviors, setShowAllBehaviors] = React.useState(false); // c3
 
   const getExtensionsMatches = React.useCallback(
@@ -321,7 +325,10 @@ export const BehaviorStore = ({
               if (header) installAndChoose(header, tile ? tile.id : undefined);
             }}
             tiles={(showAllBehaviors
-              ? filteredSearchResults.map(({ item }) => ({ item, tile: null }))
+              ? filteredSearchResults.map(({ item }) => ({
+                  item,
+                  tile: (null: ?C3Behavior),
+                }))
               : C3_BEHAVIORS.map(tile => ({
                   tile,
                   item: filteredSearchResults

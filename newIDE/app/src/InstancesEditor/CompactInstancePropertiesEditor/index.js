@@ -40,7 +40,10 @@ import Window from '../../Utils/Window';
 import { type ResourceManagementProps } from '../../ResourcesList/ResourceSource';
 import { usePersistedScrollPosition } from '../../Utils/UsePersistedScrollPosition';
 import { usePersistedCollapsedSection } from '../../Utils/UsePersistedCollapsedSection';
-import EmptyMessage from '../../UI/EmptyMessage';
+// c3: object-level editors, so the instance panel shows everything the
+// object has (Construct shows behaviours and effects on the instance).
+import CompactBehaviorsEditorService from '../../ObjectEditor/CompactObjectPropertiesEditor/CompactBehaviorsEditorService';
+import { CompactEffectsListEditor } from '../../LayersList/CompactLayerPropertiesEditor/CompactEffectsListEditor';
 import CompactInstanceBehaviorsEditorService from './CompactInstanceBehaviorsEditorService';
 import { exceptionallyGuardAgainstDeadObject } from '../../Utils/IsNullPtr';
 import { getAllVisibleBehaviorNames } from '../../Utils/Behavior';
@@ -463,15 +466,42 @@ export const CompactInstancePropertiesEditor = ({
                         key={instancesAndBehaviors[0].behavior.ptr}
                         renderContent={
                           notOverridableBehaviorTypes.includes(behaviorTypeName)
-                            ? () => (
-                                <Column expand>
-                                  <EmptyMessage>
-                                    <Trans>
-                                      This behavior can't be setup per instance.
-                                    </Trans>
-                                  </EmptyMessage>
-                                </Column>
-                              )
+                            ? () => {
+                                // c3: edit the object's behaviour right here.
+                                const ObjectBehaviorComponent = CompactBehaviorsEditorService.getEditor(
+                                  behaviorTypeName
+                                );
+                                return (
+                                  <Column expand noMargin>
+                                    <Text size="body2" color="secondary">
+                                      <Trans>
+                                        Shared by every instance of the object.
+                                      </Trans>
+                                    </Text>
+                                    <ObjectBehaviorComponent
+                                      project={project}
+                                      behaviorMetadata={behaviorMetadata}
+                                      behaviors={[
+                                        object.getBehavior(behaviorName),
+                                      ]}
+                                      object={object}
+                                      layersContainer={layersContainer}
+                                      onBehaviorUpdated={() => {
+                                        if (unsavedChanges)
+                                          unsavedChanges.triggerUnsavedChanges();
+                                      }}
+                                      resourceManagementProps={
+                                        resourceManagementProps
+                                      }
+                                      onOpenFullEditor={() =>
+                                        editObjectInPropertiesPanel(
+                                          object.getName()
+                                        )
+                                      }
+                                    />
+                                  </Column>
+                                );
+                              }
                             : () => (
                                 <CompactInstanceBehaviorComponent
                                   project={project}
@@ -531,6 +561,35 @@ export const CompactInstancePropertiesEditor = ({
               )}
             />
           ) : null}
+          {object &&
+            shouldDisplayVariablesList &&
+            persistedPanelStateId &&
+            gd.MetadataProvider.getObjectMetadata(
+              project.getCurrentPlatform(),
+              object.getType()
+            ).hasDefaultBehavior('EffectCapability::EffectBehavior') && (
+              // c3: the object's effects, edited through (shared by instances).
+              <CompactEffectsListEditor
+                layerRenderingType={'2d'}
+                target={'object'}
+                project={project}
+                resourceManagementProps={resourceManagementProps}
+                projectScopedContainersAccessor={
+                  projectScopedContainersAccessor
+                }
+                unsavedChanges={unsavedChanges}
+                i18n={i18n}
+                effectsContainer={object.getEffects()}
+                onEffectsUpdated={() => {
+                  if (unsavedChanges) unsavedChanges.triggerUnsavedChanges();
+                }}
+                onOpenFullEditor={() =>
+                  editObjectInPropertiesPanel(object.getName())
+                }
+                onEffectAdded={() => {}}
+                persistedPanelStateId={persistedPanelStateId}
+              />
+            )}
           {object && shouldDisplayVariablesList && variablesContainer ? (
             <TopLevelCollapsibleSection
               title={<Trans>Instance Variables</Trans>}

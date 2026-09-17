@@ -22,6 +22,8 @@ const r = (regex: RegExp, to: string): Rule => [
 const reskinPtBr: { [string]: string } = {
   'Recent projects': 'Projetos recentes',
   'Add layer above': 'Adicionar camada acima',
+  'Shared by every instance of the object.':
+    'Compartilhado por todas as instâncias do objeto.',
   'Show all GDevelop behaviors': 'Mostrar todos os comportamentos do GDevelop',
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',

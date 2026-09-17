@@ -287,10 +287,10 @@ function NewObjectDialog({
     setNewObjectDialogDefaultTab,
     getNewObjectDialogDefaultTab,
   } = React.useContext(PreferencesContext);
-  const hideAssetStore = true; // c3: Construct has no store in "add object".
-  const [currentTab, setCurrentTab] = React.useState(
-    hideAssetStore ? 'new-object' : getNewObjectDialogDefaultTab()
-  );
+  const hideAssetStore: boolean = true; // c3: Construct has no store in "add object".
+  const [currentTab, setCurrentTab] = React.useState<
+    'asset-store' | 'new-object'
+  >(hideAssetStore ? 'new-object' : getNewObjectDialogDefaultTab());
 
   React.useEffect(() => setNewObjectDialogDefaultTab(currentTab), [
     setNewObjectDialogDefaultTab,

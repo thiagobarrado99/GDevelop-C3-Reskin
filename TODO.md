@@ -85,7 +85,7 @@ Hide
 - [ ] Icons: add-object dialog grouped like `all_objects_list.png` (3D · Dados & armazenamento · Elementos HTML · Entrada · Geral · Mídia · Outro · Web), add-behaviour grid like `all_behaviours_list.png` (Atributos · Geral · Movimentos · 3D)
 - [x] Controls parity: PlatformerObject jumps with ↑ too (runtime one-liner in `Extensions/PlatformBehavior`, logged in CLAUDE.md Decisions)
 - [x] Naming parity: `Platform` → Solid/Sólido, `Platformer character` → Platform/Plataforma, `Jumpthru platform` → Jump-thru/Atravessável (whole-string rules in `C3Terminology.js`, tested)
-- [ ] Instance properties panel: show non-overridable behaviours (Physics…) and the object's effects, editing through to the object; else an "Edit on object" button using `editObjectInPropertiesPanel` (`CompactInstancePropertiesEditor/index.js`)
+- [x] Instance properties panel: non-overridable behaviours (Physics…) render the object-level compact editor ("Compartilhado por todas as instâncias do objeto.") and the object's effects get their own section, both editing the object (`CompactInstancePropertiesEditor/index.js`, `// c3:`)
 - [x] Survey of the reviewed extension store done (registry fetched from `api.gdevelop.io/asset/extension`); ports recorded in `Utils/C3Behaviors.js` and the CLAUDE.md table; on-demand install kept (no bundling)
 
 ## Phase 5 — Polish

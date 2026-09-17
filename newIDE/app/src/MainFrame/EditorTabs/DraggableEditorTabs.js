@@ -128,8 +128,8 @@ export function DraggableEditorTabs({
               key={editorTab.id}
               id={getTabId(editorTab)}
               data={{
-                kind: editorTab.kind, // c3: lets the theme colour tabs by kind
                 ...(editorTab.tabOptions ? editorTab.tabOptions.data : null),
+                kind: editorTab.kind, // c3: lets the theme colour tabs by kind
               }}
               active={isCurrentTab}
               onClick={() => onClickTab(id)}
