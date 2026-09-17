@@ -40,8 +40,8 @@ const styles = {
     boxSizing: 'border-box',
     margin: '0 auto',
   },
-  brand: { display: 'flex', alignItems: 'center', gap: 12 },
-  logo: { width: 40, height: 40 },
+  brand: { display: 'flex', alignItems: 'center', gap: 16 },
+  logo: { width: 64, height: 64 },
   bigButtons: { display: 'flex', gap: 8 },
   bigButton: {
     flex: 1,
@@ -205,7 +205,7 @@ const C3StartPage = ({
           <div style={styles.page}>
             <div style={styles.brand}>
               <img src="res/assemble3-icon.png" alt="" style={styles.logo} />
-              <Text size="section-title" noMargin>
+              <Text size="bold-title" noMargin>
                 {APP_NAME}
               </Text>
             </div>
