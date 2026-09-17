@@ -24,6 +24,7 @@ export function getMuiOverrides({
   textDefaultColor,
   tooltipBackgroundColor,
   tooltipTextColor,
+  borderRadius = 8,
 }: {|
   tabTextColor: string,
   tabSelectedTextColor: string,
@@ -41,6 +42,7 @@ export function getMuiOverrides({
   textDefaultColor: string,
   tooltipBackgroundColor: string,
   tooltipTextColor: string,
+  borderRadius?: number,
 |}): any {
   return {
     MuiTypography: {
@@ -212,12 +214,12 @@ export function getMuiOverrides({
     },
     MuiPaper: {
       rounded: {
-        borderRadius: 8,
+        borderRadius,
       },
     },
     MuiButton: {
       root: {
-        borderRadius: 8,
+        borderRadius,
         textTransform: 'none',
         fontWeight: 600,
         letterSpacing: '0.3px',
@@ -477,12 +479,16 @@ export function createGdevelopTheme({
   rootClassNameIdentifier,
   paletteType,
   gdevelopIconsCSSFilter,
+  flat,
 }: {
   styles: any,
   rootClassNameIdentifier: string,
   paletteType: string,
   gdevelopIconsCSSFilter: ?string,
+  // c3: square corners, no shadows, no ripple (Construct-like themes).
+  flat?: boolean,
 }): any {
+  const borderRadius = flat ? 2 : 8;
   return {
     gdevelopTheme: {
       palette: {
@@ -711,6 +717,13 @@ export function createGdevelopTheme({
       },
     },
     muiThemeOptions: {
+      ...(flat
+        ? {
+            shape: { borderRadius },
+            shadows: Array(25).fill('none'),
+            props: { MuiButtonBase: { disableRipple: true } },
+          }
+        : {}),
       typography: {
         fontFamily: styles['GdevelopModernFontFamily'],
       },
@@ -752,6 +765,7 @@ export function createGdevelopTheme({
         textDefaultColor: styles['ThemeTextDefaultColor'],
         tooltipBackgroundColor: styles['ThemeTooltipBackgroundColor'],
         tooltipTextColor: styles['ThemeTooltipTextColor'],
+        borderRadius,
       }),
     },
   };

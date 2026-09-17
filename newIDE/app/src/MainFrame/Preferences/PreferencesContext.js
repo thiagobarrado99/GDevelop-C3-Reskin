@@ -397,11 +397,8 @@ export const initialPreferences = {
   values: {
     language: 'pt_BR',
     autoDownloadUpdates: true,
-    themeName: ((typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-      ? 'GDevelop default Dark'
-      : // TODO: Use the light theme back when it's adapted to the modern theme.
-        'GDevelop default Dark'): string),
+    // c3: Construct-like look by default, regardless of the OS color scheme.
+    themeName: 'Construct-like Dark',
     codeEditorThemeName: 'vs-dark',
     hiddenAlertMessages: {},
     hiddenTutorialHints: {},
