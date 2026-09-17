@@ -98,6 +98,8 @@ export const createNewEmptyProject = ({
   creationSource: NewProjectCreationSource,
 |}): NewProjectSource => {
   const project: gdProject = gd.ProjectHelper.createNewGDJSProject();
+  // c3: "No changes to the game size" by default, like Construct 3.
+  project.setSizeOnStartupMode('');
 
   const exampleSlug = 'empty-project';
 
