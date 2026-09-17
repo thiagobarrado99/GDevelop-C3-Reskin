@@ -28,7 +28,6 @@ import LocalFileStorageProvider from './ProjectsStorage/LocalFileStorageProvider
 import { LocalGDJSDevelopmentWatcher } from './GameEngineFinder/LocalGDJSDevelopmentWatcher';
 import { useCliCommandRunner } from './MainFrame/LocalCliCommandRunner';
 import { exportLocalHtml5Headless } from './ExportAndShare/Headless/ExportLocalHtml5Headless';
-import CloudStorageProvider from './ProjectsStorage/CloudStorageProvider';
 import UrlStorageProvider from './ProjectsStorage/UrlStorageProvider';
 import LocalResourceMover from './ProjectsStorage/ResourceMover/LocalResourceMover';
 import LocalResourceFetcher from './ProjectsStorage/ResourceFetcher/LocalResourceFetcher';
@@ -59,11 +58,8 @@ export const create = (authentication: Authentication): React.Node => {
       {({ i18n }) => (
         <ProjectStorageProviders
           appArguments={appArguments}
-          storageProviders={[
-            LocalFileStorageProvider,
-            UrlStorageProvider,
-            CloudStorageProvider,
-          ]}
+          // c3: no cloud saves - projects are opened from and saved to local files.
+          storageProviders={[LocalFileStorageProvider, UrlStorageProvider]}
           defaultStorageProvider={LocalFileStorageProvider}
         >
           {({
@@ -108,7 +104,13 @@ export const create = (authentication: Authentication): React.Node => {
               )}
               quickPublishOnlineWebExporter={localOnlineWebExporter}
               renderGDJSDevelopmentWatcher={
-                isDev ? ({ onGDJSUpdated }) => <LocalGDJSDevelopmentWatcher onGDJSUpdated={onGDJSUpdated} /> : null
+                isDev
+                  ? ({ onGDJSUpdated }) => (
+                      <LocalGDJSDevelopmentWatcher
+                        onGDJSUpdated={onGDJSUpdated}
+                      />
+                    )
+                  : null
               }
               storageProviders={storageProviders}
               resourceMover={LocalResourceMover}

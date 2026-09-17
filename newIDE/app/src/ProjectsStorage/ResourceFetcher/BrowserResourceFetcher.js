@@ -9,6 +9,7 @@ import CloudStorageProvider from '../CloudStorageProvider';
 import { moveUrlResourcesToCloudFilesIfPrivate } from '../CloudStorageProvider/CloudResourceFetcher';
 import UrlStorageProvider from '../UrlStorageProvider';
 import { fetchRelativeResourcesToFullUrls } from '../UrlStorageProvider/UrlResourceFetcher';
+import BrowserFileStorageProvider from '../BrowserFileStorageProvider'; // c3
 
 const fetchers: {
   [string]: FetchAllProjectResourcesFunction,
@@ -21,6 +22,12 @@ const fetchers: {
   // URL. This allows to open local projects uploaded to GitHub for example.
   // $FlowFixMe[incompatible-type]
   [UrlStorageProvider.internalName]: fetchRelativeResourcesToFullUrls,
+  // c3: a project opened from a local file already has its resources inlined
+  // (or as public URLs): nothing to fetch.
+  // $FlowFixMe[incompatible-type]
+  [BrowserFileStorageProvider.internalName]: async () => ({
+    erroredResources: [],
+  }),
 };
 
 const BrowserResourceFetcher: ResourceFetcher = {

@@ -4208,16 +4208,6 @@ const MainFrame = (props: Props): React.MixedElement => {
     });
   };
 
-  const openOpenFromStorageProviderDialog = React.useCallback(
-    (open: boolean = true) => {
-      setState(state => ({
-        ...state,
-        openFromStorageProviderDialogOpen: open,
-      }));
-    },
-    [setState]
-  );
-
   // When opening a project, we always open a scene to avoid confusing the user.
   // If it has no scene (new project), we create one and open it.
   // If it has one scene, we open it.
@@ -4383,6 +4373,31 @@ const MainFrame = (props: Props): React.MixedElement => {
       openSceneOrProjectManager,
       getStorageProvider,
       setHasProjectOpened,
+    ]
+  );
+
+  const openOpenFromStorageProviderDialog = React.useCallback(
+    (open: boolean = true) => {
+      // c3: with a single place to open from (a local file), go straight to
+      // its file picker like Construct 3 instead of asking where to open from.
+      const openableStorageProviders = props.storageProviders.filter(
+        ({ hiddenInOpenDialog }) => !hiddenInOpenDialog
+      );
+      if (open && openableStorageProviders.length === 1) {
+        getStorageProviderOperations(openableStorageProviders[0]);
+        chooseProjectWithStorageProviderPicker();
+        return;
+      }
+      setState(state => ({
+        ...state,
+        openFromStorageProviderDialogOpen: open,
+      }));
+    },
+    [
+      setState,
+      props.storageProviders,
+      getStorageProviderOperations,
+      chooseProjectWithStorageProviderPicker,
     ]
   );
 
@@ -4801,10 +4816,16 @@ const MainFrame = (props: Props): React.MixedElement => {
       }
 
       const storageProviderOperations = getStorageProviderOperations();
-      if (
-        props.storageProviders.filter(
-          ({ hiddenInSaveDialog }) => !hiddenInSaveDialog
-        ).length > 1 ||
+      const savableStorageProviders = props.storageProviders.filter(
+        ({ hiddenInSaveDialog }) => !hiddenInSaveDialog
+      );
+      if (savableStorageProviders.length === 1) {
+        // c3: a single place to save to (a local file) - no need to ask.
+        saveProjectAsWithStorageProvider({
+          requestedStorageProvider: savableStorageProviders[0],
+        });
+      } else if (
+        savableStorageProviders.length > 1 ||
         !storageProviderOperations.onSaveProjectAs
       ) {
         openSaveToStorageProviderDialog();

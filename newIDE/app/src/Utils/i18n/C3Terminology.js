@@ -19,7 +19,6 @@ const r = (regex: RegExp, to: string): Rule => [
 // pt-BR for strings added by the reskin (they are not in the Crowdin
 // catalog). Labels follow the Construct 3 pt-BR UI.
 const reskinPtBr: { [string]: string } = {
-  'Browse examples': 'Explorar exemplos',
   'Recent projects': 'Projetos recentes',
   'No recent projects.': 'Nenhum projeto recente.',
   Participate: 'Participar',
@@ -67,6 +66,7 @@ const reskinPtBr: { [string]: string } = {
   '1080p portrait': 'Retrato 1080p',
   '4K landscape': 'Paisagem 4K',
   '4K portrait': 'Retrato 4K',
+  'Local file': 'Arquivo local',
 };
 const escapeRegExp = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

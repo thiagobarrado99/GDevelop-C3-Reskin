@@ -24,8 +24,7 @@ import { makeBrowserS3EventsFunctionCodeWriter } from './EventsFunctionsExtensio
 import Providers from './MainFrame/Providers';
 import ProjectStorageProviders from './ProjectsStorage/ProjectStorageProviders';
 import UrlStorageProvider from './ProjectsStorage/UrlStorageProvider';
-import DownloadFileStorageProvider from './ProjectsStorage/DownloadFileStorageProvider';
-import CloudStorageProvider from './ProjectsStorage/CloudStorageProvider';
+import BrowserFileStorageProvider from './ProjectsStorage/BrowserFileStorageProvider'; // c3
 import BrowserResourceMover from './ProjectsStorage/ResourceMover/BrowserResourceMover';
 import BrowserResourceFetcher from './ProjectsStorage/ResourceFetcher/BrowserResourceFetcher';
 import BrowserEventsFunctionsExtensionOpener from './EventsFunctionsExtensionsLoader/Storage/BrowserEventsFunctionsExtensionOpener';
@@ -66,11 +65,8 @@ export const create = (authentication: Authentication): React.Node => {
       {({ i18n }) => (
         <ProjectStorageProviders
           appArguments={appArguments}
-          storageProviders={[
-            UrlStorageProvider,
-            CloudStorageProvider,
-            DownloadFileStorageProvider,
-          ]}
+          // c3: no cloud saves - projects are opened from and saved to local files.
+          storageProviders={[UrlStorageProvider, BrowserFileStorageProvider]}
           defaultStorageProvider={UrlStorageProvider}
         >
           {({
