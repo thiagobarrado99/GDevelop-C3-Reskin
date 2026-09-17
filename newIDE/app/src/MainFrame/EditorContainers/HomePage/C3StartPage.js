@@ -1,6 +1,6 @@
 // @flow
 import * as React from 'react';
-import { Trans } from '@lingui/macro';
+import { Trans, t } from '@lingui/macro';
 import { I18n } from '@lingui/react';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Text from '../../../UI/Text';
@@ -12,6 +12,10 @@ import { isStartingPointExampleShortHeader } from '../../../ProjectCreation/Empt
 import { type ExampleShortHeader } from '../../../Utils/GDevelopServices/Example';
 import { type FileMetadataAndStorageProviderName } from '../../../ProjectsStorage';
 import { useProjectsListFor } from './CreateSection/utils';
+import ContextMenu, {
+  type ContextMenuInterface,
+} from '../../../UI/Menu/ContextMenu';
+import PreferencesContext from '../../Preferences/PreferencesContext';
 import Book from '../../../UI/CustomSvgIcons/Book';
 import School from '../../../UI/CustomSvgIcons/School';
 import Lightbulb from '../../../UI/CustomSvgIcons/Lightbulb';
@@ -185,6 +189,8 @@ const C3StartPage = ({
     ExampleStoreContext
   );
   const recentFiles = useProjectsListFor(null).slice(0, 8);
+  const { removeRecentProjectFile } = React.useContext(PreferencesContext);
+  const recentMenu = React.useRef<?ContextMenuInterface>(null);
   const cardBackground = gdevelopTheme.paper.backgroundColor.medium;
   const iconColor = gdevelopTheme.palette.secondary;
 
@@ -252,6 +258,11 @@ const C3StartPage = ({
                     file.storageProviderName + file.fileMetadata.fileIdentifier
                   }
                   onClick={() => onOpenRecentFile(file)}
+                  onContextMenu={e => {
+                    e.preventDefault();
+                    if (recentMenu.current)
+                      recentMenu.current.open(e.clientX, e.clientY, { file });
+                  }}
                   style={{ ...styles.recent, background: cardBackground }}
                 >
                   <Text noMargin>
@@ -392,6 +403,15 @@ const C3StartPage = ({
               </div>
             )}
           </div>
+          <ContextMenu
+            ref={recentMenu}
+            buildMenuTemplate={(i18n, { file }) => [
+              {
+                label: i18n._(t`Remove from list`),
+                click: () => removeRecentProjectFile(file),
+              },
+            ]}
+          />
         </div>
       )}
     </I18n>
