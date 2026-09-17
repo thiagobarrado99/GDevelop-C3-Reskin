@@ -56,13 +56,12 @@ Hide
 - [x] Dialog chrome: grey title strip with centred title + ✕, dark filled fields, grey buttons (`Dialog.js` gets a `c3-dialog-title` class, rules in `ConstructLikeDark.css`)
 
 ## Phase 3 — Event sheet (see survey)
-- [ ] Rows: margin number, `[icon Object] condition` block, `Add action` placeholder, per-event `Add…`
-- [ ] Condition context: Edit · Add another condition · Invert · Replace condition · Replace object · Toggle · Cut/Copy/Paste · Delete
-- [ ] Picker step 2: two-column grouped list, category headers, description on top, search; step 3 params with Back/Done and `= Equal to…` operator labels
-- [ ] Compact rows, object icon + text, C3 colours (`EventsTree/style.css`)
-- [ ] Add condition/action flow: object tiles → condition → params (`InstructionOrObjectSelector.js`)
-- [ ] "+ Add…" menu per `05-event-sheet-add-menu.png` (no JS/TS entries)
-- [ ] Right-click menus
+- [x] Rows: margin number on the drag handle (`data-event-number`, theme CSS), `[icon Object] condition` block, `+ Add action` placeholder, cream selected block
+- [~] Condition context: Edit · Add another condition · Invert · Cut · Copy · Paste · Delete (done); Replace condition/object, Toggle, Copy as text not offered
+- [~] Picker step 2: two-column grouped list with category headers + search (done; description of the hovered item not shown); step 3 params with Back/Done — operator labels stay GDevelop's `= (igual a)` form
+- [x] Add condition/action flow: System + object tiles → list → params (`InstructionEditor/C3ObjectPicker.js`, `InstructionEditorDialog.js` `useC3Steps`)
+- [x] "+ Add…" menu: Event · Comment · Group · Include event sheet · loops (`EnumerateEventsMetadata.js` order + runtime renames)
+- [ ] Per-event `Add…` link; event context menu in Construct's order
 
 ## Phase 4 — Layout view (see survey)
 - [ ] Properties sections LAYOUT / EFFECTS / EDITOR with C3 row order; instance sections Common / Instance variables / Behaviors / Effects / Properties / Editor
@@ -98,3 +97,4 @@ Hide
 - 2026-09-18: Phase 2 shell shipped: start page, new-project dialog, ☰ menu, toolbar, panel arrangement, local files (.a3p, File System Access), Assemble3 brand + icons. Phase 6 started: colour tokens, properties panel tint. Construct defaults: game size kept, rgb(50,50,50) layouts, ↑ jumps.
 - 2026-09-18 (later): user supplied `C3-Icons/` (94 flat 64 px PNGs + the two Construct grid screenshots); documented the type→file map and the `getIconFilename` wrapper plan in CLAUDE.md; `--c3-behavior-color` = `#f75651`, new `--c3-object-color` = `#00768e`, both sampled from the icons. Queued: close-tab confirmation only on unsaved changes (Phase 2), instance panel edit-through (Phase 6). Open question: may the icons be committed?
 - 2026-09-18 (night): Phase 2 leftovers shipped (close-tab prompt only on unsaved changes, project bar order, recent-project context menu, layer add above/below, Construct dialog chrome); docked project bar still open. Phase 6: rows/tabs coloured by kind, Solid/Platform/Jump-thru renames, `C3TileGrid` for add-behaviour (22/32 Construct behaviours ported 1:1 with presets, store extensions installed on demand) and add-object (13 tiles), instance panel edits physics behaviours + effects through to the object. Icons wait on the user's answer.
+- 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
