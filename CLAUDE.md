@@ -13,12 +13,14 @@ Done (Phase 0 complete):
 - Remotes: `upstream` = 4ian/GDevelop, `origin` = thiagobarrado99/GDevelop-C3-Reskin (GitHub fork exists, `gh` is logged in as `thiagobarrado99`).
 - Branch `c3-reskin` (tracks `origin/c3-reskin`). `master` untouched = upstream. Commits prefixed `c3:`.
 - `docs/c3-reference/` holds the 5 Construct 3 screenshots described below — **local only**: `/docs` is gitignored upstream and they are Scirra's UI, so they are not in git. Measured palette is in "Style takeaways" so the notes survive without them.
-- `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens "GDevelop 5" against it.
-- `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden), Phase 2 started (Construct-like start page `HomePage/C3StartPage.js` and new-project dialog `ProjectCreation/C3NewProjectDialog.js`). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them. New UI strings get their pt-BR in `reskinPtBr` inside `C3Terminology.js`.
+- `newIDE/app` and `newIDE/electron-app` are installed (`npm ci`, Node 25 works, no OpenSSL flag needed). `npm start` compiles and serves http://localhost:3000; Electron opens Assemble3 against it.
+- `TODO.md` holds the per-phase checklist; Phase 0 done, Phase 1 core done (theme `Construct-like Dark` as default, `pt_BR` default language, runtime terminology rewrite, JS events / exporters / AI / storefront hidden), Phase 2 mostly done (start page `HomePage/C3StartPage.js` + `.css`, new-project dialog `ProjectCreation/C3NewProjectDialog.js`, menu, toolbar, panels, local files, brand — leftovers listed below), Phase 6 started (colour tokens + properties panel tint). Every reskin edit in upstream files carries a `// c3:` comment — grep it to find them. New UI strings get their pt-BR in `reskinPtBr` inside `C3Terminology.js`.
 
 Local files only (2026-09-18): `CloudStorageProvider` is removed from both apps' provider lists. Web build opens/saves through `ProjectsStorage/BrowserFileStorageProvider`: with the File System Access API (Chrome/Edge) "Abrir"/"Salvar como" use the system picker and Ctrl+S writes back to the same `.json` after the browser's permission prompt (handles persisted in IndexedDB so recent projects reopen); without it (Firefox/Safari) "Abrir" reads a picked file and saving downloads a zip. A `.zip` from "Baixar uma cópia" can be opened too (assets inlined as `data:` URLs); its first save asks for a project file. **Project files use the `.a3p` extension** (Assemble3 project — the user's name for this fork; plain GDevelop JSON inside, `.json` still opens): constants in `ProjectsStorage/C3ProjectFile.js`, used by the local (desktop) and browser providers; `electron-builder-config.js` registers the file association. `MainFrame/index.js` skips the "where to open/save" dialogs when a single provider is available. On the web build, files picked from the device are inlined as `data:` URLs (`FileToCloudProjectResourceUploader.js`, `// c3:`) so they live inside `game.json` — fine for classroom-size sprites, keep an eye on project size.
 
 Phase 2 shell (2026-09-18): ☰ opens the Construct menu tree (`MainFrame/C3MainMenu.js`, rendered through a `ContextMenu` anchored under the button in `MainFrame/index.js`); toolbar = Project bar · Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); layout editor default mosaic = properties left, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js`); theme-scoped CSS in `ConstructLikeDarkTheme/ConstructLikeDark.css` (body carries the theme's root class) squares bars and tabs; system font via the `gdevelop.modern-font-family` override in `theme.json`. The project manager is still a drawer (`ProjectManager/index.js`, old menu row hidden).
+
+Defaults changed to match Construct (2026-09-18): new projects keep their game size on startup (`setSizeOnStartupMode('')` in `ProjectCreation/CreateProject.js`); new layouts start with an rgb(50, 50, 50) background (`MainFrame/index.js` first layout, `ProjectManager/index.js` new scene); the PlatformerObject's up arrow jumps (runtime edit, see Decisions).
 
 Pending / next steps, in order:
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish.
@@ -26,6 +28,7 @@ Pending / next steps, in order:
 3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
+- Tooling: one jest file = `CI=true npx react-app-rewired test --env=node <path>` (run from `newIDE/app`); prettier is 1.x — `--list-different`, not `--check` (that one hangs on stdin); `npx flow check` cold start ≈ 10 min on the HDD, run it in the background; lint-staged runs prettier + eslint on commit. Verify UI with a headless Playwright script (global npm install, `require(process.env.APPDATA + '/npm/node_modules/playwright')`) against the dev server rather than eyeballing. When scripting file edits from a Python heredoc, ``/`\d` in regex literals get mangled — use the Edit tool for those lines.
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
 - Windows: use forward slashes; Git Bash is available. Line endings: repo is LF, keep files LF. `core.autocrlf=false` is set locally; the working copy was checked out as CRLF, so run prettier / strip `\r` on any file you edit before committing.
 - Node 25 installed locally; CI uses 24. Works as-is.
@@ -46,7 +49,7 @@ Gotchas:
 
 - **Do not modify `Core/`, `GDJS/`, `GDevelop.js/`, `Extensions/`** unless a decision is logged below (see 2026-09-18 for the one existing runtime edit). Editing C++ means an Emscripten build and losing easy upstream sync; runtime `.ts` in `GDJS/Runtime` and `Extensions/` only needs the esbuild step the dev server already runs.
 - Do not copy Construct 3 code, assets, icons, docs, or the "Construct" name. Clone concepts and workflow only.
-- Keep GDevelop's expression syntax (`Sprite.X()`, `ToString()`), project format (`.json`), and object model (objects per scene + global objects). Work around, don't rewrite.
+- Keep GDevelop's expression syntax (`Sprite.X()`, `ToString()`), project format (GDevelop JSON, saved as `.a3p`), and object model (objects per scene + global objects). Work around, don't rewrite.
 - Prefer a **new theme + new locale + layout config** over touching component logic. Escalate to component edits only when needed for the C3 feel.
 
 ## Terminology map (C3 → GDevelop)
@@ -91,7 +94,7 @@ Key editor dirs (`newIDE/app/src/`):
 | `MainFrame/EditorTabs`, `PanesContainer`, `Toolbar` | Tab bar / docking / top toolbar | |
 | `MainFrame/EditorContainers/` | Scene / events / external layout containers | |
 | `SceneEditor/index.js` | Layout editor orchestrator | 3.7k |
-| `SceneEditor/MosaicEditorsDisplay/index.js` | **Panel layout** (`initialMosaicEditorNodes`: properties 23% left, canvas, objects list right — already C3-ish) | 600 |
+| `SceneEditor/MosaicEditorsDisplay/index.js` | **Panel layout** (`initialMosaicEditorNodes`: properties 20% left, canvas, objects top-right / layers bottom-right — Construct arrangement, done) | 600 |
 | `InstancesEditor/` | Pixi canvas: selection, move/resize/rotate, grid, status bar | 2k |
 | `EventsSheet/index.js` | Event sheet orchestrator | 3.2k |
 | `EventsSheet/EventsTree/` | Event rows; `Renderers/StandardEvent.js`, `Instruction.js`, `ConditionsActionsColumns.js`, `style.css`, `SortableEventsTree.css` | 1.3k |
