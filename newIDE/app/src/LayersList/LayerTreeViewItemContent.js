@@ -15,6 +15,7 @@ import VisibilityOffIcon from '../UI/CustomSvgIcons/VisibilityOff';
 import LockIcon from '../UI/CustomSvgIcons/Lock';
 import LockOpenIcon from '../UI/CustomSvgIcons/LockOpen';
 import Radio from '@material-ui/core/Radio';
+import { addDefaultLightToLayer } from '../ProjectCreation/CreateProject'; // c3
 
 const styles = {
   tooltip: { marginRight: 5, verticalAlign: 'bottom' },
@@ -125,6 +126,21 @@ export class LayerTreeViewItemContent implements TreeViewItemContent {
     this.props.triggerOnLayersModified();
   }
 
+  // c3: Construct's "Add layer above/below" context entries.
+  _insertLayer(i18n: I18nType, offset: number): void {
+    const { layersContainer } = this.props;
+    let n = 1;
+    while (layersContainer.hasLayerNamed(`${i18n._(t`Layer`)} ${n}`)) n++;
+    const name = `${i18n._(t`Layer`)} ${n}`;
+    layersContainer.insertNewLayer(
+      name,
+      layersContainer.getLayerPosition(this.layer.getName()) + offset
+    );
+    addDefaultLightToLayer(layersContainer.getLayer(name));
+    this.props.triggerOnLayersModified();
+    this.props.forceUpdateList();
+  }
+
   getRightButton(i18n: I18nType): any {
     return [
       {
@@ -171,6 +187,15 @@ export class LayerTreeViewItemContent implements TreeViewItemContent {
           this.props.onEditLayer(this.layer);
           this.props.onSelectLayer(null);
         },
+      },
+      // c3
+      {
+        label: i18n._(t`Add layer above`),
+        click: () => this._insertLayer(i18n, 1),
+      },
+      {
+        label: i18n._(t`Add layer below`),
+        click: () => this._insertLayer(i18n, 0),
       },
       {
         type: 'separator',

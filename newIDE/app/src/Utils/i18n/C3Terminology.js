@@ -21,6 +21,8 @@ const r = (regex: RegExp, to: string): Rule => [
 // catalog). Labels follow the Construct 3 pt-BR UI.
 const reskinPtBr: { [string]: string } = {
   'Recent projects': 'Projetos recentes',
+  'Add layer above': 'Adicionar camada acima',
+  'Add layer below': 'Adicionar camada abaixo',
   'No recent projects.': 'Nenhum projeto recente.',
   Participate: 'Participar',
   "Beginner's guide": 'Guia para iniciantes',

@@ -46,7 +46,7 @@ Hide
 - [x] New projects keep their game size on startup (`CreateProject.js`, Construct default)
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
 - [x] Project bar tree order: Layouts · Folhas de eventos · Layouts externos · Extensões · Configurações do jogo (`ProjectManager/index.js` root array reordered, `// c3:`); object types/families/resources stay per-scene / in the Resources editor
-- [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
+- [x] Layers bar: visibility · lock · rename already upstream; context menu gained Adicionar camada acima/abaixo (`LayerTreeViewItemContent.js`, names `Camada N`); z-index column skipped
 - [x] Panel arrangement: properties left, canvas centre, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js` `initialMosaicEditorNodes`; users with a saved layout keep theirs)
 - [ ] Project bar as a docked panel — needs a new editor-tab kind for the side panes; for now the drawer opens from the toolbar's first button and View ▸ Project bar, and no longer carries the old File/View/Help row
 - [x] Panel headers: 13 px plain title, square bars (`ConstructLikeDarkTheme/ConstructLikeDark.css`, scoped to the theme's body class)
