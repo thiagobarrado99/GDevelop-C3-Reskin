@@ -31,67 +31,77 @@
   border-radius: 0 !important;
 }
 
-/* Dialogs like Construct's: a grey title strip with a small centred title and
+/* Dialogs like Construct's (MUI class names may carry a numeric suffix in
+   some subtrees, hence the [class*=] selectors): a grey title strip with a small centred title and
    the close cross, dark filled fields instead of underlines, and plain grey
    buttons (palette measured from 02-new-project-dialog.png). */
 /* The scrolling container clips negative margins, so zero its inline margin
    and re-add the side/bottom margins on the content and actions instead. */
-.ConstructLikeDarkTheme .MuiDialog-paper > div:has(> .c3-dialog-title) {
+.ConstructLikeDarkTheme
+  [class*='MuiDialog-paper']
+  > div:has(> .c3-dialog-title) {
   margin: 0 !important;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .c3-dialog-title {
+.ConstructLikeDarkTheme [class*='MuiDialog-paper'] .c3-dialog-title {
   margin: 0 0 12px;
   padding: 4px 8px 4px 16px !important;
   background: #696969;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .c3-dialog-title .MuiIconButton-root {
+.ConstructLikeDarkTheme
+  [class*='MuiDialog-paper']
+  .c3-dialog-title
+  [class*='MuiIconButton-root'] {
   color: #e0e0e0;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .c3-dialog-title ~ * {
+.ConstructLikeDarkTheme [class*='MuiDialog-paper'] .c3-dialog-title ~ * {
   margin-left: 24px;
   margin-right: 24px;
 }
 .ConstructLikeDarkTheme
-  .MuiDialog-paper
+  [class*='MuiDialog-paper']
   .c3-dialog-title
-  ~ .MuiDialogActions-root {
+  ~ [class*='MuiDialogActions-root'] {
   margin-bottom: 24px;
 }
 .ConstructLikeDarkTheme
-  .MuiDialog-paper
+  [class*='MuiDialog-paper']
   .c3-dialog-title
   > div
   > div:first-child {
   flex: 1;
   justify-content: center;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .c3-dialog-title h3 {
+.ConstructLikeDarkTheme [class*='MuiDialog-paper'] .c3-dialog-title h3 {
   font-size: 14px;
   font-weight: normal;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .MuiButton-root {
+.ConstructLikeDarkTheme [class*='MuiDialog-paper'] [class*='MuiButton-root'] {
   background: #696969;
   border: 0;
   color: #f0f0f0;
   min-width: 80px;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .MuiButton-root:hover {
+.ConstructLikeDarkTheme
+  [class*='MuiDialog-paper']
+  [class*='MuiButton-root']:hover {
   background: #7a7a7a;
 }
-.ConstructLikeDarkTheme .MuiDialog-paper .MuiButton-root.Mui-disabled {
+.ConstructLikeDarkTheme
+  [class*='MuiDialog-paper']
+  [class*='MuiButton-root'].Mui-disabled {
   opacity: 0.5;
 }
-.ConstructLikeDarkTheme .MuiInput-root {
+.ConstructLikeDarkTheme [class*='MuiInput-underline'] {
   background: #383838;
   border-radius: 2px;
   padding-left: 8px;
   padding-right: 4px;
 }
-.ConstructLikeDarkTheme .MuiInput-underline:before,
-.ConstructLikeDarkTheme .MuiInput-underline:after {
+.ConstructLikeDarkTheme [class*='MuiInput-underline']:before,
+.ConstructLikeDarkTheme [class*='MuiInput-underline']:after {
   display: none;
 }
-.ConstructLikeDarkTheme .MuiInput-root.Mui-focused {
+.ConstructLikeDarkTheme [class*='MuiInput-underline'].Mui-focused {
   outline: 1px solid #00b1cc;
 }
 

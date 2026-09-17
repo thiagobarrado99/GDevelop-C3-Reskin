@@ -80,9 +80,10 @@ Hide
 - [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
 - [ ] Icons: copy `C3-Icons/{behaviour,object}_icons` to `public/res/c3-icons/{behaviors,objects}/`, add `Utils/C3Icons.js` (type → file map from CLAUDE.md) and wrap `gd.BehaviorMetadata/ObjectMetadata.prototype.getIconFilename` in `src/index.js` — no call-site edits (user decides first whether the files are committed)
 - [ ] Icons: render as CSS masks tinted by `--c3-behavior-color` / `--c3-object-color` and drop `IconContainer`'s white gradient under the theme; check add-object dialog, add-condition step 1, objects bar, behaviour tiles/rows, event sheet rows
+- [x] Add-object dialog: asset-store tab hidden (`NewObjectDialog.js`, `hideAssetStore`), opens straight on the object types
 - [ ] Icons: add-object dialog grouped like `all_objects_list.png` (3D · Dados & armazenamento · Elementos HTML · Entrada · Geral · Mídia · Outro · Web), add-behaviour grid like `all_behaviours_list.png` (Atributos · Geral · Movimentos · 3D)
 - [x] Controls parity: PlatformerObject jumps with ↑ too (runtime one-liner in `Extensions/PlatformBehavior`, logged in CLAUDE.md Decisions)
-- [ ] Naming parity: `Platform` behaviour → "Solid"/"Sólido", jump-thru → "Jump-thru"; whole-string rules in `C3Terminology.js` (libGD names go through the patched `i18n._`)
+- [x] Naming parity: `Platform` → Solid/Sólido, `Platformer character` → Platform/Plataforma, `Jumpthru platform` → Jump-thru/Atravessável (whole-string rules in `C3Terminology.js`, tested)
 - [ ] Instance properties panel: show non-overridable behaviours (Physics…) and the object's effects, editing through to the object; else an "Edit on object" button using `editObjectInPropertiesPanel` (`CompactInstancePropertiesEditor/index.js`)
 - [ ] Survey Construct's behaviour list vs GDevelop built-ins/extensions; fill the parity table in CLAUDE.md; rename or bundle what students expect (8 Direction, Drag & Drop, Bullet, Sine, Fade, …)
 

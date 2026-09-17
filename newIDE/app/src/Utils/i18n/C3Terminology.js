@@ -98,6 +98,11 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Untitled external events$/, 'Event sheet 1'],
     [/^Base layer$/, 'Layer 0'],
     [/^Share$/, 'Export'],
+    // Behaviour names as Construct calls them: the ground is "Solid", the
+    // character is "Platform" (order matters: Platform → Solid first).
+    [/^Platform$/, 'Solid'],
+    [/^Platformer character$/, 'Platform'],
+    [/^Jumpthru platform$/, 'Jump-thru'],
     r(/\bscenes\b/gi, 'layouts'),
     r(/\bscene\b/gi, 'layout'),
     r(/\bobject groups\b/gi, 'families'),
@@ -114,6 +119,9 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Eventos externos sem título$/, 'Folha de eventos 1'],
     [/^Camada base$/, 'Camada 0'],
     [/^Compartilhar$/, 'Exportar'],
+    [/^Plataforma$/, 'Sólido'],
+    [/^Personagem de plataforma$/, 'Plataforma'],
+    [/^Plataforma atravessável$/, 'Atravessável'],
     [/^Projecto$/, 'Projeto'],
     [/^Exibição$/, 'Exibir'],
     // cena (f.) → layout (m.)

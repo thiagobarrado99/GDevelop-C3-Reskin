@@ -287,8 +287,9 @@ function NewObjectDialog({
     setNewObjectDialogDefaultTab,
     getNewObjectDialogDefaultTab,
   } = React.useContext(PreferencesContext);
+  const hideAssetStore = true; // c3: Construct has no store in "add object".
   const [currentTab, setCurrentTab] = React.useState(
-    getNewObjectDialogDefaultTab()
+    hideAssetStore ? 'new-object' : getNewObjectDialogDefaultTab()
   );
 
   React.useEffect(() => setNewObjectDialogDefaultTab(currentTab), [
@@ -570,24 +571,26 @@ function NewObjectDialog({
             fullHeight
             id="new-object-dialog"
             fixedContent={
-              <Tabs
-                value={currentTab}
-                onChange={setCurrentTab}
-                options={[
-                  {
-                    label: <Trans>Asset Store</Trans>,
-                    value: 'asset-store',
-                    id: 'asset-store-tab',
-                  },
-                  {
-                    label: <Trans>New object from scratch</Trans>,
-                    value: 'new-object',
-                    id: 'new-object-from-scratch-tab',
-                  },
-                ]}
-                // Enforce scroll on mobile, because the tabs have long names.
-                variant={isMobile ? 'scrollable' : undefined}
-              />
+              hideAssetStore ? null : ( // c3
+                <Tabs
+                  value={currentTab}
+                  onChange={setCurrentTab}
+                  options={[
+                    {
+                      label: <Trans>Asset Store</Trans>,
+                      value: 'asset-store',
+                      id: 'asset-store-tab',
+                    },
+                    {
+                      label: <Trans>New object from scratch</Trans>,
+                      value: 'new-object',
+                      id: 'new-object-from-scratch-tab',
+                    },
+                  ]}
+                  // Enforce scroll on mobile, because the tabs have long names.
+                  variant={isMobile ? 'scrollable' : undefined}
+                />
+              )
             }
           >
             {currentTab === 'asset-store' && (

@@ -12,6 +12,21 @@ const makeI18n = (language: string, messages: { [string]: string }) => {
 };
 
 describe('applyC3Terminology', () => {
+  it('names the platformer behaviours like Construct', () => {
+    const en = makeI18n('en', {});
+    expect(en._('Platform')).toBe('Solid');
+    expect(en._('Platformer character')).toBe('Platform');
+    expect(en._('Jumpthru platform')).toBe('Jump-thru');
+    const pt = makeI18n('pt_BR', {
+      Platform: 'Plataforma',
+      'Platformer character': 'Personagem de plataforma',
+      'Jumpthru platform': 'Plataforma atravessável',
+    });
+    expect(pt._('Platform')).toBe('Sólido');
+    expect(pt._('Platformer character')).toBe('Plataforma');
+    expect(pt._('Jumpthru platform')).toBe('Atravessável');
+  });
+
   it('rewrites English terms keeping capitalisation', () => {
     const i18n = makeI18n('en', {});
     expect(i18n._('Scene')).toBe('Layout');
