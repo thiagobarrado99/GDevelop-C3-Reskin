@@ -23,7 +23,7 @@ Phase 2 shell (2026-09-18): ☰ opens the Construct menu tree (`MainFrame/C3Main
 Defaults changed to match Construct (2026-09-18): new projects keep their game size on startup (`setSizeOnStartupMode('')` in `ProjectCreation/CreateProject.js`); new layouts start with an rgb(50, 50, 50) background (`MainFrame/index.js` first layout, `ProjectManager/index.js` new scene); the PlatformerObject's up arrow jumps (runtime edit, see Decisions).
 
 Pending / next steps, in order:
-1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish.
+1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish, close-tab confirmation only when there are unsaved changes (user request 2026-09-18; upstream `CloseConfirmDialog` prompts whenever a project is open, and not at all in dev).
 2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming.
 3. Phase 3 event sheet (see survey + TODO).
 
