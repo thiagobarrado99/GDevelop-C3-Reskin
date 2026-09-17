@@ -34,7 +34,7 @@ Hide
 - [x] Start page per survey (`HomePage/C3StartPage.js`): NEW / OPEN / BROWSE EXAMPLES, RECENT PROJECTS, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
 - [x] New project dialog per survey (`ProjectCreation/C3NewProjectDialog.js`); GDevelop's dialog kept for examples/templates (`UseNewProjectDialog.js`)
 - [x] Local files only: Cloud provider removed, `BrowserFileStorageProvider` gives the web build a real Open picker (.json / .zip) and direct download-on-save; start page hover/pointer, white NOVO/ABRIR, "Explorar exemplos" button removed
-- [ ] Web build: resource upload from device requires Cloud upstream (`FileToCloudProjectResourceUploader`) → needs an in-memory/data-URL uploader for BrowserFile projects, or File System Access API folder projects
+- [x] Web build: device files are inlined as `data:` URLs for non-cloud projects (`FileToCloudProjectResourceUploader.js`, `// c3:`), so they travel inside `game.json`
 - [ ] Start page polish: real logo image, recent-project context menu (remove from list); recent list no longer receives web projects (BrowserFile has no `onSaveProject`)
 - [ ] Main menu tree: Project ▸ (Save, Save as, Preview, Export, Close project, New, Open) · View ▸ · Settings · Help · About
 - [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files

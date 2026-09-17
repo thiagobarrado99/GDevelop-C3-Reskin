@@ -110,6 +110,16 @@ export const getInputAcceptedMimesAndExtensions = (
   return [...acceptedMimes, ...acceptedExtensions].join(',');
 };
 
+// c3: projects that are not on GDevelop Cloud (local files on the web build)
+// get their device files inlined as data URLs, so they travel with the project.
+const readAsDataUrl = (file: File): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+
 export const FileToCloudProjectResourceUploader = ({
   options,
   fileMetadata,
@@ -131,11 +141,33 @@ export const FileToCloudProjectResourceUploader = ({
     getStorageProvider,
   ]);
   const cloudProjectId = fileMetadata ? fileMetadata.fileIdentifier : null;
+  const isLocalProject = storageProvider.internalName !== 'Cloud'; // c3
   const [uploadProgress, setUploadProgress] = React.useState(0);
   const onUpload = React.useCallback(
     async () => {
       const input = inputRef.current;
       if (!input) return;
+      if (isLocalProject) {
+        // c3: no upload, inline the files.
+        try {
+          setIsUploading(true);
+          setError(null);
+          const dataUrls = await Promise.all(selectedFiles.map(readAsDataUrl));
+          onChooseResources(
+            selectedFiles.map((file, index) => {
+              const newResource = createNewResource();
+              newResource.setFile(dataUrls[index]);
+              newResource.setName(file.name);
+              return newResource;
+            })
+          );
+        } catch (error) {
+          setError(error);
+        } finally {
+          setIsUploading(false);
+        }
+        return;
+      }
       if (!cloudProjectId) return;
 
       try {
@@ -178,6 +210,7 @@ export const FileToCloudProjectResourceUploader = ({
       onChooseResources,
       createNewResource,
       cloudProjectId,
+      isLocalProject,
     ]
   );
 
@@ -197,7 +230,8 @@ export const FileToCloudProjectResourceUploader = ({
     storageProvider.internalName === 'Cloud' && !!fileMetadata;
   const isConnected = !!authenticatedUser.authenticated;
   const canChooseFiles =
-    !isUploading && isConnected && canUploadWithThisStorageProvider;
+    !isUploading &&
+    (isLocalProject || (isConnected && canUploadWithThisStorageProvider)); // c3
 
   // Automatically open the input once, at the first render, if asked.
   React.useLayoutEffect(
@@ -250,7 +284,7 @@ export const FileToCloudProjectResourceUploader = ({
 
   return (
     <ColumnStackLayout noMargin>
-      {!isConnected ? (
+      {isLocalProject ? null : !isConnected ? ( // c3
         <AlertMessage kind="warning">
           <Trans>
             Your need to first create your account, or login, to upload your own
