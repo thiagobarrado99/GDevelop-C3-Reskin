@@ -10,7 +10,6 @@ import Paper from '../../../UI/Paper';
 import { ColumnStackLayout, LineStackLayout } from '../../../UI/Layout';
 import { AnnouncementsFeed } from '../../../AnnouncementsFeed';
 import { AnnouncementsFeedContext } from '../../../AnnouncementsFeed/AnnouncementsFeedContext';
-import AuthenticatedUserContext from '../../../Profile/AuthenticatedUserContext';
 import Chip from '../../../UI/Chip';
 
 export const SECTION_DESKTOP_SPACING = 20;
@@ -127,12 +126,9 @@ const SectionContainer: React.ComponentType<{
           : SECTION_DESKTOP_SPACING
         : 0,
     };
-    const authenticatedUser = React.useContext(AuthenticatedUserContext);
 
-    const shouldHideAnnouncements =
-      !!authenticatedUser.limits &&
-      !!authenticatedUser.limits.capabilities.classrooms &&
-      authenticatedUser.limits.capabilities.classrooms.hideAnnouncements;
+    // c3: no GDevelop announcements.
+    const shouldHideAnnouncements: boolean = true;
 
     return (
       <Column expand useFullHeight noMargin>

@@ -18,7 +18,6 @@ import useAlertDialog from '../../UI/Alert/useAlertDialog';
 import { t } from '@lingui/macro';
 import { sendGameTemplateInformationOpened } from '../../Utils/Analytics/EventSender';
 import { PRIVATE_GAME_TEMPLATES_FETCH_TIMEOUT } from '../../Utils/GlobalFetchTimeouts';
-import AuthenticatedUserContext from '../../Profile/AuthenticatedUserContext';
 
 const defaultSearchText = '';
 const excludedTiers = new Set<string>(); // No tiers for game templates.
@@ -101,7 +100,6 @@ export const PrivateGameTemplateStoreStateProvider = ({
     searchText: shopSearchText,
     setSearchText: setShopSearchText,
   } = shopNavigationState;
-  const { limits } = React.useContext(AuthenticatedUserContext);
 
   const [
     gameTemplateFilters,
@@ -126,10 +124,8 @@ export const PrivateGameTemplateStoreStateProvider = ({
   );
   const filtersStateForExampleStore = useFilters();
 
-  const hidePremiumProducts =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hidePremiumProducts;
+  // c3: no paid products.
+  const hidePremiumProducts: boolean = true;
 
   const fetchGameTemplates = React.useCallback(
     () => {

@@ -321,7 +321,8 @@ const PublishHome = ({
     }
   };
 
-  const shouldShowBackButton = !!(chosenSection || chosenSubSection);
+  // c3: HTML5 export only, so there is no platform chooser to go back to.
+  const shouldShowBackButton: boolean = false;
 
   return (
     <ColumnStackLayout expand noMargin>

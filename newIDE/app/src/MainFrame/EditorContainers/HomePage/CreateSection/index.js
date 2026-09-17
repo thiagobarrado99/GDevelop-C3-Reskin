@@ -62,7 +62,6 @@ import {
 import InfoBar from '../../../../UI/Messages/InfoBar';
 import { getDefaultRegisterGameProperties } from '../../../../Utils/UseGameAndBuildsManager';
 import { type CreateProjectResult } from '../../../../Utils/UseCreateProject';
-import { AskAiStandAloneForm } from '../../../../AiGeneration/AskAiStandAloneForm';
 import { type OpenAskAiOptions } from '../../../../AiGeneration/Utils';
 import { AiRequestContext } from '../../../../AiGeneration/AiRequestContext';
 
@@ -176,7 +175,6 @@ const CreateSection = ({
     getAuthorizationHeader,
     recommendations,
     subscription,
-    limits,
   } = authenticatedUser;
   const {
     showDeleteConfirmation,
@@ -211,10 +209,8 @@ const CreateSection = ({
   const savedGames = (games || []).filter(game => game.savedStatus !== 'draft');
   const hasAProjectOpenedNowOrRecentlyOrGameSaved =
     !!project || savedGames.length || !!allRecentProjectFiles.length;
-  const hidePerformanceDashboard =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hideSocials;
+  // c3: no credits wallet / earnings widgets, they are GDevelop's storefront.
+  const hidePerformanceDashboard: boolean = true;
 
   React.useEffect(
     () => {
@@ -574,22 +570,6 @@ const CreateSection = ({
           showUrgentAnnouncements
         >
           <SectionRow expand>
-            <AskAiStandAloneForm
-              i18n={i18n}
-              project={project}
-              resourceManagementProps={resourceManagementProps}
-              fileMetadata={currentFileMetadata}
-              storageProvider={storageProvider}
-              onCreateProjectFromExample={onCreateProjectFromExample}
-              onCreateEmptyProject={onCreateEmptyProject}
-              onOpenLayout={onOpenLayout}
-              onWillInstallExtension={onWillInstallExtension}
-              onExtensionInstalled={onExtensionInstalled}
-              onCloseAskAi={onCloseAskAi}
-              onOpenAskAi={onOpenAskAi}
-              closeProject={closeProject}
-              dismissableIdentifier="home-page-create-section"
-            />
             <ColumnStackLayout noMargin>
               {hidePerformanceDashboard ? null : hasAProjectOpenedNowOrRecentlyOrGameSaved ? (
                 <ColumnStackLayout noMargin>

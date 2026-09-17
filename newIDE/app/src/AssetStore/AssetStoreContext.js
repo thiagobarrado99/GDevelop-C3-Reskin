@@ -178,11 +178,9 @@ export const AssetStoreStateProvider = ({
     publicAssetShortHeaders,
     setPublicAssetShortHeaders,
   ] = React.useState<?Array<AssetShortHeader>>(null);
-  const {
-    receivedAssetShortHeaders,
-    receivedAssetPacks,
-    limits,
-  } = React.useContext(AuthenticatedUserContext);
+  const { receivedAssetShortHeaders, receivedAssetPacks } = React.useContext(
+    AuthenticatedUserContext
+  );
   const [filters, setFilters] = React.useState<?Filters>(null);
   const [
     publicAssetPacks,
@@ -279,10 +277,8 @@ export const AssetStoreStateProvider = ({
   const assetPackSearchFilters = React.useMemo<
     Array<SearchFilter<PublicAssetPack | PrivateAssetPackListingData>>
   >(() => [assetPackTypeFilter], [assetPackTypeFilter]);
-  const hidePremiumProducts =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hidePremiumProducts;
+  // c3: no paid products.
+  const hidePremiumProducts: boolean = true;
 
   const fetchAssetsAndFilters = React.useCallback(
     () => {

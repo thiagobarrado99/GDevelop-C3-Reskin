@@ -218,11 +218,8 @@ const NewProjectSetupDialog = ({
   const { values, setNewProjectsDefaultStorageProviderName } = React.useContext(
     PreferencesContext
   );
-  const { limits } = authenticatedUser;
-  const isAskAiHiddenByClassroom =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hideAskAi;
+  // c3: no AI features.
+  const isAskAiHiddenByClassroom: boolean = true;
   const isAskAiStandAloneFormHidden =
     isAskAiHiddenByClassroom ||
     !!values.hiddenAskAiStandAloneForms[

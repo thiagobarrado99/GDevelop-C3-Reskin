@@ -129,14 +129,13 @@ const ShareDialog = ({
     chosenExporterSection,
     setChosenExporterSection,
   ] = React.useState<?ExporterSection>(
-    showOnlineWebExporterOnly ? 'browser' : null
+    // c3: HTML5 export only, skip the platform chooser.
+    'browser'
   );
   const [
     chosenExporterSubSection,
     setChosenExporterSubSection,
-  ] = React.useState<?ExporterSubSection>(
-    showOnlineWebExporterOnly ? 'online' : null
-  );
+  ] = React.useState<?ExporterSubSection>('offline');
 
   React.useEffect(() => setShareDialogDefaultTab(currentTab), [
     setShareDialogDefaultTab,

@@ -20,10 +20,12 @@ export const enumerateEventsMetadata = (): Array<EventMetadata> => {
       const extension = allExtensions.at(i);
       const extensionEvents = extension.getAllEvents();
 
+      // c3: event-based only, no JavaScript code events.
       return extensionEvents
         .keys()
         .toJSArray()
         .filter(type => type !== 'BuiltinAsync::Async')
+        .filter(type => type !== 'BuiltinCommonInstructions::JsCode')
         .map(type => {
           const metadata = extensionEvents.get(type);
           return {

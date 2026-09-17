@@ -218,10 +218,8 @@ export const AskAiStandAloneForm = ({
   );
   const [isSendingUserMessage, setIsSendingUserMessage] = React.useState(false);
 
-  const hideAskAi =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hideAskAi;
+  // c3: no AI features.
+  const hideAskAi: boolean = true;
 
   const availableCredits = limits ? limits.credits.userBalance.amount : 0;
   const quota =

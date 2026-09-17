@@ -17,7 +17,6 @@ import useAlertDialog from '../../UI/Alert/useAlertDialog';
 import { t } from '@lingui/macro';
 import { sendBundleInformationOpened } from '../../Utils/Analytics/EventSender';
 import { BUNDLES_FETCH_TIMEOUT } from '../../Utils/GlobalFetchTimeouts';
-import AuthenticatedUserContext from '../../Profile/AuthenticatedUserContext';
 
 const getBundleListingDataSearchTerms = (bundle: BundleListingData) =>
   bundle.name + '\n' + bundle.description + '\n' + bundle.categories.join('\n');
@@ -72,7 +71,6 @@ export const BundleStoreStateProvider = ({
     searchText: shopSearchText,
     setSearchText: setShopSearchText,
   } = shopNavigationState;
-  const { limits } = React.useContext(AuthenticatedUserContext);
 
   const [bundleFilters, setBundleFilters] = React.useState<?Filters>(null);
   const [error, setError] = React.useState<?Error>(null);
@@ -93,10 +91,8 @@ export const BundleStoreStateProvider = ({
   const isLoading = React.useRef<boolean>(false);
   const { showAlert } = useAlertDialog();
 
-  const hidePremiumProducts =
-    !!limits &&
-    !!limits.capabilities.classrooms &&
-    limits.capabilities.classrooms.hidePremiumProducts;
+  // c3: no paid products.
+  const hidePremiumProducts: boolean = true;
 
   const fetchBundles = React.useCallback(
     () => {

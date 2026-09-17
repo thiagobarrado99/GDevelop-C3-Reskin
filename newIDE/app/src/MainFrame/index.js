@@ -5755,10 +5755,8 @@ const MainFrame = (props: Props): React.MixedElement => {
   });
 
   const previewLoading = previewLoadingRef.current;
-  const hideAskAi =
-    !!authenticatedUser.limits &&
-    !!authenticatedUser.limits.capabilities.classrooms &&
-    authenticatedUser.limits.capabilities.classrooms.hideAskAi;
+  // c3: no AI features.
+  const hideAskAi: boolean = true;
   const showLoaderAfterDelay =
     previewLoading === 'hot-reload-for-in-game-edition';
   const showLoaderImmediately =

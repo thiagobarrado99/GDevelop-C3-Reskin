@@ -15,12 +15,8 @@ import Preferences from '../../../UI/CustomSvgIcons/Preferences';
 import GDevelopGLogo from '../../../UI/CustomSvgIcons/GDevelopGLogo';
 import GDevelopThemeContext from '../../../UI/Theme/GDevelopThemeContext';
 import HomePageMenuBar from './HomePageMenuBar';
-import {
-  shouldHideClassroomTab,
-  type Limits,
-} from '../../../Utils/GDevelopServices/Usage';
+import { type Limits } from '../../../Utils/GDevelopServices/Usage';
 import AuthenticatedUserContext from '../../../Profile/AuthenticatedUserContext';
-import { isNativeMobileApp } from '../../../Utils/Platform';
 
 export const styles = {
   // Ensure it's always interactive, even when another iframe disable pointer events.
@@ -104,29 +100,9 @@ export const getTabsToDisplay = ({
 }: {|
   limits: ?Limits,
 |}): HomePageMenuTab[] => {
-  const displayPlayTab =
-    !limits ||
-    !(
-      limits.capabilities.classrooms &&
-      limits.capabilities.classrooms.hidePlayTab
-    );
-  const displayShopTab =
-    !limits ||
-    !(
-      limits.capabilities.classrooms &&
-      limits.capabilities.classrooms.hidePremiumProducts
-    );
-  const displayTeachTab =
-    !shouldHideClassroomTab(limits) && !isNativeMobileApp();
-  // $FlowFixMe[incompatible-type]
-  const tabs: HomeTab[] = [
-    'learn',
-    'create',
-    displayPlayTab ? 'play' : null,
-    displayShopTab ? 'shop' : null,
-    displayTeachTab ? 'team-view' : null,
-  ].filter(Boolean);
-  return tabs.map(tab => homePageMenuTabs[tab]);
+  // c3: only the projects tab. Learn/Play/Shop/Teach are GDevelop's
+  // storefront and have no Construct 3 counterpart.
+  return [homePageMenuTabs.create];
 };
 
 type Props = {|

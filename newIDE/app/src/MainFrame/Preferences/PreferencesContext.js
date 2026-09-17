@@ -432,7 +432,7 @@ export const initialPreferences = {
     resourcesImporationBehavior: 'ask',
     eventsSheetCancelInlineParameter: 'apply',
     showExperimentalExtensions: false,
-    showCreateSectionByDefault: false,
+    showCreateSectionByDefault: true,
     showInAppTutorialDeveloperMode: false,
     openDiagnosticReportAutomatically: true,
     blockPreviewAndExportOnDiagnosticErrors: false,
