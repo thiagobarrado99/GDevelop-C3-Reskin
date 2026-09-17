@@ -93,3 +93,4 @@ Hide
 - 2026-09-16: repo forked, CLAUDE.md + references committed. Phase 0 done: web + desktop run.
 - 2026-09-17: Phase 1 core shipped: theme, pt-BR default, runtime terminology, hides.
 - 2026-09-18: Phase 2 shell shipped: start page, new-project dialog, ☰ menu, toolbar, panel arrangement, local files (.a3p, File System Access), Assemble3 brand + icons. Phase 6 started: colour tokens, properties panel tint. Construct defaults: game size kept, rgb(50,50,50) layouts, ↑ jumps.
+- 2026-09-18 (later): user supplied `C3-Icons/` (94 flat 64 px PNGs + the two Construct grid screenshots); documented the type→file map and the `getIconFilename` wrapper plan in CLAUDE.md; `--c3-behavior-color` = `#f75651`, new `--c3-object-color` = `#00768e`, both sampled from the icons. Queued: close-tab confirmation only on unsaved changes (Phase 2), instance panel edit-through (Phase 6). Open question: may the icons be committed?

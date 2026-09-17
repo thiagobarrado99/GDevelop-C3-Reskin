@@ -6,7 +6,7 @@ Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is re
 
 ## Current state (read first in a new session)
 
-Last updated: 2026-09-18.
+Last updated: 2026-09-18 (evening: icon set received and documented, behaviour/object colours sampled from it, close-tab confirmation and instance-panel edit-through queued).
 
 Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
@@ -23,12 +23,13 @@ Phase 2 shell (2026-09-18): ☰ opens the Construct menu tree (`MainFrame/C3Main
 Defaults changed to match Construct (2026-09-18): new projects keep their game size on startup (`setSizeOnStartupMode('')` in `ProjectCreation/CreateProject.js`); new layouts start with an rgb(50, 50, 50) background (`MainFrame/index.js` first layout, `ProjectManager/index.js` new scene); the PlatformerObject's up arrow jumps (runtime edit, see Decisions).
 
 Pending / next steps, in order:
+0. **Waiting on the user**: whether `C3-Icons/` (Scirra's icon PNGs, untracked at the repo root) may be committed to the public fork or must stay local with look-alikes drawn for git. Do not `git add` it before that answer. Also confirm whether `#00768e` (object cyan, sampled from the icons) is fine for *text* labels — it is only ≈ 2:1 contrast on the `#474747` panels; icons are fine, labels may want a lighter shade.
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish, close-tab confirmation only when there are unsaved changes (user request 2026-09-18; upstream `CloseConfirmDialog` prompts whenever a project is open, and not at all in dev).
 2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming, `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there).
 3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
-- Tooling: one jest file = `CI=true npx react-app-rewired test --env=node <path>` (run from `newIDE/app`); prettier is 1.x — `--list-different`, not `--check` (that one hangs on stdin); `npx flow check` cold start ≈ 10 min on the HDD, run it in the background; lint-staged runs prettier + eslint on commit. Verify UI with a headless Playwright script (global npm install, `require(process.env.APPDATA + '/npm/node_modules/playwright')`) against the dev server rather than eyeballing. When scripting file edits from a Python heredoc, `\b`/`\d` in regex literals get mangled — use the Edit tool for those lines.
+- Tooling: one jest file = `CI=true npx react-app-rewired test --env=node <path>` (run from `newIDE/app`); prettier is 1.x — `--list-different`, not `--check` (that one hangs on stdin); `npx flow check` cold start ≈ 10 min on the HDD, run it in the background; lint-staged runs prettier + eslint on commit. Verify UI with a headless Playwright script (global npm install, `require(process.env.APPDATA + '/npm/node_modules/playwright')`) against the dev server rather than eyeballing. When scripting file edits from a Python heredoc, `\b`/`\d` in regex literals get mangled — use the Edit tool for those lines. A long Python script inside a Bash heredoc (triple-quoted strings, backticks) broke bash's parser — write the script to the scratchpad with the Write tool and run `python <path>`. To enumerate built-in behaviour/object type names and icon paths: `require('<newIDE/app>/public/libGD.js')().then(gd => gd.JsPlatform.get().getAllPlatformExtensions() …)` in node (`getBehaviorsTypes()`, `getExtensionObjectsTypes()`, `getBehaviorMetadata(t).getFullName()/getIconFilename()`); JS extensions (Physics2, Tween, Scene3D, TileMap, …) are not loaded there — grep `Extensions/*/JsExtension.js` for `addBehavior(`/`addObject(`.
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
 - Windows: use forward slashes; Git Bash is available. Line endings: repo is LF, keep files LF. `core.autocrlf=false` is set locally; the working copy was checked out as CRLF, so run prettier / strip `\r` on any file you edit before committing.
 - Node 25 installed locally; CI uses 24. Works as-is.
