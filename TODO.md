@@ -72,14 +72,14 @@ Hide
 - [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
-- [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` / `--c3-effect-color` (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
+- [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
 - [ ] Project bar rows tinted per kind (`ProjectManager/*TreeViewItemContent.js`)
 - [ ] Open editor tab background matches its kind (`EditorTabs/DraggableEditorTabs.js`, `UI/ClosableTabs.js`, by tab `kind`)
 - [x] Properties panel: Behaviors/Effects section titles and each behaviour/effect name tinted; object editor dialog tabs too (`TopLevelCollapsibleSection`/`CollapsibleSubPanel` got a `color` prop)
 - [ ] Add-behaviour / add-effect dialogs and the full behaviours editor tinted too
 - [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
 - [ ] Icons: copy `C3-Icons/{behaviour,object}_icons` to `public/res/c3-icons/{behaviors,objects}/`, add `Utils/C3Icons.js` (type → file map from CLAUDE.md) and wrap `gd.BehaviorMetadata/ObjectMetadata.prototype.getIconFilename` in `src/index.js` — no call-site edits (user decides first whether the files are committed)
-- [ ] Icons: render as CSS masks tinted by `--c3-behavior-color` / `--c3-object-color` (new token, cyan `#00b1cc`) and drop `IconContainer`'s white gradient under the theme; check add-object dialog, add-condition step 1, objects bar, behaviour tiles/rows, event sheet rows
+- [ ] Icons: render as CSS masks tinted by `--c3-behavior-color` / `--c3-object-color` and drop `IconContainer`'s white gradient under the theme; check add-object dialog, add-condition step 1, objects bar, behaviour tiles/rows, event sheet rows
 - [ ] Icons: add-object dialog grouped like `all_objects_list.png` (3D · Dados & armazenamento · Elementos HTML · Entrada · Geral · Mídia · Outro · Web), add-behaviour grid like `all_behaviours_list.png` (Atributos · Geral · Movimentos · 3D)
 - [x] Controls parity: PlatformerObject jumps with ↑ too (runtime one-liner in `Extensions/PlatformBehavior`, logged in CLAUDE.md Decisions)
 - [ ] Naming parity: `Platform` behaviour → "Solid"/"Sólido", jump-thru → "Jump-thru"; whole-string rules in `C3Terminology.js` (libGD names go through the patched `i18n._`)

@@ -6,7 +6,8 @@
 .ConstructLikeDarkTheme {
   --c3-layout-color: #ffd54f;
   --c3-event-sheet-color: #2fcc63;
-  --c3-behavior-color: #ff7a7a;
+  --c3-behavior-color: #f75651; /* sampled from C3-Icons/behaviour_icons */
+  --c3-object-color: #00768e; /* sampled from C3-Icons/object_icons */
   --c3-effect-color: #c39bff;
 }
 
