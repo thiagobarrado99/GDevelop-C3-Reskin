@@ -16,6 +16,66 @@ const r = (regex: RegExp, to: string): Rule => [
       : to,
 ];
 
+// pt-BR for strings added by the reskin (they are not in the Crowdin
+// catalog). Labels follow the Construct 3 pt-BR UI.
+const reskinPtBr: { [string]: string } = {
+  'Browse examples': 'Explorar exemplos',
+  'Recent projects': 'Projetos recentes',
+  'No recent projects.': 'Nenhum projeto recente.',
+  Participate: 'Participar',
+  "Beginner's guide": 'Guia para iniciantes',
+  'Learn how to create your first game!':
+    'Aprenda como criar seu primeiro jogo!',
+  Manual: 'Manual',
+  'A comprehensive reference of all features':
+    'Uma referência abrangente de todos os recursos',
+  Tutorials: 'Tutoriais',
+  'Improve your skills with helpful tutorials':
+    'Melhore suas habilidades com tutoriais úteis',
+  'Play games made by the community': 'Jogue jogos feitos pela comunidade',
+  'Chat with other game creators': 'Converse com outros criadores de jogos',
+  Forum: 'Fórum',
+  'The best place to get help and advice':
+    'O melhor lugar para obter ajuda e orientações',
+  Examples: 'Exemplos',
+  'Open an example to see how it is made':
+    'Abra um exemplo para ver como ele foi feito',
+  "What's new": 'Novidades',
+  'See all the changes in the latest version':
+    'Confira todas as mudanças da última versão',
+  Website: 'Site',
+  'Official GDevelop website': 'Site oficial do GDevelop',
+  'Recommended examples': 'Exemplos recomendados',
+  'New project': 'Novo projeto',
+  'Choose preset': 'Escolha uma pré-definição',
+  'Viewport size': 'Tamanho da tela',
+  Orientations: 'Orientações',
+  Any: 'Qualquer uma',
+  'Start with': 'Começar em',
+  'Event sheet': 'Folha de eventos',
+  'Optimize for pixel art': 'Otimizar para pixel art',
+  Custom: 'Personalizado',
+  'Please enter a valid viewport size.': 'Informe um tamanho de tela válido.',
+  'Retro style': 'Estilo retrô',
+  'SD landscape 4:3': 'Paisagem SD 4:3',
+  'SD portrait 3:4': 'Retrato SD 3:4',
+  'SD landscape 16:9': 'Paisagem SD 16:9',
+  'SD portrait 9:16': 'Retrato SD 9:16',
+  '720p landscape': 'Paisagem 720p',
+  '720p portrait': 'Retrato 720p',
+  '1080p landscape': 'Paisagem 1080p',
+  '1080p portrait': 'Retrato 1080p',
+  '4K landscape': 'Paisagem 4K',
+  '4K portrait': 'Retrato 4K',
+};
+const escapeRegExp = (text: string) =>
+  text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const exactRules = (translations: { [string]: string }): Array<Rule> =>
+  Object.keys(translations).map(source => [
+    new RegExp('^' + escapeRegExp(source) + '$'),
+    translations[source],
+  ]);
+
 // Order matters: article/gender-aware phrases first, bare nouns last.
 const rulesByLanguage: { [string]: Array<Rule> } = {
   en: [
@@ -34,6 +94,7 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     r(/\bproject manager\b/gi, 'project bar'),
   ],
   pt_BR: [
+    ...exactRules(reskinPtBr),
     // Whole-string labels, as named in Construct 3 (pt-BR).
     [/^Cena sem título$/, 'Layout 1'],
     [/^Eventos externos sem título$/, 'Folha de eventos 1'],

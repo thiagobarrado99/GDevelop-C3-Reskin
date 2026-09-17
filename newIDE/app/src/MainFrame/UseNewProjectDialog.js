@@ -18,6 +18,7 @@ import { type ResourceManagementProps } from '../ResourcesList/ResourceSource';
 import RouterContext from './RouterContext';
 import { type CreateProjectResult } from '../Utils/UseCreateProject';
 import { type OpenAskAiOptions } from '../AiGeneration/Utils';
+import C3NewProjectDialog from '../ProjectCreation/C3NewProjectDialog';
 
 type Props = {|
   project: ?gdProject,
@@ -68,7 +69,7 @@ type _UseNewProjectDialogReturnType = {
     preventBackHome?: boolean,
     privateGameTemplateListingData: ?PrivateGameTemplateListingData,
   }) => void,
-  openNewProjectDialog: () => void,
+  openNewProjectDialog: (options?: {| browseExamples?: boolean |}) => void,
   renderNewProjectDialog: () => React.Node,
   selectedExampleShortHeader: ?ExampleShortHeader,
   selectedPrivateGameTemplateListingData: ?PrivateGameTemplateListingData,
@@ -102,6 +103,9 @@ const useNewProjectDialog = ({
     setSelectedExampleShortHeader,
   ] = React.useState<?ExampleShortHeader>(null);
   const [preventBackHome, setPreventBackHome] = React.useState(true);
+  // c3: the plain "New project" form is the default; GDevelop's dialog is
+  // kept for browsing examples and templates.
+  const [browseExamples, setBrowseExamples] = React.useState(false);
   const { removeRouteArguments } = React.useContext(RouterContext);
 
   const { receivedGameTemplates } = React.useContext(AuthenticatedUserContext);
@@ -119,7 +123,8 @@ const useNewProjectDialog = ({
     [setNewProjectSetupDialogOpen]
   );
   const openNewProjectDialog = React.useCallback(
-    () => {
+    (options?: {| browseExamples?: boolean |}) => {
+      setBrowseExamples(!!options && !!options.browseExamples);
       setPreventBackHome(false);
       setSelectedExampleShortHeader(null);
       setSelectedPrivateGameTemplateListingData(null);
@@ -228,48 +233,62 @@ const useNewProjectDialog = ({
     return (
       <>
         {isFetchingExample && <LoaderModal showImmediately />}
-        {newProjectSetupDialogOpen && (
-          <NewProjectSetupDialog
-            project={project}
-            fileMetadata={fileMetadata}
-            resourceManagementProps={resourceManagementProps}
-            isProjectOpening={isProjectOpening}
-            onClose={closeNewProjectDialog}
-            onCreateEmptyProject={createEmptyProject}
-            onCreateFromExample={createProjectFromExample}
-            onCreateProjectFromPrivateGameTemplate={
-              createProjectFromPrivateGameTemplate
-            }
-            onCloseAskAi={closeAskAi}
-            onOpenAskAi={openAskAi}
-            closeProject={closeProject}
-            storageProviders={storageProviders}
-            storageProvider={storageProvider}
-            selectedExampleShortHeader={selectedExampleShortHeader}
-            onSelectExampleShortHeader={exampleShortHeader =>
-              onSelectExampleShortHeader({
-                exampleShortHeader,
-                preventBackHome: false,
-              })
-            }
-            selectedPrivateGameTemplateListingData={
-              selectedPrivateGameTemplateListingData
-            }
-            onSelectPrivateGameTemplateListingData={privateGameTemplateListingData =>
-              onSelectPrivateGameTemplateListingData({
-                privateGameTemplateListingData,
-                preventBackHome: false,
-              })
-            }
-            privateGameTemplateListingDatasFromSameCreator={
-              privateGameTemplateListingDatasFromSameCreator
-            }
-            preventBackHome={preventBackHome}
-            onOpenLayout={onOpenLayout}
-            onWillInstallExtension={onWillInstallExtension}
-            onExtensionInstalled={onExtensionInstalled}
-          />
-        )}
+        {newProjectSetupDialogOpen &&
+          !browseExamples &&
+          !selectedExampleShortHeader &&
+          !selectedPrivateGameTemplateListingData && (
+            <C3NewProjectDialog
+              isProjectOpening={isProjectOpening}
+              onClose={closeNewProjectDialog}
+              onCreateEmptyProject={createEmptyProject}
+              storageProviders={storageProviders}
+            />
+          )}
+        {newProjectSetupDialogOpen &&
+          (browseExamples ||
+            !!selectedExampleShortHeader ||
+            !!selectedPrivateGameTemplateListingData) && (
+            <NewProjectSetupDialog
+              project={project}
+              fileMetadata={fileMetadata}
+              resourceManagementProps={resourceManagementProps}
+              isProjectOpening={isProjectOpening}
+              onClose={closeNewProjectDialog}
+              onCreateEmptyProject={createEmptyProject}
+              onCreateFromExample={createProjectFromExample}
+              onCreateProjectFromPrivateGameTemplate={
+                createProjectFromPrivateGameTemplate
+              }
+              onCloseAskAi={closeAskAi}
+              onOpenAskAi={openAskAi}
+              closeProject={closeProject}
+              storageProviders={storageProviders}
+              storageProvider={storageProvider}
+              selectedExampleShortHeader={selectedExampleShortHeader}
+              onSelectExampleShortHeader={exampleShortHeader =>
+                onSelectExampleShortHeader({
+                  exampleShortHeader,
+                  preventBackHome: false,
+                })
+              }
+              selectedPrivateGameTemplateListingData={
+                selectedPrivateGameTemplateListingData
+              }
+              onSelectPrivateGameTemplateListingData={privateGameTemplateListingData =>
+                onSelectPrivateGameTemplateListingData({
+                  privateGameTemplateListingData,
+                  preventBackHome: false,
+                })
+              }
+              privateGameTemplateListingDatasFromSameCreator={
+                privateGameTemplateListingDatasFromSameCreator
+              }
+              preventBackHome={preventBackHome}
+              onOpenLayout={onOpenLayout}
+              onWillInstallExtension={onWillInstallExtension}
+              onExtensionInstalled={onExtensionInstalled}
+            />
+          )}
       </>
     );
   };

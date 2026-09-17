@@ -70,6 +70,14 @@ describe('applyC3Terminology', () => {
     expect(pt._('Share')).toBe('Exportar');
   });
 
+  it('translates the strings added by the reskin to pt-BR', () => {
+    const pt = makeI18n('pt_BR', {});
+    expect(pt._('Recent projects')).toBe('Projetos recentes');
+    expect(pt._('SD landscape 16:9')).toBe('Paisagem SD 16:9');
+    expect(pt._("What's new")).toBe('Novidades');
+    expect(makeI18n('en', {})._('Recent projects')).toBe('Recent projects');
+  });
+
   it('leaves other languages untouched', () => {
     const i18n = makeI18n('fr_FR', { Scene: 'Scène' });
     expect(i18n._('Scene')).toBe('Scène');
