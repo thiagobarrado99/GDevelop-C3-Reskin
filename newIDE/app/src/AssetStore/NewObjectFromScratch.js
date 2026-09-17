@@ -23,7 +23,7 @@ import { ObjectStoreContext, type ObjectCategory } from './ObjectStoreContext';
 import { ListSearchResults } from '../UI/Search/ListSearchResults';
 import { ObjectListItem } from './ObjectListItem';
 import C3TileGrid from '../UI/C3TileGrid'; // c3
-import { C3_OBJECTS } from '../Utils/C3Objects'; // c3
+import { C3_OBJECTS, type C3Object } from '../Utils/C3Objects'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
 import { ColumnStackLayout, LineStackLayout } from '../UI/Layout';
@@ -253,6 +253,26 @@ export default function NewObjectFromScratch({
   const filteredSearchResults = searchResults ? searchResults : null;
   const useC3Grid: boolean = true; // c3: Construct's add-object tiles
   const [showAllObjects, setShowAllObjects] = React.useState(false); // c3
+  // c3: Construct tiles paired with the GDevelop object header they port.
+  const c3Tiles: Array<{|
+    tile: C3Object,
+    header: ObjectShortHeader,
+  |}> = React.useMemo(
+    () => {
+      const headers: Array<ObjectShortHeader> = [];
+      for (const { item } of filteredSearchResults || []) {
+        // Categories carry `categoryId`; everything else is a header.
+        if (!item.categoryId) headers.push((item: any));
+      }
+      const tiles = [];
+      for (const tile of C3_OBJECTS) {
+        const header = headers.find(header => header.type === tile.type);
+        if (header) tiles.push({ tile, header });
+      }
+      return tiles;
+    },
+    [filteredSearchResults]
+  );
 
   const getExtensionsMatches = React.useCallback(
     (extensionShortHeader: ObjectShortHeader): SearchMatch[] => {
@@ -338,30 +358,20 @@ export default function NewObjectFromScratch({
           <C3TileGrid
             colorVariable="--c3-object-label-color"
             onChoose={id => {
-              const tile = C3_OBJECTS.find(tile => tile.id === id);
-              const header = filteredSearchResults
-                .map(({ item }) => item)
-                .find(item => tile && item.type === tile.type);
-              if (header) {
-                sendNewObjectCreated(header.name);
-                onObjectTypeSelected(header);
+              const found = c3Tiles.find(({ tile }) => tile.id === id);
+              if (found) {
+                sendNewObjectCreated(found.header.name);
+                onObjectTypeSelected(found.header);
               }
             }}
-            tiles={C3_OBJECTS.map(tile => ({
-              tile,
-              item: filteredSearchResults
-                .map(({ item }) => item)
-                .find(item => item.type === tile.type),
-            }))
-              .filter(({ item }) => !!item && !item.categoryId)
-              .map(({ tile, item }) => ({
-                id: tile.id,
-                name: c3Label(tile.name, preferences.values.language),
-                description: item.description,
-                iconUrl: item.previewIconUrl,
-                category: c3Label(tile.category, preferences.values.language),
-                enabled: true,
-              }))}
+            tiles={c3Tiles.map(({ tile, header }) => ({
+              id: tile.id,
+              name: c3Label(tile.name, preferences.values.language),
+              description: header.description,
+              iconUrl: header.previewIconUrl,
+              category: c3Label(tile.category, preferences.values.language),
+              enabled: true,
+            }))}
           />
         ) : (
           <ListSearchResults
@@ -373,8 +383,8 @@ export default function NewObjectFromScratch({
               filteredSearchResults.map(({ item }) => item)
             }
             getSearchItemUniqueId={getObjectType}
-            // $FlowFixMe[missing-local-annot]
             renderSearchItem={(
+              // $FlowFixMe[missing-local-annot]
               objectShortHeaderOrCategory,
               onHeightComputed
             ) => {

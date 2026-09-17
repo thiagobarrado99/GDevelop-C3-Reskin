@@ -6,7 +6,7 @@ Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is re
 
 ## Current state (read first in a new session)
 
-Last updated: 2026-09-18 (evening: icon set received and documented, behaviour/object colours sampled from it, close-tab confirmation and instance-panel edit-through queued).
+Last updated: 2026-09-18 (night: Phase 2 leftovers closed except the docked project bar; Phase 6 shipped colour-coded rows/tabs, Construct dialogs, tile-grid add-behaviour/add-object dialogs fed by the 1:1 tables `Utils/C3Behaviors.js` / `Utils/C3Objects.js`, instance-panel edit-through. Flow clean. Still waiting on step 0 for the icons).
 
 Done (Phase 0 complete):
 - Clone at `D:/Projetos/GDevelop-C3-Reskin` (blobless partial clone; `git fetch` lazily pulls blobs — first checkout of old files may be slow).
