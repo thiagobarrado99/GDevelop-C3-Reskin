@@ -22,7 +22,8 @@ Phase 2 shell (2026-09-18): ☰ opens the Construct menu tree (`MainFrame/C3Main
 
 Pending / next steps, in order:
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish.
-2. Phase 3 event sheet (see survey + TODO).
+2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming.
+3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
 - `D:` is a SATA HDD (C: is NVMe; user chose to stay on D:). Expect `npm ci` ≈ 45–60 min, deleting `node_modules` ≈ 15 min, slow webpack first compile. Before killing an npm that "looks stuck", check `Get-Counter '\PhysicalDisk(0 D:)\% Disk Time'` — if the disk is saturated it's working. Defender exclusion for the repo folder is already added.
@@ -138,6 +139,37 @@ Style takeaways (sample exact hex from the PNGs when building the theme):
 - **Event sheet**: `Add event` link top-left, `Add…` top-right; rows = margin number · `[icon Object] condition` blocks · actions column with `Add action` placeholder · per-event `Add…`. Add menu = Add event · Add function · Add custom action · Add comment · Add group · Add global variable · Include event sheet · Paste (JS/TS entries omitted in our fork). Condition context = Edit · Add another condition · Invert · Replace condition · Replace object · Toggle · Cut · Copy · Paste · Delete · Copy as text. **Add condition flow**: (1) object tiles (System first) → Next; (2) grouped two-column list with search, description of the hovered item on top, Back/Next; (3) parameters form label-left, Cancel · Help · Find Expressions left, Back · Done right. Comparison operators are shown as `= Equal to, ≠ Not equal to, < Less than, ≤ Less or equal, > Greater than, ≥ Greater or equal`. *pt: Adicionar evento · Adicionar… · Adicionar ação · Escolha um objeto para criar uma condição a partir dele · Sistema · Próximo/Voltar/Pronto · Encontrar Expressões.*
 - **Verbs (pt-BR)**: Definir (set), Comparar, Ao… (on…), Está… (is…), Selecionar (pick), Excluir (delete), Renomear, Duplicar, Recortar/Copiar/Colar, Visualizar (preview), Exportar.
 
+## Colour coding, behaviours and icons (user requirements, 2026-09-18)
+
+**Colour coding** — every kind of thing has one colour, used consistently so students find their way by colour (as in Construct 3):
+
+| Kind | Colour | Where it shows |
+|---|---|---|
+| Layouts | yellow | project bar row background, the open editor tab background, icon tint |
+| Event sheets | green | same |
+| Behaviours | red | behaviour rows/tiles in the object editor, add-behaviour dialog, behaviour tabs |
+| Effects | purple | effect rows, add-effect dialog |
+
+Exact shades: pick from the Construct 3 references (`docs/c3-reference/`) and define them as theme tokens in `ConstructLikeDarkTheme/theme.json` (one token per kind), never hardcode. Pointers: project bar rows = `ProjectManager/SceneTreeViewItemContent.js`, `ExternalEventsTreeViewItemContent.js`, `ExternalLayoutTreeViewItemContent.js`; tabs = `MainFrame/EditorTabs/DraggableEditorTabs.js` + `UI/ClosableTabs.js`, keyed by the editor tab `kind` (`'layout'`, `'layout events'`, `'external events'`, `'external layout'`, …); behaviours = `BehaviorsEditor/`, effects = `EffectsList/`.
+
+**Add-behaviour dialog** (`BehaviorsEditor/NewBehaviorDialog.js`, currently a vertical list with descriptions) must become Construct's: a horizontal grid of tiles (icon on top, name below), grouped by category, side by side; the description of the clicked tile appears at the bottom of the dialog; Add/Cancel. Same idea later for the object picker ("Create new object type" survey notes).
+
+**Icons**: the user will replace every object and behaviour icon later (Construct-like, simplistic). Until then use simple monochrome icons and keep icon lookups in one place so the swap is a file drop, not code edits.
+
+**Behaviour naming parity with Construct 3** — students must not meet a GDevelop name that means something else in Construct:
+
+| Construct 3 | GDevelop | Rule |
+|---|---|---|
+| Solid (ground the platformer stands on) | Platform behaviour (`PlatformBehavior::PlatformBehavior`, type "platform") | **must be shown as "Solid" / pt "Sólido"** — GDevelop's "Platform" name is the confusing one |
+| Jump-thru | Platform behaviour with type "jumpthru" | show as "Jump-thru" / pt "Atravessável" (check C3 pt-BR label in the survey) |
+| Platform (the character) | PlatformerObject | keeping "PlatformerObject" is acceptable per the user; may become "Platform" once the ground is "Solid" |
+| 8 Direction | TopDownMovement | rename candidate |
+| Physics | Physics2 | fine |
+| Drag & Drop | Draggable | rename candidate |
+| everything else | — | survey C3's behaviour list vs GDevelop built-ins + bundled community extensions; decide rename vs bundle vs skip; add rows here |
+
+How: behaviour/extension names from libGD go through `gd.getTranslation` → the patched `i18n._` (`Utils/i18n/getTranslationFunction.js`), so whole-string rules in `C3Terminology.js` (`^Platform$` → `Solid`, `^Plataforma$` → `Sólido`, both `en` and `pt_BR`) rename them everywhere, including condition/action sentences. Verify that no unrelated whole-string "Platform" label breaks (e.g. export platforms are hidden already).
+
 ## Setup / run / test
 
 Node: CI uses 24; local has 25 (works). npm, not yarn.
@@ -186,6 +218,7 @@ Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, propertie
 Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
 Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
 Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
+Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; simplistic icons (full icon replacement by the user later); behaviour naming parity (Platform → Solid first). Spec in "Colour coding, behaviours and icons".
 
 Progress is tracked in `TODO.md`.
 

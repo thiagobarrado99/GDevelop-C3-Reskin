@@ -68,6 +68,16 @@ Hide
 - [ ] Dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`); canvas colour is project data, not theme
 - [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
 
+## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
+- [ ] Theme tokens: one colour per kind — layouts yellow, event sheets green, behaviours red, effects purple (`ConstructLikeDarkTheme/theme.json`)
+- [ ] Project bar rows tinted per kind (`ProjectManager/*TreeViewItemContent.js`)
+- [ ] Open editor tab background matches its kind (`EditorTabs/DraggableEditorTabs.js`, `UI/ClosableTabs.js`, by tab `kind`)
+- [ ] Behaviour and effect rows/tiles tinted (`BehaviorsEditor/`, `EffectsList/`)
+- [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
+- [ ] Simplistic placeholder icons for behaviours/objects, single lookup point (user replaces every icon later)
+- [ ] Naming parity: `Platform` behaviour → "Solid"/"Sólido", jump-thru → "Jump-thru"; whole-string rules in `C3Terminology.js` (libGD names go through the patched `i18n._`)
+- [ ] Survey Construct's behaviour list vs GDevelop built-ins/extensions; fill the parity table in CLAUDE.md; rename or bundle what students expect (8 Direction, Drag & Drop, Bullet, Sine, Fade, …)
+
 ## Phase 5 — Polish
 - [ ] Animation editor, shortcut parity, examples, docs
 
