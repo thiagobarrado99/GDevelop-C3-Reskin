@@ -24,7 +24,7 @@ Defaults changed to match Construct (2026-09-18): new projects keep their game s
 
 Pending / next steps, in order:
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes), dialog button chrome, layers bar polish, close-tab confirmation only when there are unsaved changes (user request 2026-09-18; upstream `CloseConfirmDialog` prompts whenever a project is open, and not at all in dev).
-2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming.
+2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming, `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there).
 3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
@@ -159,7 +159,53 @@ Shades are CSS variables on the theme root in `ConstructLikeDarkTheme/ConstructL
 
 **Instance panel shows everything from the object (user request, 2026-09-18)**: clicking an instance in the layout must show *all* its behaviours and effects, like Construct. Today `InstancesEditor/CompactInstancePropertiesEditor/index.js` lists the behaviours but non-overridable ones (Physics2/Physics3D/Physics, `notOverridableBehaviorTypes`) only say "This behavior can't be setup per instance", and object effects are not listed at all. Preferred: render those with the object-level editor so edits go to the object's behaviour/effect (`object.getBehavior(name)` / `object.getEffects()`, same code path as `CompactObjectPropertiesEditor`), clearly labelled as shared by every instance. Fallback if that gets hairy: an "Edit on object" button per behaviour/effect that jumps to the object in the properties panel via the existing `editObjectInPropertiesPanel(objectName)` callback. Not started.
 
-**Icons**: the user will replace every object and behaviour icon later (Construct-like, simplistic). Until then use simple monochrome icons and keep icon lookups in one place so the swap is a file drop, not code edits.
+**Icons (user-supplied, 2026-09-18)** — `C3-Icons/` at the repo root (untracked so far, see the note at the end):
+
+- `all_behaviours_list.png` / `all_objects_list.png`: Construct's pt-BR add-behaviour and add-object grids. They give the tile look for the grid dialogs (icon over label, category headers `ATRIBUTOS`, `GERAL`, `MOVIMENTOS`, `3D` …), the pt-BR label of every entry, and the category each belongs to.
+- `behaviour_icons/*.png` (32) and `object_icons/*.png` (62): one file per tile, **64×64 RGBA, transparent background, one flat colour** (behaviours `#f75651`, objects `#00768e`). File name = the tile's pt-BR label slugged (lowercase, accents stripped, spaces/`&` → `-`): `solido.png` = "Sólido", `arrastar-e-soltar.png` = "Arrastar & Soltar", `8-direcoes.png` = "8 Direções".
+- Because they are single-colour, ship them as **masks** rather than fixed pictures: `background-color: var(--c3-behavior-color)` (or `--c3-object-color`, to add) with `mask-image: url(...)`/`-webkit-mask-image`, so the colour coding stays in one CSS variable and one PNG serves every size. If an `<img>` is unavoidable, use the PNG as-is.
+
+How GDevelop finds an icon: `behaviorMetadata.getIconFilename()` / `objectMetadata.getIconFilename()` (libGD, e.g. `CppPlatform/Extensions/platformicon.png`, served from `newIDE/app/public/`) is read at ~15 call sites (`grep -rn getIconFilename src`) and shown through `UI/IconContainer.js` (`CorsAwareImage` on a white gradient, `iconWithBackgroundStyle` — that background must go for flat icons on the dark theme; drop it under the theme's body class). **Do not touch the call sites**: put the icons in `newIDE/app/public/res/c3-icons/{behaviors,objects}/<slug>.png`, add one module `Utils/C3Icons.js` holding the type → slug map below, and wrap `gd.BehaviorMetadata.prototype.getIconFilename` and `gd.ObjectMetadata.prototype.getIconFilename` once after libGD loads (`src/index.js`, where `global.gd = gd` is set, same idea as the `i18n._` patch) to return `res/c3-icons/…` when `this.getName()` is in the map and fall through otherwise. Sprite objects keep showing their first frame in lists (`ObjectsRenderingService` thumbnail), as Construct does. Then the swap really is a file drop.
+
+Behaviour map (`getName()` → file; those marked *ext* are not built in — find the matching community extension when doing the parity survey, else leave the row unmapped):
+
+| GDevelop behaviour type | C3 file | C3 label (pt / en) |
+|---|---|---|
+| `PlatformBehavior::PlatformBehavior` | `solido.png` (`pular-atraves.png` when the platform type is jumpthru, once rows can tell) | Sólido / Solid |
+| `PlatformBehavior::PlatformerObjectBehavior` | `plataforma.png` | Plataforma / Platform |
+| `TopDownMovementBehavior::TopDownMovementBehavior` | `8-direcoes.png` | 8 Direções / 8 Direction |
+| `Physics2::Physics2Behavior`, `Physics3D::Physics3DBehavior`, `PhysicsBehavior::PhysicsBehavior` | `fisica.png` | Física / Physics |
+| `Physics3D::PhysicsCar3D` | `carro.png` | Carro / Car |
+| `DraggableBehavior::Draggable` | `arrastar-e-soltar.png` | Arrastar & Soltar / Drag & Drop |
+| `AnchorBehavior::AnchorBehavior` | `ancora.png` | Âncora / Anchor |
+| `Tween::TweenBehavior` | `interpolacao.png` | Interpolação / Tween |
+| `PathfindingBehavior::PathfindingBehavior` (+ `PathfindingObstacleBehavior`, NavMesh) | `explorador-de-rotas.png` | Explorador de rotas / Pathfinding |
+| `DestroyOutsideBehavior::DestroyOutside` | `destruir-externamente.png` | Destruir externamente / Destroy outside layout |
+| `Scene3D::Base3DBehavior` | `billboard.png` (closest; Construct has no "3D object" behaviour) | Billboard |
+| *ext* Bullet / Sine / Fade / Flash / Rotate / Orbit / MoveTo / Follow / Pin / Wrap / Timer / Turret / Bound to layout / Scroll To / Line of sight / Tile movement / Shadow caster / Persist / No save / Custom | `projetil` `senoide` `esmaecer` `piscar` `girar` `orbita` `mover-para` `seguir` `fixar` `dar-a-volta` `cronometro` `canhao` `restrito-ao-layout` `centrar-em` `campo-de-visao` `movimento-em-grid` `projetor-de-sombra` `persistir` `nao-salvar` `personalizado` | see `all_behaviours_list.png` |
+
+Object map:
+
+| GDevelop object type | C3 file | C3 label (pt / en) |
+|---|---|---|
+| `Sprite` | `sprite.png` | Sprite |
+| `TextObject::Text`, `BBText::BBText`, `BitmapText::BitmapTextObject` | `texto.png` (`fonte-de-sprites.png` for BitmapText) | Texto / Text, Fonte de sprites / Sprite font |
+| `TiledSpriteObject::TiledSprite` | `plano-de-fundo-em-blocos.png` | Plano de Fundo em Blocos / Tiled Background |
+| `PanelSpriteObject::PanelSprite` | `9-seccoes.png` | 9-secções / 9-patch |
+| `ParticleSystem::ParticleEmitter` | `particulas.png` | Partículas / Particles |
+| `PrimitiveDrawing::Drawer` | `tela-de-desenho.png` | Tela de Desenho / Drawing canvas |
+| `TextInput::TextInputObject`, `TextEntryObject::TextEntry` | `entrada-de-texto.png` | Entrada de texto / Text input |
+| `Video::VideoObject` | `video.png` | Vídeo |
+| `TileMap::TileMap`, `TileMap::SimpleTileMap`, `TileMap::CollisionMask` | `mosaico.png` | Mosaico / Tilemap |
+| `Lighting::LightObject` | `refletor.png` | Refletor / Spotlight-ish (closest) |
+| `Scene3D::Cube3DObject` | `forma-3d.png` | Forma 3D / 3D shape |
+| `Scene3D::Model3DObject` | `modelo-3d.png` | Modelo 3D / 3D model |
+| `SpineObject::SpineObject` | `sprite.png` (no C3 equivalent) | — |
+| extensions without an object (Keyboard, Mouse, Touch, Audio, Gamepad, AJAX/Network, Browser, LocalStorage/Storage, Dictionary/Array/JSON → variables, Multiplayer, Camera, Time…) | `teclado` `mouse` `toque` `audio` `gamepad` `ajax` `navegador` `armazenamento-local` `dicionario` `matriz` `json` `multiplayer` `camera-3d` `data` … | use them for the extension rows of the add-condition/action object list (Phase 3) and the project bar; the rest (Facebook, Google Play, IAP, micro:bit, Bluetooth, MIDI, …) have no counterpart — skip |
+
+Where the icons must show up: object tiles of the add-object dialog and of the add-condition/action step 1, objects bar rows (non-sprite objects), behaviour tiles of the add-behaviour grid, behaviour rows in the properties panel / behaviours editor / instance panel, and the event sheet's instruction rows (object icon before the condition text).
+
+**Note on the files**: they are Scirra's artwork (see "Non-goals / rules"). The user supplied them and decides whether `C3-Icons/` and `public/res/c3-icons/` get committed to the public fork or stay local like `docs/c3-reference/` (in that case draw look-alikes with the same names before committing). Until they decide, do not `git add` them.
 
 **Behaviour naming parity with Construct 3** — students must not meet a GDevelop name that means something else in Construct:
 
@@ -223,7 +269,7 @@ Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, propertie
 Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
 Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
 Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
-Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; simplistic icons (full icon replacement by the user later); behaviour naming parity (Platform → Solid first); instance panel shows the object's non-overridable behaviours and effects (edit-through or "Edit on object" button). Spec in "Colour coding, behaviours and icons".
+Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; the user's `C3-Icons/` applied through one `getIconFilename` wrapper + type→file map (`Utils/C3Icons.js`); behaviour naming parity (Platform → Solid first); instance panel shows the object's non-overridable behaviours and effects (edit-through or "Edit on object" button). Spec in "Colour coding, behaviours and icons".
 
 Progress is tracked in `TODO.md`.
 
