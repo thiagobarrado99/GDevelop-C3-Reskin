@@ -1,0 +1,67 @@
+/* c3: Construct-style tile picker (see C3TileGrid.js). */
+.c3-tile-grid {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+.c3-tile-grid-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+.c3-tile-category {
+  font-size: 11px;
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin: 12px 4px 4px;
+}
+.c3-tile-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.c3-tile {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 104px;
+  height: 92px;
+  padding: 6px 4px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  color: var(--c3-tile-color);
+  text-align: center;
+}
+.c3-tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.c3-tile.selected {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--c3-tile-color);
+}
+.c3-tile.disabled {
+  opacity: 0.35;
+}
+.c3-tile-name {
+  font-size: 12px;
+  line-height: 1.2;
+  margin-top: 4px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.c3-tile-grid-footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 4px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  min-height: 56px;
+}
+.c3-tile-description {
+  flex: 1;
+  min-width: 0;
+}

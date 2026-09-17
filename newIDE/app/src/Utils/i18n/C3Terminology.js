@@ -22,6 +22,8 @@ const r = (regex: RegExp, to: string): Rule => [
 const reskinPtBr: { [string]: string } = {
   'Recent projects': 'Projetos recentes',
   'Add layer above': 'Adicionar camada acima',
+  'Click an item to see its description.':
+    'Clique em um item para ver sua descrição.',
   'Add layer below': 'Adicionar camada abaixo',
   'No recent projects.': 'Nenhum projeto recente.',
   Participate: 'Participar',

@@ -44,21 +44,26 @@ type Props = {|
   platform: gdPlatform,
 |};
 
-export const BehaviorListItem = ({
-  id,
+// c3: shared with the tile grid (C3TileGrid) so both agree on what can be added.
+export const isBehaviorUsable = ({
   objectType,
   objectBehaviorsTypes,
   isChildObject,
   shouldCheckCapabilityBehaviors,
   behaviorShortHeader,
-  matches,
-  onChoose,
-  onShowDetails,
-  onHeightComputed,
   platform,
-}: Props): React.Node => {
-  const gdevelopTheme = React.useContext(GDevelopThemeContext);
-
+}: {|
+  objectType: string,
+  objectBehaviorsTypes: Array<string>,
+  isChildObject: boolean,
+  shouldCheckCapabilityBehaviors: boolean,
+  behaviorShortHeader: BehaviorShortHeader,
+  platform: gdPlatform,
+|}): {|
+  alreadyAdded: boolean,
+  isObjectCompatible: boolean,
+  isEngineCompatible: boolean,
+|} => {
   const alreadyAdded = objectBehaviorsTypes.includes(behaviorShortHeader.type);
 
   const behaviorMetadata = gd.MetadataProvider.getBehaviorMetadata(
@@ -90,6 +95,37 @@ export const BehaviorListItem = ({
     getIDEVersion(),
     behaviorShortHeader.gdevelopVersion
   );
+  return { alreadyAdded, isObjectCompatible, isEngineCompatible };
+};
+
+export const BehaviorListItem = ({
+  id,
+  objectType,
+  objectBehaviorsTypes,
+  isChildObject,
+  shouldCheckCapabilityBehaviors,
+  behaviorShortHeader,
+  matches,
+  onChoose,
+  onShowDetails,
+  onHeightComputed,
+  platform,
+}: Props): React.Node => {
+  const gdevelopTheme = React.useContext(GDevelopThemeContext);
+
+  // c3: checks moved to isBehaviorUsable, shared with the tile grid.
+  const {
+    alreadyAdded,
+    isObjectCompatible,
+    isEngineCompatible,
+  } = isBehaviorUsable({
+    objectType,
+    objectBehaviorsTypes,
+    isChildObject,
+    shouldCheckCapabilityBehaviors,
+    behaviorShortHeader,
+    platform,
+  });
 
   // Report the height of the item once it's known.
   const containerRef = React.useRef<?HTMLDivElement>(null);

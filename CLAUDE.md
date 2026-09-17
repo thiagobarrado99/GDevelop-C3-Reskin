@@ -25,7 +25,7 @@ Defaults changed to match Construct (2026-09-18): new projects keep their game s
 Pending / next steps, in order:
 0. **Waiting on the user**: whether `C3-Icons/` (Scirra's icon PNGs, untracked at the repo root) may be committed to the public fork or must stay local with look-alikes drawn for git. Do not `git add` it before that answer. Also confirm whether `#00768e` (object cyan, sampled from the icons) is fine for *text* labels — it is only ≈ 2:1 contrast on the `#474747` panels; icons are fine, labels may want a lighter shade.
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes). Done 2026-09-18 (night): close-tab confirmation on unsaved changes only, project bar order, recent-project context menu, layer context menu (add above/below), dialog chrome (title strip + filled fields + grey buttons, all theme CSS keyed on the `c3-dialog-title` class in `UI/Dialog.js`). Close-tab confirmation on unsaved changes only is done (`MainFrame/index.js`, `// c3:`; invisible in dev because `CloseConfirmDialog` skips `Window.isDev()`).
-2. Phase 6 (see "Colour coding, behaviours and icons"): colour coding of layouts/event sheets/behaviours/effects, add-behaviour grid dialog, Platform → Solid naming, `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there).
+2. Phase 6 (see "Colour coding, behaviours and icons"): done so far — colour tokens, properties panel tint, project bar rows + tabs by kind, Solid/Platform/Jump-thru renames, tile grid (`UI/C3TileGrid.js`) in the add-behaviour dialog. Next: the 1:1 behaviour table `Utils/C3Behaviors.js` feeding the grid + presets on add (spec below), then `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there), instance panel edit-through.
 3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
@@ -209,19 +209,35 @@ Where the icons must show up: object tiles of the add-object dialog and of the a
 
 **Note on the files**: they are Scirra's artwork (see "Non-goals / rules"). The user supplied them and decides whether `C3-Icons/` and `public/res/c3-icons/` get committed to the public fork or stay local like `docs/c3-reference/` (in that case draw look-alikes with the same names before committing). Until they decide, do not `git add` them.
 
-**Behaviour naming parity with Construct 3** — students must not meet a GDevelop name that means something else in Construct:
+**Behaviour parity is 1:1 with Construct 3 (user requirement, 2026-09-18)** — the add-behaviour dialog offers exactly Construct's behaviour list (the 32 tiles of `all_behaviours_list.png`: same names, same four categories `[3D]` · `ATRIBUTOS` · `GERAL` · `MOVIMENTOS`, same icons), nothing else. Every tile is a *port*: one GDevelop behaviour (built-in, or a community extension bundled/installed on demand) **plus the settings applied when it is added**. Several tiles may point at the same GDevelop behaviour with different settings:
 
-| Construct 3 | GDevelop | Rule |
-|---|---|---|
-| Solid (ground the platformer stands on) | Platform behaviour (`PlatformBehavior::PlatformBehavior`, type "platform") | **must be shown as "Solid" / pt "Sólido"** — GDevelop's "Platform" name is the confusing one |
-| Jump-thru | Platform behaviour with type "jumpthru" | show as "Jump-thru" / pt "Atravessável" (check C3 pt-BR label in the survey) |
-| Platform (the character) | PlatformerObject | keeping "PlatformerObject" is acceptable per the user; may become "Platform" once the ground is "Solid" |
-| 8 Direction | TopDownMovement | rename candidate |
-| Physics | Physics2 | fine |
-| Drag & Drop | Draggable | rename candidate |
-| everything else | — | survey C3's behaviour list vs GDevelop built-ins + bundled community extensions; decide rename vs bundle vs skip; add rows here |
+- **Sólido / Solid** = `PlatformBehavior::PlatformBehavior` with `platformType = "NormalPlatform"` (jump-through disabled).
+- **Pular através / Jump-thru** = the *same* `PlatformBehavior::PlatformBehavior` with `platformType = "Jumpthru"`.
 
-How: behaviour/extension names from libGD go through `gd.getTranslation` → the patched `i18n._` (`Utils/i18n/getTranslationFunction.js`), so whole-string rules in `C3Terminology.js` (`^Platform$` → `Solid`, `^Plataforma$` → `Sólido`, both `en` and `pt_BR`) rename them everywhere, including condition/action sentences. Verify that no unrelated whole-string "Platform" label breaks (e.g. export platforms are hidden already).
+The tile also fixes the behaviour's default *name* on the object (`Solid` / `JumpThru`, pt `Solido` / `PularAtraves` — names are identifiers, no accents), so the properties panel reads like Construct. GDevelop's own "Type: Platform / Jumpthru / Ladder" property stays editable afterwards — the tile only sets the initial value.
+
+Implementation: one table in `Utils/C3Behaviors.js` — Construct label (pt / en) → `{ type, extensionName?, presets: { property: value }, defaultName, icon slug, category }`. The grid (`UI/C3TileGrid.js`, mounted by `AssetStore/BehaviorStore/index.js`) is fed from that table only; `installAndChoose` installs the extension when the type is not in the project yet, `NewBehaviorDialog.onChoose` (→ `BehaviorsEditor` `addBehavior`) applies the presets through `behavior.updateProperty(name, value)` right after `object.addNewBehavior`. GDevelop behaviours that are not in the table are not offered (keep the ⋮ menu's "show all GDevelop behaviours" toggle as the escape hatch for the teacher, off by default). The whole-string renames in `C3Terminology.js` (`Platform` → Solid, `Platformer character` → Platform, `Jumpthru platform` → Jump-thru) stay: they cover the behaviour *type* name wherever GDevelop prints it (condition/action groups, panel subtitles).
+
+Mapping so far (fill the rest while doing the survey; *ext* = community extension to bundle, name to confirm in the extension store):
+
+| Construct tile (pt / en) | Category | GDevelop port | Presets |
+|---|---|---|---|
+| Sólido / Solid | Atributos | `PlatformBehavior::PlatformBehavior` | `platformType=NormalPlatform`, name `Solid` |
+| Pular através / Jump-thru | Atributos | `PlatformBehavior::PlatformBehavior` | `platformType=Jumpthru`, name `JumpThru` |
+| Persistir / Persist, Não salvar / No save | Atributos | *ext* (save-state extensions) or skip | |
+| Projetor de sombra / Shadow caster | Atributos | `Lighting::LightObstacleBehavior` | |
+| Plataforma / Platform | Movimentos | `PlatformBehavior::PlatformerObjectBehavior` | name `Platform` |
+| 8 Direções / 8 Direction | Movimentos | `TopDownMovementBehavior::TopDownMovementBehavior` | `allowDiagonals=true`, name `8Direction` |
+| Física / Physics | Movimentos | `Physics2::Physics2Behavior` | |
+| Carro / Car | Movimentos | `Physics3D::PhysicsCar3D` (3D only) or *ext* | |
+| Explorador de rotas / Pathfinding | Movimentos | `PathfindingBehavior::PathfindingBehavior` | |
+| Projétil / Bullet, Senóide / Sine, Girar / Rotate, Órbita / Orbit, Mover para / MoveTo, Seguir / Follow, Canhão / Turret, Movimento em grid / Tile movement, Personalizado / Custom | Movimentos | *ext* | |
+| Arrastar & Soltar / Drag & Drop | Geral | `DraggableBehavior::Draggable` | name `DragDrop` |
+| Âncora / Anchor | Geral | `AnchorBehavior::AnchorBehavior` | |
+| Destruir externamente / Destroy outside layout | Geral | `DestroyOutsideBehavior::DestroyOutside` | |
+| Interpolação / Tween | Geral | `Tween::TweenBehavior` | |
+| Esmaecer / Fade, Piscar / Flash, Fixar / Pin, Dar a volta / Wrap, Cronômetro / Timer, Restrito ao layout / Bound to layout, Centrar em / Scroll To, Campo de visão / Line of sight | Geral | *ext* | |
+| [Billboard] | 3D | `Scene3D::Base3DBehavior` (closest) | |
 
 ## Setup / run / test
 
@@ -271,7 +287,7 @@ Phase 2 — Shell (2–4 wks): C3 panel arrangement (project bar left, propertie
 Phase 3 — Event sheet (1–2 mo): compact rows with object icon + condition/action text, C3 colour scheme, right-click menus, add-condition/action dialog flow (object → condition → params) tuned to C3 order/keyboard flow.
 Phase 4 — Layout view (2–4 wks): C3 gizmos, snap/grid defaults, z-order bar, instance-properties panel ordering.
 Phase 5 — Polish: animation editor, keyboard shortcuts parity, examples, docs.
-Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; the user's `C3-Icons/` applied through one `getIconFilename` wrapper + type→file map (`Utils/C3Icons.js`); behaviour naming parity (Platform → Solid first); instance panel shows the object's non-overridable behaviours and effects (edit-through or "Edit on object" button). Spec in "Colour coding, behaviours and icons".
+Phase 6 — Colour coding & behaviour parity (requested 2026-09-18, do right after the Phase 2 leftovers, before Phase 3): one colour per kind (layouts yellow, event sheets green, behaviours red, effects purple) in project bar rows, tabs and icons; Construct-style add-behaviour grid dialog; the user's `C3-Icons/` applied through one `getIconFilename` wrapper + type→file map (`Utils/C3Icons.js`); 1:1 behaviour parity with Construct (each tile = GDevelop behaviour + presets, e.g. Solid and Jump-thru are both the Platform behaviour); instance panel shows the object's non-overridable behaviours and effects (edit-through or "Edit on object" button). Spec in "Colour coding, behaviours and icons".
 
 Progress is tracked in `TODO.md`.
 

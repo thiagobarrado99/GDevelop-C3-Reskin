@@ -11,7 +11,8 @@ import {
 import { type BehaviorShortHeader } from '../../Utils/GDevelopServices/Extension';
 import { BehaviorStoreContext } from './BehaviorStoreContext';
 import { ListSearchResults } from '../../UI/Search/ListSearchResults';
-import { BehaviorListItem } from './BehaviorListItem';
+import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
+import C3TileGrid from '../../UI/C3TileGrid'; // c3
 import { type SearchMatch } from '../../UI/Search/UseSearchStructuredItem';
 import { sendExtensionAddedToProject } from '../../Utils/Analytics/EventSender';
 import useDismissableTutorialMessage from '../../Hints/useDismissableTutorialMessage';
@@ -135,6 +136,7 @@ export const BehaviorStore = ({
   );
 
   const filteredSearchResults = searchResults ? searchResults : null;
+  const useC3Grid = true; // c3: tiles like Construct's add-behaviour dialog
 
   const getExtensionsMatches = React.useCallback(
     (extensionShortHeader: BehaviorShortHeader): SearchMatch[] => {
@@ -298,43 +300,76 @@ export const BehaviorStore = ({
           </ResponsiveLineStackLayout>
           {DismissableTutorialMessage}
         </ColumnStackLayout>
-        <ListSearchResults
-          disableAutoTranslate // Search results text highlighting conflicts with dom handling by browser auto-translations features. Disables auto translation to prevent crashes.
-          onRetry={fetchBehaviors}
-          error={error}
-          searchItems={
-            filteredSearchResults &&
-            filteredSearchResults.map(({ item }) => item)
-          }
-          getSearchItemUniqueId={getBehaviorType}
-          renderSearchItem={(
-            behaviorShortHeader: BehaviorShortHeader,
-            onHeightComputed
-          ): React.Node => (
-            <BehaviorListItem
-              id={
-                'behavior-item-' + behaviorShortHeader.type.replace(/:/g, '-')
-              }
-              key={behaviorShortHeader.type}
-              objectType={objectType}
-              objectBehaviorsTypes={objectBehaviorsTypes}
-              isChildObject={isChildObject}
-              shouldCheckCapabilityBehaviors={shouldCheckCapabilityBehaviors}
-              onHeightComputed={onHeightComputed}
-              behaviorShortHeader={behaviorShortHeader}
-              matches={getExtensionsMatches(behaviorShortHeader)}
-              onChoose={() => {
-                installAndChoose(behaviorShortHeader);
-              }}
-              onShowDetails={() => {
-                if (behaviorShortHeader.headerUrl) {
-                  setSelectedBehaviorShortHeader(behaviorShortHeader);
+        {useC3Grid && filteredSearchResults ? ( // c3: Construct-style tiles
+          <C3TileGrid
+            colorVariable="--c3-behavior-color"
+            onChoose={type => {
+              const header = filteredSearchResults
+                .map(({ item }) => item)
+                .find(item => item.type === type);
+              if (header) installAndChoose(header);
+            }}
+            tiles={filteredSearchResults.map(({ item }) => {
+              const usable = isBehaviorUsable({
+                objectType,
+                objectBehaviorsTypes,
+                isChildObject,
+                shouldCheckCapabilityBehaviors,
+                behaviorShortHeader: item,
+                platform: project.getCurrentPlatform(),
+              });
+              return {
+                id: item.type,
+                name: item.fullName,
+                description: item.description,
+                iconUrl: item.previewIconUrl,
+                category: item.category,
+                enabled:
+                  !usable.alreadyAdded &&
+                  usable.isObjectCompatible &&
+                  usable.isEngineCompatible,
+              };
+            })}
+          />
+        ) : (
+          <ListSearchResults
+            disableAutoTranslate // Search results text highlighting conflicts with dom handling by browser auto-translations features. Disables auto translation to prevent crashes.
+            onRetry={fetchBehaviors}
+            error={error}
+            searchItems={
+              filteredSearchResults &&
+              filteredSearchResults.map(({ item }) => item)
+            }
+            getSearchItemUniqueId={getBehaviorType}
+            renderSearchItem={(
+              behaviorShortHeader: BehaviorShortHeader,
+              onHeightComputed
+            ): React.Node => (
+              <BehaviorListItem
+                id={
+                  'behavior-item-' + behaviorShortHeader.type.replace(/:/g, '-')
                 }
-              }}
-              platform={project.getCurrentPlatform()}
-            />
-          )}
-        />
+                key={behaviorShortHeader.type}
+                objectType={objectType}
+                objectBehaviorsTypes={objectBehaviorsTypes}
+                isChildObject={isChildObject}
+                shouldCheckCapabilityBehaviors={shouldCheckCapabilityBehaviors}
+                onHeightComputed={onHeightComputed}
+                behaviorShortHeader={behaviorShortHeader}
+                matches={getExtensionsMatches(behaviorShortHeader)}
+                onChoose={() => {
+                  installAndChoose(behaviorShortHeader);
+                }}
+                onShowDetails={() => {
+                  if (behaviorShortHeader.headerUrl) {
+                    setSelectedBehaviorShortHeader(behaviorShortHeader);
+                  }
+                }}
+                platform={project.getCurrentPlatform()}
+              />
+            )}
+          />
+        )}
       </ColumnStackLayout>
       {!!selectedBehaviorShortHeader && (
         <ExtensionInstallDialog

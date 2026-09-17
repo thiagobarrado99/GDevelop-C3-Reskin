@@ -77,7 +77,8 @@ Hide
 - [x] Editor tabs tinted by kind: `DraggableEditorTabs.js` adds `data-kind` to the tab button, theme CSS fills the active tab / colours the inactive label
 - [x] Properties panel: Behaviors/Effects section titles and each behaviour/effect name tinted; object editor dialog tabs too (`TopLevelCollapsibleSection`/`CollapsibleSubPanel` got a `color` prop)
 - [ ] Add-behaviour / add-effect dialogs and the full behaviours editor tinted too
-- [ ] Add-behaviour dialog as a Construct-style grid: icon + name tiles by category, description at the bottom after clicking, Add/Cancel (`BehaviorsEditor/NewBehaviorDialog.js`)
+- [x] Add-behaviour dialog as a Construct-style grid: `UI/C3TileGrid.js` (+ `.css`) mounted in `AssetStore/BehaviorStore/index.js` (`useC3Grid`), description + Add in the footer, double-click adds; compatibility check shared via `isBehaviorUsable` in `BehaviorListItem.js`
+- [ ] 1:1 behaviour parity (user, 2026-09-18): `Utils/C3Behaviors.js` table (Construct tile → GDevelop type + presets + default name + category + icon slug) feeds the grid instead of the full GDevelop/store list; presets applied after `addNewBehavior` (Solid = Platform behaviour with `platformType=NormalPlatform`, Jump-thru = same with `Jumpthru`); *ext* rows need the community extension bundled or installed on demand; keep a "show all GDevelop behaviours" toggle in the ⋮ menu
 - [ ] Icons: copy `C3-Icons/{behaviour,object}_icons` to `public/res/c3-icons/{behaviors,objects}/`, add `Utils/C3Icons.js` (type → file map from CLAUDE.md) and wrap `gd.BehaviorMetadata/ObjectMetadata.prototype.getIconFilename` in `src/index.js` — no call-site edits (user decides first whether the files are committed)
 - [ ] Icons: render as CSS masks tinted by `--c3-behavior-color` / `--c3-object-color` and drop `IconContainer`'s white gradient under the theme; check add-object dialog, add-condition step 1, objects bar, behaviour tiles/rows, event sheet rows
 - [x] Add-object dialog: asset-store tab hidden (`NewObjectDialog.js`, `hideAssetStore`), opens straight on the object types
@@ -85,7 +86,7 @@ Hide
 - [x] Controls parity: PlatformerObject jumps with ↑ too (runtime one-liner in `Extensions/PlatformBehavior`, logged in CLAUDE.md Decisions)
 - [x] Naming parity: `Platform` → Solid/Sólido, `Platformer character` → Platform/Plataforma, `Jumpthru platform` → Jump-thru/Atravessável (whole-string rules in `C3Terminology.js`, tested)
 - [ ] Instance properties panel: show non-overridable behaviours (Physics…) and the object's effects, editing through to the object; else an "Edit on object" button using `editObjectInPropertiesPanel` (`CompactInstancePropertiesEditor/index.js`)
-- [ ] Survey Construct's behaviour list vs GDevelop built-ins/extensions; fill the parity table in CLAUDE.md; rename or bundle what students expect (8 Direction, Drag & Drop, Bullet, Sine, Fade, …)
+- [ ] Survey: find the community extensions for the *ext* rows of the CLAUDE.md parity table (Bullet, Sine, Fade, Flash, Rotate, Orbit, MoveTo, Follow, Pin, Wrap, Timer, Turret, Bound to layout, Scroll To, Line of sight, Tile movement, Persist/No save, Custom) and decide bundle vs on-demand install
 
 ## Phase 5 — Polish
 - [ ] Animation editor, shortcut parity, examples, docs
