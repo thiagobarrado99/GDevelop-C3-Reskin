@@ -22,6 +22,7 @@ import Controller from '../../../UI/CustomSvgIcons/Controller';
 import Star from '../../../UI/CustomSvgIcons/Star';
 import Web from '../../../UI/CustomSvgIcons/Web';
 import './C3StartPage.css';
+import { APP_NAME } from '../../../Utils/C3Brand';
 
 // c3: start page laid out like Construct 3 - logo + NEW/OPEN on top, RECENT
 // PROJECTS on the left, LEARN / PARTICIPATE / EXPLORE card columns on the
@@ -201,7 +202,7 @@ const C3StartPage = ({
         >
           <div style={styles.page}>
             <Text size="section-title" noMargin>
-              GDevelop
+              {APP_NAME}
             </Text>
             <div style={styles.bigButtons}>
               <ButtonBase

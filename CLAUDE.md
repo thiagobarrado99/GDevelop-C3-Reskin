@@ -1,6 +1,8 @@
-# GDevelop-C3-Reskin
+# GDevelop-C3-Reskin → **Assemble3**
 
 Fork of [GDevelop](https://github.com/4ian/GDevelop) (MIT) whose editor UI is reworked to look and feel like Scirra's **Construct 3**, so a team already fluent in Construct can switch with near-zero relearning. Open source, no feature limits, browser + desktop, HTML5 export only.
+
+**Product name: Assemble3** (chosen by the user on 2026-09-18). Project files are `.a3p`. The name is applied at runtime to every translated string (`brandRules` in `src/Utils/i18n/C3Terminology.js`, all languages, word-boundary and case-sensitive so `gdevelop.io` URLs stay) and hardcoded through `src/Utils/C3Brand.js` (`APP_NAME`) in the window title (`ProjectTitlebar.js`), the start page, `public/index.html`, `public/manifest.json`, and the Electron `package.json`/`electron-builder-config.js` (`productName`, `executableName`, `appId: com.assemble3.ide`). Use `APP_NAME` for any new hardcoded mention. Still GDevelop's: logo/icons/thumbnails (`public/`, `electron-app/build/`), the About dialog's contributor credits (must stay), help/forum/website links, and source identifiers — do not rename those.
 
 ## Current state (read first in a new session)
 

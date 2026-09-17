@@ -3,16 +3,14 @@
  * @see https://www.electron.build/configuration/configuration
  */
 const config = {
-  appId: 'com.gdevelop-app.ide',
+  appId: 'com.assemble3.ide', // c3
   directories: {
     app: 'app',
     buildResources: 'build',
     output: 'dist',
   },
   // c3: double-clicking an Assemble3 project opens it in the app.
-  fileAssociations: [
-    { ext: 'a3p', name: 'Assemble3 project', role: 'Editor' },
-  ],
+  fileAssociations: [{ ext: 'a3p', name: 'Assemble3 project', role: 'Editor' }],
   extraResources: [
     {
       from: '../app/resources/GDJS',
@@ -52,7 +50,7 @@ const config = {
       'Contents/Resources/app.asar.unpacked/node_modules/steamworks.js/dist/osx/steamworksjs.darwin-*.node',
   },
   win: {
-    executableName: 'GDevelop',
+    executableName: 'Assemble3', // c3
     target: [
       { target: 'nsis', arch: ['x64'] },
       { target: 'zip', arch: ['x64'] },
@@ -63,10 +61,10 @@ const config = {
     allowToChangeInstallationDirectory: true,
   },
   appx: {
-    publisherDisplayName: 'GDevelop game engine',
-    displayName: 'GDevelop',
+    publisherDisplayName: 'Assemble3',
+    displayName: 'Assemble3',
     publisher: 'CN=B13CB8D3-97AA-422C-A394-0EE51B9ACAD3',
-    identityName: 'GDevelopgameengine.GDevelop',
+    identityName: 'Assemble3.Assemble3',
     backgroundColor: '#524F9C',
     languages: [
       'EN-US',

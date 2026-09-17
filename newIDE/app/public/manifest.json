@@ -1,6 +1,6 @@
 {
-  "short_name": "GDevelop",
-  "name": "GDevelop",
+  "short_name": "Assemble3",
+  "name": "Assemble3",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -19,21 +19,21 @@
       "sizes": "3024x1890",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "GDevelop"
+      "label": "Assemble3"
     },
     {
       "src": "screenshot-wide-2.png",
       "sizes": "3024x1890",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "GDevelop"
+      "label": "Assemble3"
     },
     {
       "src": "screenshot-wide-3.png",
       "sizes": "3024x1890",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "GDevelop"
+      "label": "Assemble3"
     }
   ],
   "description": "GDevelop is the most powerful, open-source, no-code game engine. Make 2D, 3D and multiplayer games without limits. Publish everywhere: iOS, Android, Steam, web, gaming platforms. Reach millions of players like other hit games and experiences powered by GDevelop.",

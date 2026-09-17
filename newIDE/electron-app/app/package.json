@@ -1,7 +1,7 @@
 {
-  "name": "gdevelop",
-  "productName": "GDevelop 5",
-  "description": "GDevelop 5 IDE - the open-source, cross-platform game engine designed for everyone",
+  "name": "assemble3",
+  "productName": "Assemble3",
+  "description": "Assemble3 IDE - a GDevelop fork with a Construct-like editor",
   "version": "5.6.282",
   "author": "GDevelop Team <hello@gdevelop.io>",
   "license": "MIT",

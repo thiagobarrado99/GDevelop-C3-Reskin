@@ -1,5 +1,6 @@
 // @flow
 import { type I18n } from '@lingui/core';
+import { APP_NAME } from '../C3Brand';
 
 // c3: make the editor speak Construct 3 vocabulary (see the terminology map
 // in CLAUDE.md) by rewriting translated strings at runtime, so the
@@ -192,6 +193,12 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
   ],
 };
 
+// The app name, in every language (URLs are lowercase and untouched).
+const brandRules: Array<Rule> = [
+  [/\bGDevelop 5\b/g, APP_NAME],
+  [/\bGDevelop\b/g, APP_NAME],
+];
+
 const SHIELD = String.fromCharCode(1);
 const SHIELDED = new RegExp(SHIELD + '(\\d+)' + SHIELD, 'g');
 
@@ -201,8 +208,10 @@ const SHIELDED = new RegExp(SHIELD + '(\\d+)' + SHIELD, 'g');
  * user content is never rewritten.
  */
 export const applyC3Terminology = (i18n: I18n) => {
-  const rules = rulesByLanguage[i18n.language.replace('-', '_')];
-  if (!rules) return;
+  const rules = [
+    ...(rulesByLanguage[i18n.language.replace('-', '_')] || []),
+    ...brandRules,
+  ];
 
   const cache: Map<string, string> = new Map();
   const rewrite = (text: string): string => {

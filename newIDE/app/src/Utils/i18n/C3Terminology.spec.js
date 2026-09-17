@@ -91,6 +91,18 @@ describe('applyC3Terminology', () => {
     const i18n = makeI18n('fr_FR', { Scene: 'Scène' });
     expect(i18n._('Scene')).toBe('Scène');
   });
+
+  it('names the app Assemble3 in every language, but not in URLs', () => {
+    const fr = makeI18n('fr_FR', {
+      'About GDevelop': 'À propos de GDevelop 5',
+      'GDevelop website': 'Site https://gdevelop.io',
+    });
+    expect(fr._('About GDevelop')).toBe('À propos de Assemble3');
+    expect(fr._('GDevelop website')).toBe('Site https://gdevelop.io');
+    expect(makeI18n('pt_BR', {})._('Official GDevelop website')).toBe(
+      'Site oficial do Assemble3'
+    );
+  });
 });
 
 describe('applyC3Terminology pt_BR agreement', () => {
