@@ -860,7 +860,10 @@ const EventsTree: React.ComponentType<{
           opacity: isDragged ? 0.5 : 1,
           ...getEventContainerStyle(props.windowSize),
         }}
-        {...dataObjectToProps({ rowIndex: node.rowIndex.toString() })}
+        {...dataObjectToProps({
+          rowIndex: node.rowIndex.toString(),
+          eventNumber: (node.rowIndex + 1).toString(), // c3: margin number
+        })}
       >
         <EventContainer
           project={props.project}

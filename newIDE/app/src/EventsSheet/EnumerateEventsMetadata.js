@@ -10,6 +10,18 @@ export type EventMetadata = {|
   description: string,
 |};
 
+// c3: Construct's "Add..." order - event, comment, group, include, then loops.
+const c3Order = [
+  'BuiltinCommonInstructions::Standard',
+  'BuiltinCommonInstructions::Comment',
+  'BuiltinCommonInstructions::Group',
+  'BuiltinCommonInstructions::Link',
+];
+const c3Rank = (type: string) => {
+  const index = c3Order.indexOf(type);
+  return index === -1 ? c3Order.length : index;
+};
+
 export const enumerateEventsMetadata = (): Array<EventMetadata> => {
   const allExtensions = gd
     .asPlatform(gd.JsPlatform.get())
@@ -35,5 +47,5 @@ export const enumerateEventsMetadata = (): Array<EventMetadata> => {
           };
         });
     })
-  );
+  ).sort((a, b) => c3Rank(a.type) - c3Rank(b.type)); // c3
 };

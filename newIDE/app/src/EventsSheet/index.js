@@ -835,17 +835,62 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
     });
   };
 
+  // c3: last right-clicked instruction, for the Construct-style entries below.
+  _contextMenuInstruction: ?{|
+    eventContext: EventContext,
+    instructionContext: InstructionContext,
+  |} = null;
+
   _buildInstructionContextMenu = (i18n: I18nType): any =>
     [
-      {
-        label: i18n._(t`Copy`),
-        click: () => this.copySelection(),
-        accelerator: 'CmdOrCtrl+C',
-      },
+      // c3: Construct's order - Edit, Add another, Invert, Cut, Copy, Paste, Delete.
+      this._contextMenuInstruction
+        ? {
+            label: i18n._(t`Edit`),
+            click: () =>
+              this._contextMenuInstruction &&
+              this.openInstructionEditor(
+                this._contextMenuInstruction.eventContext,
+                this._contextMenuInstruction.instructionContext
+              ),
+          }
+        : null,
+      this._contextMenuInstruction
+        ? {
+            label: this._contextMenuInstruction.instructionContext.isCondition
+              ? i18n._(t`Add another condition`)
+              : i18n._(t`Add another action`),
+            click: () =>
+              this._contextMenuInstruction &&
+              this.openInstructionEditor(
+                this._contextMenuInstruction.eventContext,
+                {
+                  instrsList: this._contextMenuInstruction.instructionContext
+                    .instrsList,
+                  isCondition: this._contextMenuInstruction.instructionContext
+                    .isCondition,
+                }
+              ),
+          }
+        : null,
+      hasSelectedAtLeastOneCondition(this.state.selection)
+        ? {
+            label: i18n._(t`Invert Condition`),
+            click: () => this._invertSelectedConditions(),
+            accelerator: getShortcutDisplayName(
+              this.props.shortcutMap['TOGGLE_CONDITION_INVERTED']
+            ),
+          }
+        : null,
       {
         label: i18n._(t`Cut`),
         click: () => this.cutSelection(),
         accelerator: 'CmdOrCtrl+X',
+      },
+      {
+        label: i18n._(t`Copy`),
+        click: () => this.copySelection(),
+        accelerator: 'CmdOrCtrl+C',
       },
       {
         label: i18n._(t`Paste`),
@@ -864,15 +909,6 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
         accelerator: 'CmdOrCtrl+Shift+A',
         visible: hasSomethingSelected(this.state.selection),
       },
-      hasSelectedAtLeastOneCondition(this.state.selection)
-        ? {
-            label: i18n._(t`Invert Condition`),
-            click: () => this._invertSelectedConditions(),
-            accelerator: getShortcutDisplayName(
-              this.props.shortcutMap['TOGGLE_CONDITION_INVERTED']
-            ),
-          }
-        : null,
       this._hasSelectedOptionallyAsyncActions()
         ? {
             label: i18n._(t`Toggle Wait the Action to End`),
@@ -1543,6 +1579,7 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
     instructionContext: InstructionContext
   ) => {
     const multiSelect = this._keyboardShortcuts.shouldMultiSelect();
+    this._contextMenuInstruction = { eventContext, instructionContext }; // c3
     this.setState(
       {
         selection: selectInstruction(

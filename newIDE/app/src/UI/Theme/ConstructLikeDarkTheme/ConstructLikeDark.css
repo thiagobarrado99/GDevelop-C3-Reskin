@@ -171,3 +171,39 @@
   > span {
   color: var(--c3-tab-color, inherit) !important;
 }
+
+/* Event sheet: the drag handle doubles as Construct's numbered margin
+   (data-event-number is set by EventsTree/index.js), selected blocks turn
+   cream with dark text, the sheet-level "Add" links are green. */
+.ConstructLikeDarkTheme .gd-events-sheet .move-handle {
+  width: 26px;
+}
+.ConstructLikeDarkTheme .gd-events-sheet [data-event-number]::before {
+  content: attr(data-event-number);
+  position: absolute;
+  left: 0;
+  top: 4px;
+  width: 26px;
+  text-align: center;
+  font-size: 0.8em;
+  color: #9e9e9e;
+  pointer-events: none;
+  z-index: 1;
+}
+.ConstructLikeDarkTheme .gd-events-sheet .selectable.selected {
+  background-color: #fff2cc;
+  color: #1f1f1f;
+}
+.ConstructLikeDarkTheme
+  .gd-events-sheet
+  .selectable.selected
+  .instruction-parameter {
+  color: #1f1f1f;
+}
+.ConstructLikeDarkTheme .gd-events-sheet .selectable.selected img.icon {
+  filter: none !important;
+}
+.ConstructLikeDarkTheme .gd-events-sheet .add-link:not([id]) {
+  color: var(--c3-event-sheet-color);
+  opacity: 0.9;
+}

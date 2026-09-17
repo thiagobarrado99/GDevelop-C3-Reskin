@@ -27,6 +27,27 @@ describe('applyC3Terminology', () => {
     expect(pt._('Jumpthru platform')).toBe('Atravessável');
   });
 
+  it('names the event sheet entries like Construct', () => {
+    const en = makeI18n('en', {});
+    expect(en._('Add a new event')).toBe('Add event');
+    expect(en._('Standard event')).toBe('Event');
+    expect(en._('Link external events')).toBe('Include event sheet');
+    expect(en._('Pick an object to create a new action from:')).toBe(
+      'Pick an object to create a new action from:'
+    );
+    const pt = makeI18n('pt_BR', {
+      'Add a new event': 'Adicionar um novo evento',
+      'Standard event': 'Evento padrão',
+      'Link external events': 'Vincular eventos externos',
+      Done: 'Concluído',
+    });
+    expect(pt._('Add a new event')).toBe('Adicionar evento');
+    expect(pt._('Standard event')).toBe('Evento');
+    expect(pt._('Link external events')).toBe('Incluir folha de eventos');
+    expect(pt._('Done')).toBe('Pronto');
+    expect(pt._('System')).toBe('Sistema');
+  });
+
   it('rewrites English terms keeping capitalisation', () => {
     const i18n = makeI18n('en', {});
     expect(i18n._('Scene')).toBe('Layout');

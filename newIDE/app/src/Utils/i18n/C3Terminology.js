@@ -29,6 +29,13 @@ const reskinPtBr: { [string]: string } = {
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',
   'Add layer below': 'Adicionar camada abaixo',
+  System: 'Sistema',
+  'Add another condition': 'Adicionar outra condição',
+  'Add another action': 'Adicionar outra ação',
+  'Pick an object to create a new condition from:':
+    'Escolha um objeto para criar uma condição a partir dele:',
+  'Pick an object to create a new action from:':
+    'Escolha um objeto para criar uma ação a partir dele:',
   'No recent projects.': 'Nenhum projeto recente.',
   Participate: 'Participar',
   "Beginner's guide": 'Guia para iniciantes',
@@ -104,6 +111,11 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Untitled external events$/, 'Event sheet 1'],
     [/^Base layer$/, 'Layer 0'],
     [/^Share$/, 'Export'],
+    [/^Add a new event$/, 'Add event'],
+    // Event types, as Construct's "Add..." menu names them.
+    [/^Standard event$/, 'Event'],
+    [/^Event group$/, 'Group'],
+    [/^Link external events$/, 'Include event sheet'],
     // Behaviour names as Construct calls them: the ground is "Solid", the
     // character is "Platform" (order matters: Platform → Solid first).
     [/^Platform$/, 'Solid'],
@@ -130,6 +142,11 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Plataforma atravessável$/, 'Atravessável'],
     [/^Projecto$/, 'Projeto'],
     [/^Exibição$/, 'Exibir'],
+    [/^Concluído$/, 'Pronto'],
+    [/^Adicionar um novo evento$/, 'Adicionar evento'],
+    [/^Evento padrão$/, 'Evento'],
+    [/^Grupo de eventos$/, 'Grupo'],
+    [/^Vincular eventos externos$/, 'Incluir folha de eventos'],
     // cena (f.) → layout (m.)
     r(/\bnovas cenas\b/gi, 'novos layouts'),
     r(/\btodas as cenas\b/gi, 'todos os layouts'),
