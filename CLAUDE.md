@@ -25,7 +25,7 @@ Defaults changed to match Construct (2026-09-18): new projects keep their game s
 Pending / next steps, in order:
 0. **Waiting on the user**: whether `C3-Icons/` (Scirra's icon PNGs, untracked at the repo root) may be committed to the public fork or must stay local with look-alikes drawn for git. Do not `git add` it before that answer. Also confirm whether `#00768e` (object cyan, sampled from the icons) is fine for *text* labels — it is only ≈ 2:1 contrast on the `#474747` panels; icons are fine, labels may want a lighter shade.
 1. Phase 2 leftovers in `TODO.md`: docked project bar (new editor-tab kind for the side panes). Done 2026-09-18 (night): close-tab confirmation on unsaved changes only, project bar order, recent-project context menu, layer context menu (add above/below), dialog chrome (title strip + filled fields + grey buttons, all theme CSS keyed on the `c3-dialog-title` class in `UI/Dialog.js`). Close-tab confirmation on unsaved changes only is done (`MainFrame/index.js`, `// c3:`; invisible in dev because `CloseConfirmDialog` skips `Window.isDev()`).
-2. Phase 6 (see "Colour coding, behaviours and icons"): done so far — colour tokens, properties panel tint, project bar rows + tabs by kind, Solid/Platform/Jump-thru renames, tile grid (`UI/C3TileGrid.js`) in the add-behaviour dialog. The 1:1 behaviour table `Utils/C3Behaviors.js` feeds the grid and applies presets on add (built-in rows done; *ext* rows need the survey). Next: `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there), instance panel edit-through.
+2. Phase 6 (see "Colour coding, behaviours and icons"): done so far — colour tokens, properties panel tint, project bar rows + tabs by kind, Solid/Platform/Jump-thru renames, tile grid (`UI/C3TileGrid.js`) in the add-behaviour dialog. The 1:1 behaviour table `Utils/C3Behaviors.js` feeds the grid and applies presets on add (22 of 32 tiles ported; 10 have no GDevelop equivalent — listed as "no port yet" in the table). Next: `C3-Icons/` applied (user-supplied 64 px icons, map + wrapper described there), instance panel edit-through.
 3. Phase 3 event sheet (see survey + TODO).
 
 Gotchas:
@@ -218,25 +218,34 @@ The tile also fixes the behaviour's default *name* on the object (`Solid` / `Jum
 
 Implementation: one table in `Utils/C3Behaviors.js` — Construct label (pt / en) → `{ type, extensionName?, presets: { property: value }, defaultName, icon slug, category }`. The grid (`UI/C3TileGrid.js`, mounted by `AssetStore/BehaviorStore/index.js`) is fed from that table only; `installAndChoose` installs the extension when the type is not in the project yet, `NewBehaviorDialog.onChoose` (→ `BehaviorsEditor` `addBehavior`) applies the presets through `behavior.updateProperty(name, value)` right after `object.addNewBehavior`. GDevelop behaviours that are not in the table are not offered (keep the ⋮ menu's "show all GDevelop behaviours" toggle as the escape hatch for the teacher, off by default). The whole-string renames in `C3Terminology.js` (`Platform` → Solid, `Platformer character` → Platform, `Jumpthru platform` → Jump-thru) stay: they cover the behaviour *type* name wherever GDevelop prints it (condition/action groups, panel subtitles).
 
-Mapping so far (fill the rest while doing the survey; *ext* = community extension to bundle, name to confirm in the extension store):
+Mapping (the table in `Utils/C3Behaviors.js` is the source of truth; *ext* = reviewed community extension, installed on demand by the store flow when the tile is chosen — needs network the first time):
 
 | Construct tile (pt / en) | Category | GDevelop port | Presets |
 |---|---|---|---|
 | Sólido / Solid | Atributos | `PlatformBehavior::PlatformBehavior` | `platformType=NormalPlatform`, name `Solid` |
 | Pular através / Jump-thru | Atributos | `PlatformBehavior::PlatformBehavior` | `platformType=Jumpthru`, name `JumpThru` |
-| Persistir / Persist, Não salvar / No save | Atributos | *ext* (save-state extensions) or skip | |
+| Persistir / Persist | Atributos | `SaveState::SaveConfiguration` | `defaultProfilePersistence=Persisted` |
+| Não salvar / No save | Atributos | `SaveState::SaveConfiguration` | `defaultProfilePersistence=DoNotSave` |
 | Projetor de sombra / Shadow caster | Atributos | `Lighting::LightObstacleBehavior` | |
 | Plataforma / Platform | Movimentos | `PlatformBehavior::PlatformerObjectBehavior` | name `Platform` |
 | 8 Direções / 8 Direction | Movimentos | `TopDownMovementBehavior::TopDownMovementBehavior` | `allowDiagonals=true`, name `8Direction` |
 | Física / Physics | Movimentos | `Physics2::Physics2Behavior` | |
-| Carro / Car | Movimentos | `Physics3D::PhysicsCar3D` (3D only) or *ext* | |
+| Carro / Car | Movimentos | `Physics3D::PhysicsCar3D` (3D objects only; 2D could use *ext* `PhysicsCar::PhysicsCar`) | |
 | Explorador de rotas / Pathfinding | Movimentos | `PathfindingBehavior::PathfindingBehavior` | |
-| Projétil / Bullet, Senóide / Sine, Girar / Rotate, Órbita / Orbit, Mover para / MoveTo, Seguir / Follow, Canhão / Turret, Movimento em grid / Tile movement, Personalizado / Custom | Movimentos | *ext* | |
+| Projétil / Bullet | Movimentos | *ext* `AdvancedProjectile::AdvancedProjectile` | |
+| Órbita / Orbit | Movimentos | *ext* `EllipseMovement::EllipseMovement` | |
+| Canhão / Turret | Movimentos | *ext* `Turret::Turret` | |
+| Senóide / Sine, Girar / Rotate, Mover para / MoveTo, Seguir / Follow, Movimento em grid / Tile movement, Personalizado / Custom | Movimentos | **no port yet** — nothing close in GDevelop or the reviewed store (candidates to write as our own events-based extensions later) | |
 | Arrastar & Soltar / Drag & Drop | Geral | `DraggableBehavior::Draggable` | name `DragDrop` |
 | Âncora / Anchor | Geral | `AnchorBehavior::AnchorBehavior` | |
 | Destruir externamente / Destroy outside layout | Geral | `DestroyOutsideBehavior::DestroyOutside` | |
 | Interpolação / Tween | Geral | `Tween::TweenBehavior` | |
-| Esmaecer / Fade, Piscar / Flash, Fixar / Pin, Dar a volta / Wrap, Cronômetro / Timer, Restrito ao layout / Bound to layout, Centrar em / Scroll To, Campo de visão / Line of sight | Geral | *ext* | |
+| Piscar / Flash | Geral | *ext* `Flash::Flash` | |
+| Fixar / Pin | Geral | *ext* `Sticker::Sticker` | |
+| Dar a volta / Wrap | Geral | *ext* `ScreenWrap::ScreenWrap` | |
+| Restrito ao layout / Bound to layout | Geral | *ext* `StayOnScreen::StayOnScreen` | |
+| Centrar em / Scroll To | Geral | *ext* `SmoothCamera::SmoothCamera` | |
+| Esmaecer / Fade, Cronômetro / Timer, Campo de visão / Line of sight | Geral | **no port yet** (Fade ≈ Tween; Timer = GDevelop object timers; Line of sight = raycast conditions) | |
 | [Billboard] | 3D | `Scene3D::Base3DBehavior` (closest) | |
 
 ## Setup / run / test
