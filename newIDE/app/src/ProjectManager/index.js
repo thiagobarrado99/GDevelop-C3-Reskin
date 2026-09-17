@@ -1122,49 +1122,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
           !gameplayTestTreeViewItemProps
           ? []
           : [
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  gameSettingsRootFolderId,
-                  i18n._(t`Game settings`)
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  return [
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gamePropertiesItemId,
-                        i18n._(t`Properties & Icons`),
-                        openProjectProperties,
-                        'res/icons_default/properties_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        globalVariablesItemId,
-                        i18n._(t`Global variables`),
-                        openProjectVariables,
-                        'res/icons_default/global_variable24_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gameResourcesItemId,
-                        i18n._(t`Resources`),
-                        onOpenResources,
-                        'res/icons_default/project_resources_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gameDashboardItemId,
-                        i18n._(t`Game Dashboard`),
-                        onOpenGamesDashboardDialog,
-                        'res/icons_default/graphs_black.svg'
-                      )
-                    ),
-                  ];
-                },
-              },
+              // c3: Construct order - layouts, event sheets, then the rest.
               {
                 isRoot: true,
                 content: new LabelTreeViewItemContent(
@@ -1198,40 +1156,6 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
                         new SceneTreeViewItemContent(
                           project.getLayoutAt(i),
                           sceneTreeViewItemProps
-                        )
-                      )
-                  );
-                },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  extensionsRootFolderId,
-                  i18n._(t`Extensions`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Create or search for new extensions`),
-                    click: openSearchExtensionDialog,
-                    id: 'project-manager-extension-search-or-create',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getEventsFunctionsExtensionsCount() === 0) {
-                    return [
-                      new PlaceHolderTreeViewItem(
-                        extensionsEmptyPlaceholderId,
-                        i18n._(t`Start by adding a new extension.`)
-                      ),
-                    ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getEventsFunctionsExtensionsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new ExtensionTreeViewItemContent(
-                          project.getEventsFunctionsExtensionAt(i),
-                          extensionTreeViewItemProps
                         )
                       )
                   );
@@ -1311,6 +1235,83 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
                         )
                       )
                   );
+                },
+              },
+              {
+                isRoot: true,
+                content: new LabelTreeViewItemContent(
+                  extensionsRootFolderId,
+                  i18n._(t`Extensions`),
+                  {
+                    icon: <Add />,
+                    label: i18n._(t`Create or search for new extensions`),
+                    click: openSearchExtensionDialog,
+                    id: 'project-manager-extension-search-or-create',
+                  }
+                ),
+                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                  if (project.getEventsFunctionsExtensionsCount() === 0) {
+                    return [
+                      new PlaceHolderTreeViewItem(
+                        extensionsEmptyPlaceholderId,
+                        i18n._(t`Start by adding a new extension.`)
+                      ),
+                    ];
+                  }
+                  return mapFor(
+                    0,
+                    project.getEventsFunctionsExtensionsCount(),
+                    i =>
+                      new LeafTreeViewItem(
+                        new ExtensionTreeViewItemContent(
+                          project.getEventsFunctionsExtensionAt(i),
+                          extensionTreeViewItemProps
+                        )
+                      )
+                  );
+                },
+              },
+              {
+                isRoot: true,
+                content: new LabelTreeViewItemContent(
+                  gameSettingsRootFolderId,
+                  i18n._(t`Game settings`)
+                ),
+                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                  return [
+                    new LeafTreeViewItem(
+                      new ActionTreeViewItemContent(
+                        gamePropertiesItemId,
+                        i18n._(t`Properties & Icons`),
+                        openProjectProperties,
+                        'res/icons_default/properties_black.svg'
+                      )
+                    ),
+                    new LeafTreeViewItem(
+                      new ActionTreeViewItemContent(
+                        globalVariablesItemId,
+                        i18n._(t`Global variables`),
+                        openProjectVariables,
+                        'res/icons_default/global_variable24_black.svg'
+                      )
+                    ),
+                    new LeafTreeViewItem(
+                      new ActionTreeViewItemContent(
+                        gameResourcesItemId,
+                        i18n._(t`Resources`),
+                        onOpenResources,
+                        'res/icons_default/project_resources_black.svg'
+                      )
+                    ),
+                    new LeafTreeViewItem(
+                      new ActionTreeViewItemContent(
+                        gameDashboardItemId,
+                        i18n._(t`Game Dashboard`),
+                        onOpenGamesDashboardDialog,
+                        'res/icons_default/graphs_black.svg'
+                      )
+                    ),
+                  ];
                 },
               },
               {

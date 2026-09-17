@@ -45,7 +45,7 @@ Hide
 - [x] Closing the browser tab / window asks for confirmation only when the project has unsaved changes (`UI/CloseConfirmDialog.js`, wired in `MainFrame/index.js` with `shouldPrompt={!!state.currentProject}` — change to `&& hasUnsavedChanges`; note it is skipped in dev via `Window.isDev()`, so test on `npm run build` or Electron)
 - [x] New projects keep their game size on startup (`CreateProject.js`, Construct default)
 - [x] Main menu tree (`MainFrame/C3MainMenu.js`, ☰ opens it as a dropdown; project manager drawer reachable from View ▸ Project bar until it is docked)
-- [ ] Project bar tree order/labels: Layouts, Event sheets, Object types, Families, Sounds, Music, Fonts, Files
+- [x] Project bar tree order: Layouts · Folhas de eventos · Layouts externos · Extensões · Configurações do jogo (`ProjectManager/index.js` root array reordered, `// c3:`); object types/families/resources stay per-scene / in the Resources editor
 - [ ] Layers bar: ☑ visibility · 🔒 · name · z-index; context Insert layer above/below, Rename
 - [x] Panel arrangement: properties left, canvas centre, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js` `initialMosaicEditorNodes`; users with a saved layout keep theirs)
 - [ ] Project bar as a docked panel — needs a new editor-tab kind for the side panes; for now the drawer opens from the toolbar's first button and View ▸ Project bar, and no longer carries the old File/View/Help row
