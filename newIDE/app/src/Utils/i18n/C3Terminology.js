@@ -33,6 +33,9 @@ const reskinPtBr: { [string]: string } = {
   'Add group': 'Adicionar grupo',
   'Add global variable': 'Adicionar variável global',
   'Include event sheet': 'Incluir folha de eventos',
+  'Snap to grid': 'Alinhar ao grid',
+  'Grid size': 'Tamanho do grid',
+  'Grid offset': 'Deslocamento do grid',
   'Already in the events: pick this tile in Add condition / Add action.':
     'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',
@@ -163,6 +166,7 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     ...exactRules(reskinPtBr),
     // Whole-string labels, as named in Construct 3 (pt-BR).
     [/^Cena sem título$/, 'Layout 1'],
+    [/^Mostrar grade$/, 'Exibir grid'],
     // Objects and families are project-wide by default (parity guide A6).
     [/^Objetos Globais$/, 'Tipos de objeto'],
     [/^Objetos da Cena$/, 'Tipos de objeto deste layout'],
@@ -208,6 +212,8 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     r(/\bda cena\b/gi, 'do layout'),
     r(/\bna cena\b/gi, 'no layout'),
     r(/\bpela cena\b/gi, 'pelo layout'),
+    r(/\bnesta cena\b/gi, 'neste layout'),
+    r(/\bdesta cena\b/gi, 'deste layout'),
     r(/\besta cena\b/gi, 'este layout'),
     r(/\bessa cena\b/gi, 'esse layout'),
     r(/\baquela cena\b/gi, 'aquele layout'),

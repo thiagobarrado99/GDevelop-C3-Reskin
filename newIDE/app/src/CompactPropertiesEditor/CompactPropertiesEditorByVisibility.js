@@ -236,11 +236,6 @@ export const CompactPropertiesEditorByVisibility = ({
     [basicPropertiesSchema, hasAdvancedProperties]
   );
 
-  const areAdvancedPropertiesExpandedByDefault = React.useMemo(
-    () => isAnyPropertyModified(advancedPropertiesSchema, instances),
-    [instances, advancedPropertiesSchema]
-  );
-
   return (
     <ColumnStackLayout expand noMargin noOverflowParent>
       {!hasAnyProperty && (
@@ -262,10 +257,9 @@ export const CompactPropertiesEditorByVisibility = ({
           unsavedChanges={unsavedChanges}
         />
       )}
+      {/* c3: every property shown, like Construct (no "Show more" fold). */}
       {hasAdvancedProperties && (
-        <CompactCollapsibleAdvancedSection
-          uncollapsedByDefault={areAdvancedPropertiesExpandedByDefault}
-        >
+        <>
           <CompactPropertiesEditor
             project={project}
             schema={advancedPropertiesSchema}
@@ -276,7 +270,7 @@ export const CompactPropertiesEditorByVisibility = ({
             renderExtraDescriptionText={renderExtraDescriptionText}
             unsavedChanges={unsavedChanges}
           />
-        </CompactCollapsibleAdvancedSection>
+        </>
       )}
     </ColumnStackLayout>
   );

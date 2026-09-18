@@ -23,6 +23,7 @@ import {
 } from '../ObjectGroupEditor/CompactObjectGroupPropertiesEditor';
 import { type ObjectGroupEditorTab } from '../ObjectGroupEditor/EditedObjectGroupEditorDialog';
 import EmptyMessage from '../UI/EmptyMessage';
+import { type InstancesEditorSettings } from '../InstancesEditor/InstancesEditorSettings'; // c3
 
 export const styles = {
   paper: {
@@ -99,6 +100,8 @@ type Props = {|
   // For scenes
   onBackgroundColorChanged: () => void,
   openSceneVariables: () => void,
+  instancesEditorSettings?: ?InstancesEditorSettings, // c3
+  onInstancesEditorSettingsChanged?: InstancesEditorSettings => void, // c3
 
   // For object groups
   objectGroup: gdObjectGroup | null,
@@ -214,6 +217,8 @@ export const InstanceOrObjectPropertiesEditorContainer: React.ComponentType<{
       // For scenes
       onBackgroundColorChanged,
       openSceneVariables,
+      instancesEditorSettings, // c3
+      onInstancesEditorSettingsChanged, // c3
 
       // For object groups
       objectGroup,
@@ -357,6 +362,8 @@ export const InstanceOrObjectPropertiesEditorContainer: React.ComponentType<{
             i18n={i18n}
             onBackgroundColorChanged={onBackgroundColorChanged}
             openSceneVariables={openSceneVariables}
+            instancesEditorSettings={instancesEditorSettings} // c3
+            onInstancesEditorSettingsChanged={onInstancesEditorSettingsChanged} // c3
           />
         ) : null}
       </Paper>

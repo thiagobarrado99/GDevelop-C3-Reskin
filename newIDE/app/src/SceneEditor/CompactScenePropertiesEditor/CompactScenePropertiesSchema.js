@@ -1,6 +1,7 @@
 // @flow
 
 import { type I18n as I18nType } from '@lingui/core';
+import { type InstancesEditorSettings } from '../../InstancesEditor/InstancesEditorSettings'; // c3
 import { t } from '@lingui/macro';
 import {
   type Schema,
@@ -158,6 +159,100 @@ export const makeSchema = ({
       preventWrap: true,
       removeSpacers: true,
       children: [getWindowTitleField({ i18n })],
+    },
+  ];
+};
+
+// c3: Construct's "Editor" section of the layout properties - the grid
+// settings the toolbar button and the grid dialog also edit.
+export const makeC3EditorSchema = ({
+  i18n,
+  onChange,
+}: {|
+  i18n: I18nType,
+  onChange: InstancesEditorSettings => void,
+|}): Schema => {
+  const set = (changes: Partial<InstancesEditorSettings>) => (
+    settings: InstancesEditorSettings
+  ) => onChange({ ...settings, ...changes });
+  const numberField = (
+    name: string,
+    label: string,
+    getValue: InstancesEditorSettings => number,
+    setValue: (InstancesEditorSettings, number) => void
+  ): Field => ({
+    name,
+    getLabel: () => label,
+    valueType: 'number',
+    getValue,
+    setValue,
+  });
+  return [
+    {
+      name: 'grid',
+      getLabel: () => i18n._(t`Show grid`),
+      valueType: 'boolean',
+      getValue: (settings: InstancesEditorSettings) => settings.grid,
+      setValue: (settings: InstancesEditorSettings, newValue: boolean) =>
+        set({ grid: newValue })(settings),
+    },
+    {
+      name: 'snap',
+      getLabel: () => i18n._(t`Snap to grid`),
+      valueType: 'boolean',
+      getValue: (settings: InstancesEditorSettings) => settings.snap,
+      setValue: (settings: InstancesEditorSettings, newValue: boolean) =>
+        set({ snap: newValue })(settings),
+    },
+    {
+      name: 'GridSize',
+      title: i18n._(t`Grid size`),
+      nonFieldType: 'sectionTitle',
+      getValue: undefined,
+    },
+    {
+      name: 'GridSizeRow',
+      type: 'row',
+      preventWrap: true,
+      children: [
+        numberField(
+          'gridWidth',
+          i18n._(t`Width`),
+          settings => settings.gridWidth,
+          (settings, gridWidth) => set({ gridWidth })(settings)
+        ),
+        numberField(
+          'gridHeight',
+          i18n._(t`Height`),
+          settings => settings.gridHeight,
+          (settings, gridHeight) => set({ gridHeight })(settings)
+        ),
+      ],
+    },
+    {
+      name: 'GridOffset',
+      title: i18n._(t`Grid offset`),
+      nonFieldType: 'sectionTitle',
+      getValue: undefined,
+    },
+    {
+      name: 'GridOffsetRow',
+      type: 'row',
+      preventWrap: true,
+      children: [
+        numberField(
+          'gridOffsetX',
+          i18n._(t`X`),
+          settings => settings.gridOffsetX,
+          (settings, gridOffsetX) => set({ gridOffsetX })(settings)
+        ),
+        numberField(
+          'gridOffsetY',
+          i18n._(t`Y`),
+          settings => settings.gridOffsetY,
+          (settings, gridOffsetY) => set({ gridOffsetY })(settings)
+        ),
+      ],
     },
   ];
 };

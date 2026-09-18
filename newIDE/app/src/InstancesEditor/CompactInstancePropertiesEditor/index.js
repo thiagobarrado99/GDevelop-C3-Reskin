@@ -324,11 +324,8 @@ export const CompactInstancePropertiesEditor = ({
     ]
   );
 
-  const [isBehaviorsFolded, setIsBehaviorsFolded] = React.useState(
-    object
-      ? instances.every(instance => !instance.hasAnyOverriddenProperty(object))
-      : true
-  );
+  // c3: behaviours listed at once, like Construct's bar.
+  const [isBehaviorsFolded, setIsBehaviorsFolded] = React.useState(false);
 
   const shouldDisplayTileSetVisualizer =
     !!object && object.getType() === 'TileMap::SimpleTileMap';

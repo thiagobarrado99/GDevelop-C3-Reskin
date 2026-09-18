@@ -3438,6 +3438,9 @@ export default class SceneEditor extends React.Component<Props, State> {
                     onInstancesEditorSettingsMutated={
                       this._onInstancesEditorSettingsMutated
                     }
+                    onInstancesEditorSettingsChanged={
+                      this.setInstancesEditorSettings
+                    } // c3
                     onContextMenu={this._onContextMenu}
                     resourceManagementProps={this.props.resourceManagementProps}
                     hotReloadPreviewButtonProps={

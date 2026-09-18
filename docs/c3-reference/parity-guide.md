@@ -60,7 +60,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `EventsTree/BottomButtons.js` + `EventsSheet/index.js` context menu builder: top level `Adicionar evento · Adicionar comentário · Adicionar grupo · Adicionar variável global · Incluir folha de eventos · Colar · Loops ▸ (Senão · Para cada objeto · Para cada variável filha · Repetir · Enquanto)`. `Adicionar variável global` opens the global variables dialog (`MainFrame` `openGlobalVariablesDialog` — pass the callback down through `EventsSheet` props). `Adicionar função` / `ação personalizada` are omitted (extensions are hidden). pt-BR in `reskinPtBr`.
 - Check: text dump of the menu equals the list above.
 
-### B3. Properties bar expanded by default + grid settings
+### B3. Properties bar expanded by default + grid settings — done 2026-09-18 (layout sections open by default, behaviours unfolded on instances, no more `Mostrar mais` fold, `Editor` section with grid rows bound to `setInstancesEditorSettings` through `onInstancesEditorSettingsChanged`)
 - `InstancesEditor/CompactInstancePropertiesEditor`, `LayersList/CompactLayerPropertiesEditor`, `SceneEditor` layout properties, `ObjectEditor/CompactObjectPropertiesEditor`: sections `Propriedades`, `Comportamentos`, `Variáveis…` open by default (`defaultOpen`/`initiallyOpen` props, keep the user's toggle in local storage). Object `Propriedades ▸ Mostrar mais` → show all. Add an `Editor` section to the *layout* properties with `Exibir grid ☐ · Alinhar ao grid ☐ · Tamanho do grid W×H · Deslocamento do grid` bound to the same state the toolbar grid button edits (`SceneEditor/index.js` `uiSettings`).
 - Check: click instance → behaviours listed without a click; layout row → `Editor` section with grid rows.
 

@@ -528,6 +528,10 @@ const SwipeableDrawerEditorsDisplay: React.ComponentType<{
                         onBackgroundColorChanged={
                           props.onBackgroundColorChanged
                         }
+                        instancesEditorSettings={props.instancesEditorSettings} // c3
+                        onInstancesEditorSettingsChanged={
+                          props.onInstancesEditorSettingsChanged
+                        } // c3
                         openSceneVariables={props.openSceneVariables}
                       />
                     )}

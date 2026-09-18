@@ -30,7 +30,9 @@ import Window from '../../Utils/Window';
 import Link from '../../UI/Link';
 import { CompactPropertiesEditorByVisibility } from '../../CompactPropertiesEditor/CompactPropertiesEditorByVisibility';
 import { useForceRecompute } from '../../Utils/UseForceUpdate';
-import { makeSchema } from './CompactScenePropertiesSchema';
+import { makeSchema, makeC3EditorSchema } from './CompactScenePropertiesSchema';
+import { type InstancesEditorSettings } from '../../InstancesEditor/InstancesEditorSettings'; // c3
+import CompactPropertiesEditor from '../../CompactPropertiesEditor'; // c3
 import EmptyMessage from '../../UI/EmptyMessage';
 import useVariablesContainerRefactoring from '../../VariablesList/useVariablesContainerRefactoring';
 import propertiesMapToSchema from '../../PropertiesEditor/PropertiesMapToSchema';
@@ -75,6 +77,9 @@ type Props = {|
   unsavedChanges?: ?UnsavedChanges,
   i18n: I18nType,
   historyHandler?: HistoryHandler,
+  // c3: grid settings shown in an "Editor" section, like Construct.
+  instancesEditorSettings?: ?InstancesEditorSettings,
+  onInstancesEditorSettingsChanged?: InstancesEditorSettings => void,
 |};
 
 export const CompactScenePropertiesEditor = ({
@@ -87,6 +92,8 @@ export const CompactScenePropertiesEditor = ({
   unsavedChanges,
   i18n,
   historyHandler,
+  instancesEditorSettings,
+  onInstancesEditorSettingsChanged,
 }: Props): React.Node => {
   const forceUpdate = useForceUpdate();
   const variablesListRef = React.useRef<?VariablesListInterface>(null);
@@ -126,7 +133,7 @@ export const CompactScenePropertiesEditor = ({
     project,
     persistedPanelStateId,
     persistedPanelStateType: 'scene',
-    foldedByDefault: true,
+    foldedByDefault: false, // c3: sections open, like Construct's bar
   });
 
   // Variable refactoring: snapshot on mount, apply on unmount/scene change.
@@ -153,6 +160,17 @@ export const CompactScenePropertiesEditor = ({
       });
     },
     [schemaRecomputeTrigger, i18n, onBackgroundColorChanged]
+  );
+  // c3
+  const editorSchema = React.useMemo(
+    () =>
+      onInstancesEditorSettingsChanged
+        ? makeC3EditorSchema({
+            i18n,
+            onChange: onInstancesEditorSettingsChanged,
+          })
+        : null,
+    [i18n, onInstancesEditorSettingsChanged]
   );
 
   return (
@@ -338,6 +356,24 @@ export const CompactScenePropertiesEditor = ({
               />
             )}
           />
+          {editorSchema && instancesEditorSettings && (
+            <TopLevelCollapsibleSection
+              title={<Trans>Editor</Trans>}
+              isFolded={isSectionFolded('editor')}
+              toggleFolded={() => toggleSectionFolded('editor')}
+              renderContent={() => (
+                <ColumnStackLayout noMargin noOverflowParent>
+                  <CompactPropertiesEditor
+                    project={project}
+                    schema={editorSchema}
+                    instances={[instancesEditorSettings]}
+                    onInstancesModified={noop}
+                    onRefreshAllFields={noop}
+                  />
+                </ColumnStackLayout>
+              )}
+            />
+          )}
           <LargeSpacer />
           <Line>
             <EmptyMessage>

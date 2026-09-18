@@ -156,6 +156,7 @@ export type SceneEditorsDisplayProps = {|
 
   instancesEditorSettings: InstancesEditorSettings,
   onInstancesEditorSettingsMutated: InstancesEditorSettings => void,
+  onInstancesEditorSettingsChanged: InstancesEditorSettings => void, // c3: not debounced
   editorViewPosition2D: EditorViewPosition2D,
 
   historyHandler: HistoryHandler,
