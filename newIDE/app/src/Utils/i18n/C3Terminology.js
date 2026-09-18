@@ -36,6 +36,7 @@ const reskinPtBr: { [string]: string } = {
   'Snap to grid': 'Alinhar ao grid',
   'Grid size': 'Tamanho do grid',
   'Grid offset': 'Deslocamento do grid',
+  'Z index': 'Índice Z',
   'Already in the events: pick this tile in Add condition / Add action.':
     'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',

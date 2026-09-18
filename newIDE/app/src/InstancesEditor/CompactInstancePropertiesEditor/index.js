@@ -303,6 +303,7 @@ export const CompactInstancePropertiesEditor = ({
         onEditObject: editObjectInPropertiesPanel,
         layersContainer,
         forceUpdate,
+        isSprite: object.getType() === 'Sprite', // c3
       }).concat(reorderedInstanceSchemaForCustomProperties);
       return {
         object,

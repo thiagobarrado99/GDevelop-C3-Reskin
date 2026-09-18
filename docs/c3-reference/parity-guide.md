@@ -72,7 +72,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `ProjectManager/index.js`: hide `Painel do jogo`, `Testes de jogabilidade` (`GameplayTestTreeViewItemContent.js`), `Extensões` (`ExtensionTreeViewItemContent.js`) under the existing classroom `hide*` flags or a `c3` constant; keep `Layouts externos` (used) but move it after `Camadas`; rename `Recursos` → `Arquivos do projeto`. Optional later: split resources by kind into `Sons · Música · Vídeos · Fontes · Arquivos` folders (`ResourcesList` filter by `resource.getKind()`).
 - Check: bar tree = Layouts · Folhas de eventos · Objetos · Famílias · Camadas · Layouts externos · Propriedades do projeto · Arquivos do projeto.
 
-### B6. Instance panel rows like Construct
+### B6. Instance panel rows like Construct — done 2026-09-18 (2D schema in `CompactInstancePropertiesSchema.js`: Posição · Tamanho · Ângulo · Opacidade · Camada · Índice Z · UID, labelled rows, `Editar animações` for sprites; the `Global ☐` toggle was skipped — objects are global by default since A6)
 - `InstancesEditor/CompactInstancePropertiesEditor/index.js`: replace the icon-only X/Y/Z/W/H fields with label rows `Posição X,Y · Tamanho W,H · Ângulo · Opacidade · Camada · Índice Z`; behaviours unfolded (B3); `Editar objeto` becomes `Animações → Editar` for sprites (opens the object editor on the animations tab — already wired) plus a `Global ☐` toggle row that calls the existing "Definir como objeto global" action (`ObjectsList` `setAsGlobalObject`). `UID` = instance `getPersistentUuid()` read-only.
 - Check: screenshot vs `cmp/c3-*-instance*.png`.
 

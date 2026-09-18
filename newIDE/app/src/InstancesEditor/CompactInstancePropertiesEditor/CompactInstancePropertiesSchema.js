@@ -57,12 +57,15 @@ const getEditObjectButton = ({
   i18n,
   onEditObject,
   is3DInstance,
+  isSprite,
 }: {|
   i18n: I18nType,
   onEditObject: (name: string) => void,
   is3DInstance: boolean,
+  isSprite?: boolean,
 |}) => ({
-  label: i18n._(t`Edit object`),
+  // c3: Construct's "Animations → Edit" row for sprites.
+  label: isSprite ? i18n._(t`Edit animations`) : i18n._(t`Edit object`),
   disabled: 'onValuesDifferent',
   nonFieldType: 'button',
   getIcon: is3DInstance
@@ -160,6 +163,17 @@ const getZOrderField = ({ i18n }: {| i18n: I18nType |}): Field => ({
   setValue: (instance: gdInitialInstance, newValue: number) =>
     instance.setZOrder(newValue),
   renderLeftIcon: className => <LetterZ className={className} />,
+});
+
+// c3: Construct shows the instance UID (read-only).
+const getUidField = ({ i18n }: {| i18n: I18nType |}): Field => ({
+  name: 'UID',
+  getLabel: () => i18n._(t`UID`),
+  valueType: 'string',
+  getValue: (instance: gdInitialInstance) =>
+    instance.getPersistentUuid().slice(0, 8),
+  setValue: () => {},
+  disabled: () => 'always',
 });
 
 const getTitleRow = ({ i18n }: {| i18n: I18nType |}): Field => ({
@@ -530,6 +544,7 @@ export const makeSchema = ({
   onEditObject,
   onGetInstanceSize,
   layersContainer,
+  isSprite,
 }: {|
   is3DInstance: boolean,
   hasOpacity: boolean,
@@ -540,6 +555,7 @@ export const makeSchema = ({
   onEditObject: (name: string) => void,
   onGetInstanceSize: gdInitialInstance => [number, number, number],
   layersContainer: gdLayersContainer,
+  isSprite?: boolean, // c3
 |}): Schema => {
   const getInstanceWidth = (instance: gdInitialInstance) =>
     instance.hasCustomSize()
@@ -646,21 +662,29 @@ export const makeSchema = ({
     ].filter(Boolean);
   }
 
+  // c3: Construct's rows - Position · Size · Angle · Opacity · Layer ·
+  // Z index · UID, labelled, then the animations/object button.
+  const withoutIcon = (field: Field): Field => {
+    // $FlowFixMe[prop-missing]
+    const { renderLeftIcon, ...rest } = field;
+    // $FlowFixMe[incompatible-type]
+    return rest;
+  };
   // $FlowFixMe[incompatible-type]
   return [
     getTitleRow({ i18n }),
-    getEditObjectButton({ i18n, onEditObject, is3DInstance }),
     {
       name: 'Position',
       type: 'row',
+      title: i18n._(t`Position`),
       preventWrap: true,
       removeSpacers: true,
       children: getXAndYFields({ i18n }),
     },
-    getZOrderField({ i18n }),
     {
       name: 'Size',
       type: 'row',
+      title: i18n._(t`Size`),
       preventWrap: true,
       children: [
         {
@@ -696,33 +720,27 @@ export const makeSchema = ({
         },
       ],
     },
-    hasOpacity
+    {
+      ...withoutIcon(getRotationZField({ i18n })),
+      getLabel: () => i18n._(t`Angle`),
+    },
+    canBeFlippedXY
       ? {
-          name: 'Opacity',
+          name: 'Flip',
           type: 'row',
           preventWrap: true,
           removeSpacers: true,
-          children: [getOpacityField({ i18n })],
+          children: [getFlippableButtons({ i18n, canFlipZ: canBeFlippedZ })],
         }
       : null,
-    getLayerField({ i18n, layersContainer }),
+    hasOpacity ? withoutIcon(getOpacityField({ i18n })) : null,
+    withoutIcon(getLayerField({ i18n, layersContainer })),
     {
-      name: 'Rotation',
-      type: 'row',
-      title: i18n._(t`Rotation`),
-      preventWrap: true,
-      removeSpacers: true,
-      children: canBeFlippedXY
-        ? [getFlippableButtons({ i18n, canFlipZ: canBeFlippedZ })]
-        : [],
+      ...withoutIcon(getZOrderField({ i18n })),
+      getLabel: () => i18n._(t`Z index`),
     },
-    {
-      name: 'Rotation Z',
-      type: 'row',
-      preventWrap: true,
-      removeSpacers: true,
-      children: [getRotationZField({ i18n })],
-    },
+    getUidField({ i18n }),
+    getEditObjectButton({ i18n, onEditObject, is3DInstance, isSprite }),
   ].filter(Boolean);
 };
 
