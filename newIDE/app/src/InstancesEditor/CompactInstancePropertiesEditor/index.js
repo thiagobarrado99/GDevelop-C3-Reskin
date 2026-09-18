@@ -403,6 +403,44 @@ export const CompactInstancePropertiesEditor = ({
               </Column>
             </>
           )}
+          {/* c3: Construct's order - instance variables before behaviours and effects. */}
+          {object && shouldDisplayVariablesList && variablesContainer ? (
+            <TopLevelCollapsibleSection
+              title={<Trans>Instance Variables</Trans>}
+              isFolded={isSectionFolded('variables')}
+              toggleFolded={() => toggleSectionFolded('variables')}
+              onOpenFullEditor={() => editInstanceVariables(instance)}
+              noContentMargin
+              renderContent={() => (
+                <VariablesList
+                  projectScopedContainersAccessor={
+                    projectScopedContainersAccessor
+                  }
+                  directlyStoreValueChangesWhileEditing
+                  inheritedVariablesContainer={object.getVariables()}
+                  variablesContainer={variablesContainer}
+                  areObjectVariables
+                  size="compact"
+                  onComputeAllVariableNames={() =>
+                    object && layout
+                      ? EventsRootVariablesFinder.findAllObjectVariables(
+                          project.getCurrentPlatform(),
+                          project,
+                          layout,
+                          object.getName()
+                        )
+                      : []
+                  }
+                  historyHandler={historyHandler}
+                  toolbarIconStyle={styles.icon}
+                  compactEmptyPlaceholderText={
+                    <Trans>There are no variables on this instance.</Trans>
+                  }
+                  isListLocked={true}
+                />
+              )}
+            />
+          ) : null}
           {allVisibleBehaviors ? (
             <TopLevelCollapsibleSection
               title={<Trans>Behaviors</Trans>}
@@ -590,43 +628,6 @@ export const CompactInstancePropertiesEditor = ({
                 persistedPanelStateId={persistedPanelStateId}
               />
             )}
-          {object && shouldDisplayVariablesList && variablesContainer ? (
-            <TopLevelCollapsibleSection
-              title={<Trans>Instance Variables</Trans>}
-              isFolded={isSectionFolded('variables')}
-              toggleFolded={() => toggleSectionFolded('variables')}
-              onOpenFullEditor={() => editInstanceVariables(instance)}
-              noContentMargin
-              renderContent={() => (
-                <VariablesList
-                  projectScopedContainersAccessor={
-                    projectScopedContainersAccessor
-                  }
-                  directlyStoreValueChangesWhileEditing
-                  inheritedVariablesContainer={object.getVariables()}
-                  variablesContainer={variablesContainer}
-                  areObjectVariables
-                  size="compact"
-                  onComputeAllVariableNames={() =>
-                    object && layout
-                      ? EventsRootVariablesFinder.findAllObjectVariables(
-                          project.getCurrentPlatform(),
-                          project,
-                          layout,
-                          object.getName()
-                        )
-                      : []
-                  }
-                  historyHandler={historyHandler}
-                  toolbarIconStyle={styles.icon}
-                  compactEmptyPlaceholderText={
-                    <Trans>There are no variables on this instance.</Trans>
-                  }
-                  isListLocked={true}
-                />
-              )}
-            />
-          ) : null}
         </Column>
       </ScrollView>
     </ErrorBoundary>
