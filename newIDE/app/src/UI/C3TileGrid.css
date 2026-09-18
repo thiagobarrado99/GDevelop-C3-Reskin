@@ -49,6 +49,9 @@
   background: rgba(255, 255, 255, 0.14);
   border-color: var(--c3-tile-color);
 }
+.c3-tile-grid .c3-tile.info {
+  opacity: 0.6;
+}
 .c3-tile-grid .c3-tile.disabled {
   opacity: 0.35;
 }

@@ -31,6 +31,7 @@ import {
   type C3Object,
 } from '../Utils/C3Objects'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
+import { C3_PSEUDO_OBJECTS } from '../Utils/C3PseudoObjects'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
 import { ColumnStackLayout, LineStackLayout } from '../UI/Layout';
 import PreferencesContext from '../MainFrame/Preferences/PreferencesContext';
@@ -373,20 +374,39 @@ export default function NewObjectFromScratch({
                 onObjectTypeSelected(found.header);
               }
             }}
-            tiles={c3Tiles.map(({ tile, header }) => ({
-              id: tile ? tile.id : header.type,
-              name: tile
-                ? c3Label(tile.name, preferences.values.language)
-                : header.fullName,
-              description: header.description,
-              iconUrl: tile
-                ? c3ObjectIcon(tile.icon)
-                : getC3ObjectIconFilename(header.type) || header.previewIconUrl,
-              category: tile
-                ? c3Label(tile.category, preferences.values.language)
-                : translateExtensionCategory(header.category, i18n),
-              enabled: true,
-            }))}
+            tiles={c3Tiles
+              .map(({ tile, header }) => ({
+                id: tile ? tile.id : header.type,
+                name: tile
+                  ? c3Label(tile.name, preferences.values.language)
+                  : header.fullName,
+                description: header.description,
+                iconUrl: tile
+                  ? c3ObjectIcon(tile.icon)
+                  : getC3ObjectIconFilename(header.type) ||
+                    header.previewIconUrl,
+                category: tile
+                  ? c3Label(tile.category, preferences.values.language)
+                  : translateExtensionCategory(header.category, i18n),
+                enabled: true,
+              }))
+              // c3: Construct's Keyboard, Mouse… tiles, only to say where they are.
+              .concat(
+                C3_PSEUDO_OBJECTS.map(pseudo => ({
+                  id: 'c3-pseudo-' + pseudo.id,
+                  name: c3Label(pseudo.name, preferences.values.language),
+                  description: i18n._(
+                    t`Already in the events: pick this tile in Add condition / Add action.`
+                  ),
+                  iconUrl: c3ObjectIcon(pseudo.icon),
+                  category: c3Label(
+                    pseudo.category,
+                    preferences.values.language
+                  ),
+                  enabled: true,
+                  info: true,
+                }))
+              )}
           />
         ) : (
           <ListSearchResults

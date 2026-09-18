@@ -28,6 +28,8 @@ const reskinPtBr: { [string]: string } = {
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',
   'Also available': 'Também disponíveis',
+  'Already in the events: pick this tile in Add condition / Add action.':
+    'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',
   System: 'Sistema',
   'Add another condition': 'Adicionar outra condição',

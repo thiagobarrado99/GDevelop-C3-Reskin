@@ -62,6 +62,7 @@ import {
   MoreResultsTreeViewItemContent as MoreInstructionsTreeViewItemContent,
   LeafTreeViewItem as InstructionLeafTreeViewItem,
   getInstructionGroupId,
+  getAllInstructionGroupIds, // c3
 } from './InstructionOrExpressionTreeViewItems';
 import InAppTutorialContext from '../../InAppTutorial/InAppTutorialContext';
 import { exceptionallyGuardAgainstDeadObject } from '../../Utils/IsNullPtr';
@@ -200,6 +201,7 @@ type Props = {|
   currentTab: TabName,
   onChangeTab: TabName => void,
   hideTabs?: boolean, // c3: the dialog picks the tab (Construct's "System" tile)
+  filterExtensionNames?: ?Array<string>, // c3: only these extensions' free instructions
   isCondition: boolean,
   focusOnMount?: boolean,
   chosenInstructionType: ?string,
@@ -228,6 +230,7 @@ const InstructionOrObjectSelector: React.ComponentType<{
       currentTab,
       onChangeTab,
       hideTabs,
+      filterExtensionNames,
       isCondition,
       focusOnMount,
       chosenInstructionType,
@@ -248,11 +251,23 @@ const InstructionOrObjectSelector: React.ComponentType<{
     const freeInstructionTreeViewRef = React.useRef<?ReadOnlyTreeViewInterface<TreeViewItem>>(
       null
     );
+    // c3: a pseudo-object tile keeps only its extensions' instructions.
+    const filterByExtension = React.useCallback(
+      (instructions: Array<EnumeratedInstructionMetadata>) =>
+        filterExtensionNames
+          ? instructions.filter(({ scope }) =>
+              filterExtensionNames.includes(scope.extension.name)
+            )
+          : instructions,
+      [filterExtensionNames]
+    );
     const freeInstructionsInfoTreeRef = React.useRef<InstructionOrExpressionTreeNode>(
       createTree(
-        filterEnumeratedInstructionOrExpressionMetadataByScope(
-          enumerateFreeInstructions(isCondition, project, i18n),
-          scope
+        filterByExtension(
+          filterEnumeratedInstructionOrExpressionMetadataByScope(
+            enumerateFreeInstructions(isCondition, project, i18n),
+            scope
+          )
         ),
         i18n
       )
@@ -278,9 +293,11 @@ const InstructionOrObjectSelector: React.ComponentType<{
     const allInstructionsInfoRef = React.useRef<
       Array<EnumeratedInstructionMetadata>
     >(
-      filterEnumeratedInstructionOrExpressionMetadataByScope(
-        enumerateAllInstructions(isCondition, project, i18n),
-        scope
+      filterByExtension(
+        filterEnumeratedInstructionOrExpressionMetadataByScope(
+          enumerateAllInstructions(isCondition, project, i18n),
+          scope
+        )
       )
     );
     // Instructions search results are handled by Fuse because the text is searched
@@ -362,11 +379,15 @@ const InstructionOrObjectSelector: React.ComponentType<{
           : []),
       ].map(getObjectFolderTreeViewItemId)
     );
-    const initiallyOpenedInstructionsGroupIdsRef = React.useRef<string[]>([
-      ...Object.keys(freeInstructionsInfoTreeRef.current).map(categoryName =>
-        getInstructionGroupId(categoryName)
-      ),
-    ]);
+    const initiallyOpenedInstructionsGroupIdsRef = React.useRef<string[]>(
+      hideTabs // c3: Construct's list is fully open
+        ? getAllInstructionGroupIds(freeInstructionsInfoTreeRef.current)
+        : [
+            ...Object.keys(freeInstructionsInfoTreeRef.current).map(
+              categoryName => getInstructionGroupId(categoryName)
+            ),
+          ]
+    );
 
     const forceUpdate = useForceUpdate();
 
@@ -489,15 +510,19 @@ const InstructionOrObjectSelector: React.ComponentType<{
     const reEnumerateInstructions = React.useCallback(
       (i18n: I18nType) => {
         freeInstructionsInfoTreeRef.current = createTree(
-          filterEnumeratedInstructionOrExpressionMetadataByScope(
-            enumerateFreeInstructions(isCondition, project, i18n),
-            scope
+          filterByExtension(
+            filterEnumeratedInstructionOrExpressionMetadataByScope(
+              enumerateFreeInstructions(isCondition, project, i18n),
+              scope
+            )
           ),
           i18n
         );
-        allInstructionsInfoRef.current = filterEnumeratedInstructionOrExpressionMetadataByScope(
-          enumerateAllInstructions(isCondition, project, i18n),
-          scope
+        allInstructionsInfoRef.current = filterByExtension(
+          filterEnumeratedInstructionOrExpressionMetadataByScope(
+            enumerateAllInstructions(isCondition, project, i18n),
+            scope
+          )
         );
         instructionSearchApiRef.current = createFuse();
         setSearchText(searchText => {
@@ -506,7 +531,15 @@ const InstructionOrObjectSelector: React.ComponentType<{
         });
         forceUpdate();
       },
-      [createFuse, forceUpdate, isCondition, project, scope, search]
+      [
+        createFuse,
+        filterByExtension,
+        forceUpdate,
+        isCondition,
+        project,
+        scope,
+        search,
+      ]
     );
 
     React.useImperativeHandle(ref, () => ({ reEnumerateInstructions }));

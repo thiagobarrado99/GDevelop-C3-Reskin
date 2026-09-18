@@ -1,7 +1,8 @@
 // @flow
 // c3: step 1 of Construct's add-condition/action flow - "System" first, then
 // every object and family as a tile. Choosing "System" reports null so the
-// dialog shows the free (non-object) instructions.
+// dialog shows the free (non-object) instructions; a pseudo-object tile
+// (Keyboard, Mouse…) reports null plus the extension names to keep.
 import * as React from 'react';
 import { Trans, t } from '@lingui/macro';
 import { I18n } from '@lingui/react';
@@ -11,6 +12,9 @@ import { Column } from '../../UI/Grid';
 import { enumerateObjectsAndGroups } from '../../ObjectsList/EnumerateObjects';
 import ObjectsRenderingService from '../../ObjectsRendering/ObjectsRenderingService';
 import { ProjectScopedContainersAccessor } from '../../InstructionOrExpression/EventsScope';
+import { C3_PSEUDO_OBJECTS } from '../../Utils/C3PseudoObjects';
+import { c3Label, getC3Language } from '../../Utils/C3Language';
+import { c3ObjectIcon } from '../../Utils/C3Icons';
 
 export const SYSTEM_TILE_ID = 'c3-system';
 // Gear (black; ListIcon inverts SVG data URIs on dark themes).
@@ -24,8 +28,10 @@ type Props = {|
   project: gdProject,
   projectScopedContainersAccessor: ProjectScopedContainersAccessor,
   isCondition: boolean,
-  onChoose: (objectName: ?string) => void,
+  onChoose: (objectName: ?string, extensionNames?: Array<string>) => void,
 |};
+
+const PSEUDO_TILE_PREFIX = 'c3-pseudo-';
 
 const C3ObjectPicker = ({
   project,
@@ -58,9 +64,29 @@ const C3ObjectPicker = ({
           <C3TileGrid
             instant
             colorVariable="--c3-object-label-color"
-            onChoose={id => onChoose(id === SYSTEM_TILE_ID ? null : id)}
+            onChoose={id => {
+              if (id === SYSTEM_TILE_ID) return onChoose(null);
+              const pseudo = C3_PSEUDO_OBJECTS.find(
+                pseudo => PSEUDO_TILE_PREFIX + pseudo.id === id
+              );
+              if (pseudo) return onChoose(null, pseudo.extensionNames);
+              onChoose(id);
+            }}
             tiles={[
               { ...tile(i18n._(t`System`), systemIcon), id: SYSTEM_TILE_ID },
+              ...C3_PSEUDO_OBJECTS.filter(
+                pseudo =>
+                  !pseudo.requiresExtension ||
+                  project.hasEventsFunctionsExtensionNamed(
+                    pseudo.requiresExtension
+                  )
+              ).map(pseudo => ({
+                ...tile(
+                  c3Label(pseudo.name, getC3Language()),
+                  c3ObjectIcon(pseudo.icon)
+                ),
+                id: PSEUDO_TILE_PREFIX + pseudo.id,
+              })),
               ...allObjectsList.map(({ object }) =>
                 tile(
                   object.getName(),

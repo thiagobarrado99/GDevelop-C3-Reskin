@@ -17,10 +17,11 @@ export type C3Tile = {|
   iconUrl: string,
   category: string,
   enabled: boolean,
+  +info?: boolean, // shows its description only; cannot be chosen
 |};
 
 type Props = {|
-  tiles: Array<C3Tile>,
+  tiles: $ReadOnlyArray<C3Tile>,
   onChoose: (id: string) => void,
   colorVariable: string, // e.g. '--c3-behavior-color'
   instant?: boolean, // a single click chooses; no footer
@@ -38,7 +39,7 @@ const C3TileGrid = ({
 }: Props): React.Node => {
   const [selectedId, setSelectedId] = React.useState<?string>(null);
   const selected = tiles.find(tile => tile.id === selectedId);
-  const rank = category => {
+  const rank = (category: string) => {
     const index = categoryOrder.indexOf(category);
     return index === -1 ? Infinity : index;
   };
@@ -73,14 +74,17 @@ const C3TileGrid = ({
                     className={
                       'c3-tile' +
                       (tile.id === selectedId ? ' selected' : '') +
-                      (tile.enabled ? '' : ' disabled')
+                      (tile.enabled ? '' : ' disabled') +
+                      (tile.info ? ' info' : '')
                     }
                     onClick={() =>
-                      instant && tile.enabled
+                      instant && tile.enabled && !tile.info
                         ? onChoose(tile.id)
                         : setSelectedId(tile.id)
                     }
-                    onDoubleClick={() => tile.enabled && onChoose(tile.id)}
+                    onDoubleClick={() =>
+                      tile.enabled && !tile.info && onChoose(tile.id)
+                    }
                   >
                     <ListIcon
                       src={tile.iconUrl}
@@ -114,7 +118,7 @@ const C3TileGrid = ({
           <RaisedButton
             primary
             label={<Trans>Add</Trans>}
-            disabled={!selected || !selected.enabled}
+            disabled={!selected || !selected.enabled || selected.info}
             onClick={() => selected && onChoose(selected.id)}
           />
         </div>

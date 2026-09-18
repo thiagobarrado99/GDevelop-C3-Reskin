@@ -9,6 +9,20 @@ export const getInstructionGroupId = (
   parentId?: ?string
 ): string => `${parentId ? `${parentId}-` : ''}instruction-group-${groupName}`;
 
+// c3: every group id of a tree, so the list can open fully (Construct shows
+// every condition at once).
+export const getAllInstructionGroupIds = (
+  tree: InstructionOrExpressionTreeNode,
+  parentId?: ?string
+): string[] =>
+  Object.entries(tree).flatMap(([name, node]) => {
+    // $FlowFixMe[incompatible-type] leaf nodes carry a string `type`
+    if (typeof node.type === 'string') return [];
+    const id = getInstructionGroupId(name, parentId);
+    // $FlowFixMe[incompatible-type]
+    return [id, ...getAllInstructionGroupIds(node, id)];
+  });
+
 export interface TreeViewItemContent {
   applySearch: boolean;
   getName(): string | React.Node;

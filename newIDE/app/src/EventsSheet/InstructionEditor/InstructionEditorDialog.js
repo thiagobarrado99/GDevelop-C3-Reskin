@@ -177,6 +177,11 @@ const InstructionEditorDialog = ({
     !useC3Steps && (windowSize === 'large' || windowSize === 'xlarge'); // c3
   // c3: "System" tile chosen - step 1 shows the free instructions list.
   const [systemChosen, setSystemChosen] = React.useState(!isNewInstruction);
+  // c3: pseudo-object tile (Keyboard, Mouse…) chosen - only its extensions.
+  const [
+    systemExtensionNames,
+    setSystemExtensionNames,
+  ] = React.useState<?Array<string>>(null);
   const instructionType: string = instruction.getType();
   const [
     newBehaviorDialogOpen,
@@ -364,12 +369,13 @@ const InstructionEditorDialog = ({
         project={project}
         projectScopedContainersAccessor={projectScopedContainersAccessor}
         isCondition={isCondition}
-        onChoose={objectName => {
+        onChoose={(objectName, extensionNames) => {
           if (objectName) {
             chooseObject(objectName);
             setStep('object-instructions');
           } else {
             setCurrentInstructionOrObjectSelectorTab('free-instructions');
+            setSystemExtensionNames(extensionNames || null);
             setSystemChosen(true);
           }
         }}
@@ -387,6 +393,7 @@ const InstructionEditorDialog = ({
             currentTab={currentInstructionOrObjectSelectorTab}
             onChangeTab={setCurrentInstructionOrObjectSelectorTab}
             hideTabs={useC3Steps} // c3
+            filterExtensionNames={systemExtensionNames} // c3
             isCondition={isCondition}
             chosenInstructionType={
               !chosenObjectName ? instructionType : undefined
