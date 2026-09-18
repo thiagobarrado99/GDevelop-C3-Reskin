@@ -834,7 +834,7 @@ const MainFrame = (props: Props): React.MixedElement => {
           : kind === 'debugger'
           ? i18n._(t`Debugger`)
           : kind === 'layout events'
-          ? name + ` ${i18n._(t`(Events)`)}`
+          ? `${i18n._(t`Event sheet`)} — ${name}` // c3: Construct's naming
           : kind === 'custom object'
           ? parseCustomObjectEditorTabName(name).variantName ||
             parseCustomObjectEditorTabName(name).objectName +

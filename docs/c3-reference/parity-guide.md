@@ -88,7 +88,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - Canvas tooltip `Sprite X: … Layer: Layer 0 Z order: 1` (`InstancesEditor/index.js` / `InstancesRenderer` hover label), status bar `Layer: Layer 0` (`InstancesEditor/StatusBar.js`), `Effect` section header, start-page example titles/descriptions (`HomePage/C3StartPage.js` — the API returns English; map the shown examples to pt-BR titles in `C3StartPage.js` or hide the description). Strings that come from lingui: add `reskinPtBr` rules; hardcoded ones: `<Trans>` + rule.
 - Check: grep the text dumps `a3-*.txt` for `Layer:`, `Z order`, `Effect`, `Platformer`.
 
-### B10. Event sheet naming
+### B10. Event sheet naming — done 2026-09-18 (tab `Folha de eventos — Layout 1`; the bar row keeps the layout name under the `Folhas de eventos` header)
 - Tab title `Layout 1 (Eventos)` → `Folha de eventos — Layout 1` (`MainFrame/EditorTabs/*` `getTabLabel` for kind `'layout events'`), bar row under `Folhas de eventos` → same label (`ProjectManager/LayoutEventsTreeViewItemContent.js`).
 - Check: tab + row text.
 
