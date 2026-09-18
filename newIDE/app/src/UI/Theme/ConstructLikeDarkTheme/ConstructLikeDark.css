@@ -246,3 +246,12 @@
   font-family: var(--gdevelop-modern-font-family, sans-serif);
   background: #4f4f4f;
 }
+
+/* Colour coding in the full behaviours editor and the effects list. */
+.ConstructLikeDarkTheme input[id^='behavior-'][id$='-name-text-field'] {
+  color: var(--c3-behavior-color);
+  -webkit-text-fill-color: var(--c3-behavior-color);
+}
+.ConstructLikeDarkTheme .c3-effect-name input {
+  color: var(--c3-effect-color);
+}

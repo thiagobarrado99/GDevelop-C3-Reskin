@@ -223,17 +223,20 @@ const Effect = React.forwardRef((
                   <Trans>Effect name:</Trans>
                 </Text>
                 <Spacer />
-                <SemiControlledTextField
-                  margin="none"
-                  commitOnBlur
-                  errorText={nameErrors[effect.ptr]}
-                  translatableHintText={t`Enter the effect name`}
-                  value={effect.getName()}
-                  onChange={newName => {
-                    renameEffect(effect, newName);
-                  }}
-                  fullWidth
-                />
+                {/* c3: the effect name is tinted by the theme (colour coding). */}
+                <div className="c3-effect-name" style={{ display: 'contents' }}>
+                  <SemiControlledTextField
+                    margin="none"
+                    commitOnBlur
+                    errorText={nameErrors[effect.ptr]}
+                    translatableHintText={t`Enter the effect name`}
+                    value={effect.getName()}
+                    onChange={newName => {
+                      renameEffect(effect, newName);
+                    }}
+                    fullWidth
+                  />
+                </div>
               </Line>
               <Line noMargin expand alignItems="center">
                 <Text noMargin noShrink>
