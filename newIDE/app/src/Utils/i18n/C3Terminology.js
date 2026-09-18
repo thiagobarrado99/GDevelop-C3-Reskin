@@ -129,6 +129,8 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Add a new event$/, 'Add event'],
     // Event types, as Construct's "Add..." menu names them.
     [/^Standard event$/, 'Event'],
+    [/^New Event Below$/, 'Event'],
+    [/^Sub Event$/, 'Sub-event'],
     [/^Event group$/, 'Group'],
     [/^Link external events$/, 'Include event sheet'],
     // Behaviour names as Construct calls them: the ground is "Solid", the
@@ -160,6 +162,8 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Concluído$/, 'Pronto'],
     [/^Adicionar um novo evento$/, 'Adicionar evento'],
     [/^Evento padrão$/, 'Evento'],
+    [/^Novo Evento Abaixo$/, 'Evento'],
+    [/^Sub Evento$/, 'Sub-evento'],
     [/^Grupo de eventos$/, 'Grupo'],
     [/^Vincular eventos externos$/, 'Incluir folha de eventos'],
     // cena (f.) → layout (m.)

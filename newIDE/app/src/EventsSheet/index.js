@@ -1190,82 +1190,30 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
   };
 
   _buildEventContextMenu = (i18n: I18nType): any => [
-    {
-      label: i18n._(t`Edit`),
-      click: () => this.openEventTextDialog(),
-      visible:
-        filterEditableWithEventTextDialog(
-          getSelectedEvents(this.state.selection)
-        ).length > 0,
-    },
-    {
-      label: i18n._(t`Copy`),
-      click: () => this.copySelection(),
-      accelerator: 'CmdOrCtrl+C',
-    },
-    {
-      label: i18n._(t`Cut`),
-      click: () => this.cutSelection(),
-      accelerator: 'CmdOrCtrl+X',
-    },
-    {
-      label: i18n._(t`Paste`),
-      click: () => this.pasteEvents(),
-      enabled: hasClipboardEvents(),
-      accelerator: 'CmdOrCtrl+V',
-    },
-    {
-      label: i18n._(t`Delete`),
-      click: () => this.deleteSelection(),
-      accelerator: 'Delete',
-    },
-    {
-      label: i18n._(t`Select All`),
-      click: () => this.selectAllEvents(),
-      accelerator: 'CmdOrCtrl+A',
-    },
-    {
-      label: i18n._(t`Deselect All`),
-      click: () => this.deselectAll(),
-      accelerator: 'CmdOrCtrl+Shift+A',
-      visible: hasSomethingSelected(this.state.selection),
-    },
-    {
-      label: i18n._(t`Toggle Disabled`),
-      click: () => this.toggleDisabled(),
-      enabled: this._selectionCanToggleDisabled(),
-      accelerator: getShortcutDisplayName(
-        this.props.shortcutMap['TOGGLE_EVENT_DISABLED'] || 'KeyD'
-      ),
-    },
-    {
-      label: i18n._(t`Remove the Else`),
-      click: () =>
-        this._replaceSelectedEventType('BuiltinCommonInstructions::Standard'),
-      visible: this._selectionIsElseEvent(),
-    },
-    {
-      label: i18n._(t`Remove the Loop Counter Variable`),
-      click: () => this._removeLoopIndexVariable(),
-      visible:
-        this._selectionIsLoopEvent() && this._selectionHasIndexVariable(),
-    },
-    {
-      label: i18n._(t`Add Ordering`),
-      click: () => this._addOrdering(),
-      visible:
-        this._selectionIsForEachEvent() && !this._selectionForEachHasOrderBy(),
-    },
-    {
-      label: i18n._(t`Remove Ordering`),
-      click: () => this._removeOrdering(),
-      visible:
-        this._selectionIsForEachEvent() && this._selectionForEachHasOrderBy(),
-    },
-    { type: 'separator' },
+    // c3: Construct's event context menu - Add ▸ first, then edit, toggle,
+    // clipboard, delete.
     {
       label: i18n._(t`Add`),
       submenu: [
+        {
+          label: i18n._(t`Condition`),
+          click: () => this._addInstructionToSelectedEvent(true),
+          enabled: !!this._getSelectedEventContextWithInstructions(),
+          accelerator: getShortcutDisplayName(
+            this.props.shortcutMap['ADD_CONDITION']
+          ),
+        },
+        {
+          label: i18n._(t`Action`),
+          click: () => this._addInstructionToSelectedEvent(false),
+          enabled: !!this._getSelectedEventContextWithInstructions(),
+          accelerator: getShortcutDisplayName(
+            this.props.shortcutMap['ADD_ACTION']
+          ),
+        },
+        {
+          type: 'separator',
+        },
         {
           label: i18n._(t`New Event Below`),
           click: () => {
@@ -1333,6 +1281,81 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
           })),
       ],
     },
+    {
+      label: i18n._(t`Edit`),
+      click: () => this.openEventTextDialog(),
+      visible:
+        filterEditableWithEventTextDialog(
+          getSelectedEvents(this.state.selection)
+        ).length > 0,
+    },
+    {
+      label: i18n._(t`Toggle Disabled`),
+      click: () => this.toggleDisabled(),
+      enabled: this._selectionCanToggleDisabled(),
+      accelerator: getShortcutDisplayName(
+        this.props.shortcutMap['TOGGLE_EVENT_DISABLED'] || 'KeyD'
+      ),
+    },
+    {
+      label: i18n._(t`Cut`),
+      click: () => this.cutSelection(),
+      accelerator: 'CmdOrCtrl+X',
+    },
+    {
+      label: i18n._(t`Copy`),
+      click: () => this.copySelection(),
+      accelerator: 'CmdOrCtrl+C',
+    },
+    {
+      label: i18n._(t`Paste`),
+      click: () => this.pasteEvents(),
+      enabled: hasClipboardEvents(),
+      accelerator: 'CmdOrCtrl+V',
+    },
+    {
+      label: i18n._(t`Delete`),
+      click: () => this.deleteSelection(),
+      accelerator: 'Delete',
+    },
+    { type: 'separator' },
+    {
+      label: i18n._(t`Select All`),
+      click: () => this.selectAllEvents(),
+      accelerator: 'CmdOrCtrl+A',
+    },
+    {
+      label: i18n._(t`Deselect All`),
+      click: () => this.deselectAll(),
+      accelerator: 'CmdOrCtrl+Shift+A',
+      visible: hasSomethingSelected(this.state.selection),
+    },
+    { type: 'separator' },
+    {
+      label: i18n._(t`Remove the Else`),
+      click: () =>
+        this._replaceSelectedEventType('BuiltinCommonInstructions::Standard'),
+      visible: this._selectionIsElseEvent(),
+    },
+    {
+      label: i18n._(t`Remove the Loop Counter Variable`),
+      click: () => this._removeLoopIndexVariable(),
+      visible:
+        this._selectionIsLoopEvent() && this._selectionHasIndexVariable(),
+    },
+    {
+      label: i18n._(t`Add Ordering`),
+      click: () => this._addOrdering(),
+      visible:
+        this._selectionIsForEachEvent() && !this._selectionForEachHasOrderBy(),
+    },
+    {
+      label: i18n._(t`Remove Ordering`),
+      click: () => this._removeOrdering(),
+      visible:
+        this._selectionIsForEachEvent() && this._selectionForEachHasOrderBy(),
+    },
+    { type: 'separator' },
     {
       label: i18n._(t`Replace`),
       submenu: [

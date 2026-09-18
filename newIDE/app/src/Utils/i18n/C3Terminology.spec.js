@@ -48,6 +48,10 @@ describe('applyC3Terminology', () => {
     expect(pt._('System')).toBe('Sistema');
     expect(pt._('Insert new object')).toBe('Inserir novo objeto');
     expect(pt._('Unlock all')).toBe('Desbloquear tudo');
+    expect(makeI18n('en', {})._('New Event Below')).toBe('Event');
+    expect(
+      makeI18n('pt_BR', { 'Sub Event': 'Sub Evento' })._('Sub Event')
+    ).toBe('Sub-evento');
   });
 
   it('rewrites English terms keeping capitalisation', () => {
