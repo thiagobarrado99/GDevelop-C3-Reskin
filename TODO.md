@@ -64,11 +64,13 @@ Hide
 - [ ] Per-event `Add…` link; event context menu in Construct's order
 
 ## Phase 4 — Layout view (see survey)
-- [ ] Properties sections LAYOUT / EFFECTS / EDITOR with C3 row order; instance sections Common / Instance variables / Behaviors / Effects / Properties / Editor
-- [ ] Instance context: Edit · Z Order ▸ · Align ▸ · Lock ▸ · Cut/Copy/Paste · Delete; double-click empty = add object; object picker as tile grid by category
-- [ ] Gizmos, snap/grid defaults, z-order bar, status bar "Mouse · Layer · Zoom"
+- [x] Instance panel sections in Construct's order: Common (position/size/angle/layer/Z) · Instance variables · Behaviors · Effects (`CompactInstancePropertiesEditor/index.js`); object panel: Properties · Object variables · Behaviors · Effects (`CompactObjectPropertiesEditor/index.js`)
+- [x] Context menus (`SceneEditor/index.js` `buildContextMenu`, `// c3`): empty space = Insert new object · View ▸ (zoom) · Edit event sheet · Layout properties · Paste; instance = Edit · Insert new object · Add ▸ (Instance variable / Behavior / Effect) · Z Order ▸ · Lock ▸ (Lock = locked + sealed, Unlock all) · View ▸ · Cut · Copy · Paste · Duplicate · Delete · Extract ▸
+- [x] Double-click on empty space = Insert new object under the cursor (`InstancesEditor/index.js` `onBackgroundDoubleClicked`, `// c3`)
+- [x] Status bar `Mouse: (x, y)   Layer: …   Zoom: N%` (`InstancesEditor/StatusBar.js`, PIXI text, English labels only)
+- [x] Snap/grid defaults already Construct's (32×32, grid and snap off)
 - [~] Layout colours: new layouts default to rgb(50, 50, 50) (project data, `MainFrame/index.js` + `ProjectManager/index.js`); dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`) still theme work
-- [ ] Properties panel section order (LAYOUT / EFFECTS / EDITOR)
+- [ ] Z-order bar, Align ▸ submenu, the canvas hover tooltip still says "Base layer" (PIXI text in `HighlightedInstance.js`)
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
 - [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
@@ -98,3 +100,4 @@ Hide
 - 2026-09-18 (later): user supplied `C3-Icons/` (94 flat 64 px PNGs + the two Construct grid screenshots); documented the type→file map and the `getIconFilename` wrapper plan in CLAUDE.md; `--c3-behavior-color` = `#f75651`, new `--c3-object-color` = `#00768e`, both sampled from the icons. Queued: close-tab confirmation only on unsaved changes (Phase 2), instance panel edit-through (Phase 6). Open question: may the icons be committed?
 - 2026-09-18 (night): Phase 2 leftovers shipped (close-tab prompt only on unsaved changes, project bar order, recent-project context menu, layer add above/below, Construct dialog chrome); docked project bar still open. Phase 6: rows/tabs coloured by kind, Solid/Platform/Jump-thru renames, `C3TileGrid` for add-behaviour (22/32 Construct behaviours ported 1:1 with presets, store extensions installed on demand) and add-object (13 tiles), instance panel edits physics behaviours + effects through to the object. Icons wait on the user's answer.
 - 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
+- 2026-09-19: Phase 4 layout view — Construct context menus, double-click inserts an object, status bar, properties panel section order. `C3-Icons/` stays local (user decision, `.git/info/exclude`).
