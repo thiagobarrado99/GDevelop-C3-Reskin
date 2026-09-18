@@ -39,6 +39,9 @@ const reskinPtBr: { [string]: string } = {
   'Send to bottom of layer': 'Enviar para o fundo da camada',
   Lock: 'Bloquear',
   'Unlock all': 'Desbloquear tudo',
+  Align: 'Alinhar',
+  'Horizontal center': 'Centro horizontal',
+  'Vertical center': 'Centro vertical',
   'Edit event sheet': 'Editar folha de eventos',
   'Layout properties': 'Propriedades do layout',
   'Add a condition to the selected event':

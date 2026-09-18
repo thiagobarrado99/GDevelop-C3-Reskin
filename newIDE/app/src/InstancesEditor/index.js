@@ -670,6 +670,8 @@ export default class InstancesEditor extends Component<Props, State> {
       width: this.props.width,
       height: this.props.height,
       layout: props.layout || null,
+      project: props.project, // c3
+      toCanvasCoordinates: this.viewPosition.toCanvasCoordinates, // c3
     });
     this.backgroundPixiContainer.addChild(this.background.getPixiObject());
   }
@@ -1902,6 +1904,16 @@ export default class InstancesEditor extends Component<Props, State> {
     this.instancesRenderer.getPixiContainer().eventMode = 'auto';
 
     startPIXITicker();
+  };
+
+  // c3: used by the layout editor's Align submenu.
+  getInstanceAABB = (
+    initialInstance: gdInitialInstance,
+    bounds: Rectangle
+  ): Rectangle => {
+    return this.instancesRenderer
+      .getInstanceMeasurer()
+      .getInstanceAABB(initialInstance, bounds);
   };
 
   getInstanceSize = (

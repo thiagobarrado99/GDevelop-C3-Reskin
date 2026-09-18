@@ -2135,6 +2135,46 @@ export default class SceneEditor extends React.Component<Props, State> {
     done(true);
   };
 
+  // c3: Construct's Align ▸ - align the selected instances on the edges or
+  // centre of the selection's bounding box.
+  _alignSelection = (
+    mode: 'left' | 'centerX' | 'right' | 'top' | 'centerY' | 'bottom'
+  ) => {
+    const { editorDisplay } = this;
+    if (!editorDisplay) return;
+    const instances = this.instancesSelection
+      .getSelectedInstances()
+      .filter(instance => !instance.isLocked());
+    if (instances.length < 2) return;
+    const selection = editorDisplay.instancesHandlers.getSelectionAABB();
+    const target = new Rectangle(
+      selection.left,
+      selection.top,
+      selection.right,
+      selection.bottom
+    );
+    const bounds = new Rectangle();
+    instances.forEach(instance => {
+      const aabb = editorDisplay.instancesHandlers.getInstanceAABB(
+        instance,
+        bounds
+      );
+      if (mode === 'left')
+        instance.setX(instance.getX() + target.left - aabb.left);
+      else if (mode === 'centerX')
+        instance.setX(instance.getX() + target.centerX() - aabb.centerX());
+      else if (mode === 'right')
+        instance.setX(instance.getX() + target.right - aabb.right);
+      else if (mode === 'top')
+        instance.setY(instance.getY() + target.top - aabb.top);
+      else if (mode === 'centerY')
+        instance.setY(instance.getY() + target.centerY() - aabb.centerY());
+      else instance.setY(instance.getY() + target.bottom - aabb.bottom);
+    });
+    this._onInstancesMoved(instances);
+    this.forceUpdateInstancesList();
+  };
+
   _onMoveInstancesZOrder = (where: 'front' | 'back') => {
     const selectedInstances = this.instancesSelection.getSelectedInstances();
 
@@ -2780,6 +2820,31 @@ export default class SceneEditor extends React.Component<Props, State> {
           {
             label: i18n._(t`Send to bottom of layer`),
             click: () => this._onMoveInstancesZOrder('back'),
+          },
+        ],
+      },
+      {
+        label: i18n._(t`Align`),
+        enabled: instances.length > 1,
+        submenu: [
+          { label: i18n._(t`Left`), click: () => this._alignSelection('left') },
+          {
+            label: i18n._(t`Horizontal center`),
+            click: () => this._alignSelection('centerX'),
+          },
+          {
+            label: i18n._(t`Right`),
+            click: () => this._alignSelection('right'),
+          },
+          { type: 'separator' },
+          { label: i18n._(t`Top`), click: () => this._alignSelection('top') },
+          {
+            label: i18n._(t`Vertical center`),
+            click: () => this._alignSelection('centerY'),
+          },
+          {
+            label: i18n._(t`Bottom`),
+            click: () => this._alignSelection('bottom'),
           },
         ],
       },

@@ -210,6 +210,7 @@ export type SceneEditorsDisplayInterface = {|
   instancesHandlers: {|
     getContentAABB: () => Rectangle | null,
     getSelectionAABB: () => Rectangle,
+    getInstanceAABB: (gdInitialInstance, Rectangle) => Rectangle, // c3
     addInstances: (
       pos: [number, number],
       objectNames: Array<string>,

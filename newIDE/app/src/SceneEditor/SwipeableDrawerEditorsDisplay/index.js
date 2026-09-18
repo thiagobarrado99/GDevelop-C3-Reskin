@@ -262,6 +262,9 @@ const SwipeableDrawerEditorsDisplay: React.ComponentType<{
           getSelectionAABB: editor
             ? editor.selectedInstances.getSelectionAABB
             : () => new Rectangle(),
+          getInstanceAABB: editor
+            ? editor.getInstanceAABB
+            : (instance, bounds) => bounds, // c3
           addInstances: editor ? editor.addInstances : () => [],
           clearHighlightedInstance: editor
             ? editor.clearHighlightedInstance
