@@ -219,3 +219,30 @@
   > * {
   break-inside: avoid;
 }
+
+/* Docked project bar (MainFrame `c3ProjectBarDocked`): a column at the right
+   of the editors, titled like the other bars. */
+.c3-docked-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.c3-project-bar {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-left: 1px solid #6b6b6b;
+  background: #474747;
+}
+.c3-project-bar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px 0 10px;
+  min-height: 32px;
+  font-size: 13px;
+  font-family: var(--gdevelop-modern-font-family, sans-serif);
+  background: #4f4f4f;
+}

@@ -251,6 +251,9 @@ import { extractGDevelopApiErrorStatusAndCode } from '../Utils/GDevelopServices/
 import { type CourseChapter } from '../Utils/GDevelopServices/Asset';
 import useVersionHistory from '../VersionHistory/UseVersionHistory';
 import { ProjectManagerDrawer } from '../ProjectManager/ProjectManagerDrawer';
+import { useResponsiveWindowSize } from '../UI/Responsive/ResponsiveWindowMeasurer'; // c3
+import Cross from '../UI/CustomSvgIcons/Cross'; // c3
+import IconButton from '../UI/IconButton'; // c3
 import ContextMenu, { type ContextMenuInterface } from '../UI/Menu/ContextMenu'; // c3
 import { buildC3MainMenuTemplate } from './C3MainMenu'; // c3
 import DiagnosticReportDialog from '../ExportAndShare/DiagnosticReportDialog';
@@ -1733,11 +1736,17 @@ const MainFrame = (props: Props): React.MixedElement => {
     return Window.quit();
   }, []);
 
+  const [c3ProjectBarShown, setC3ProjectBarShown] = React.useState<boolean>(
+    true
+  ); // c3
+  const { isMobile } = useResponsiveWindowSize(); // c3
   const toggleProjectManager = React.useCallback(
     () => {
-      openProjectManager(projectManagerOpen => !projectManagerOpen);
+      // c3: on desktop the button shows/hides the docked project bar.
+      if (!isMobile) setC3ProjectBarShown(shown => !shown);
+      else openProjectManager(projectManagerOpen => !projectManagerOpen);
     },
-    [openProjectManager]
+    [openProjectManager, isMobile]
   );
 
   // c3: the ☰ button opens a Construct-like menu, anchored under it.
@@ -5968,6 +5977,60 @@ const MainFrame = (props: Props): React.MixedElement => {
   const hasEditorsInLeftPane = hasEditorsInPane(state.editorTabs, 'left');
   const hasEditorsInRightPane = hasEditorsInPane(state.editorTabs, 'right');
 
+  // c3: Construct's Project bar - docked at the right of the editors on
+  // desktop (the drawer stays for mobile), hidden/shown by the toolbar button.
+  const c3ProjectBarDocked = !!currentProject && !isMobile && c3ProjectBarShown;
+  const projectManager = (
+    <ProjectManager
+      project={currentProject}
+      onChangeProjectName={onChangeProjectName}
+      onSaveProjectProperties={onSaveProjectProperties}
+      onOpenExternalEvents={openExternalEvents}
+      onOpenLayout={(name, options) => openLayout(name, options)}
+      onOpenExternalLayout={openExternalLayout}
+      onOpenEventsFunctionsExtension={openEventsFunctionsExtension}
+      onDeleteLayout={deleteLayout}
+      onDeleteExternalLayout={deleteExternalLayout}
+      onDeleteEventsFunctionsExtension={deleteEventsFunctionsExtension}
+      onDeleteExternalEvents={deleteExternalEvents}
+      onDeleteGameplayTest={(test: gdTest) =>
+        deleteGameplayTest({ type: 'project' }, test)
+      }
+      onRenameLayout={renameLayout}
+      onRenameExternalLayout={renameExternalLayout}
+      onRenameEventsFunctionsExtension={renameEventsFunctionsExtension}
+      onRenameExternalEvents={renameExternalEvents}
+      onRenameGameplayTest={(oldName: string, newName: string) =>
+        renameGameplayTest({ type: 'project' }, oldName, newName)
+      }
+      onOpenGameplayTest={(testName: string) =>
+        openGameplayTest({ type: 'project' }, testName)
+      }
+      onRunGameplayTest={(testName: string) =>
+        runGameplayTestFromUi({ type: 'project' }, testName)
+      }
+      onOpenResources={openResources}
+      onReloadEventsFunctionsExtensions={onReloadEventsFunctionsExtensions}
+      onWillInstallExtension={onWillInstallExtension}
+      onExtensionInstalled={onExtensionInstalled}
+      onSceneAdded={onSceneAdded}
+      onExternalLayoutAdded={onExternalLayoutAdded}
+      onShareProject={() => {
+        openShareDialog();
+      }}
+      isOpen={projectManagerOpen || c3ProjectBarDocked}
+      hotReloadPreviewButtonProps={hotReloadPreviewButtonProps}
+      resourceManagementProps={resourceManagementProps}
+      projectScopedContainersAccessor={projectScopedContainersAccessor}
+      gamesList={gamesList}
+      onOpenHomePage={openHomePage}
+      toggleProjectManager={toggleProjectManager}
+      mainMenuCallbacks={mainMenuCallbacks}
+      // $FlowFixMe[incompatible-type]
+      buildMainMenuProps={buildMainMenuProps}
+    />
+  );
+
   return (
     <div
       className={
@@ -6044,7 +6107,7 @@ const MainFrame = (props: Props): React.MixedElement => {
         }
       />
       <ProjectManagerDrawer
-        projectManagerOpen={projectManagerOpen}
+        projectManagerOpen={projectManagerOpen && !c3ProjectBarDocked}
         toggleProjectManager={toggleProjectManager}
         title={
           state.currentProject
@@ -6052,54 +6115,7 @@ const MainFrame = (props: Props): React.MixedElement => {
             : i18n._(t`Menu`)
         }
       >
-        <ProjectManager
-          project={currentProject}
-          onChangeProjectName={onChangeProjectName}
-          onSaveProjectProperties={onSaveProjectProperties}
-          onOpenExternalEvents={openExternalEvents}
-          onOpenLayout={(name, options) => openLayout(name, options)}
-          onOpenExternalLayout={openExternalLayout}
-          onOpenEventsFunctionsExtension={openEventsFunctionsExtension}
-          onDeleteLayout={deleteLayout}
-          onDeleteExternalLayout={deleteExternalLayout}
-          onDeleteEventsFunctionsExtension={deleteEventsFunctionsExtension}
-          onDeleteExternalEvents={deleteExternalEvents}
-          onDeleteGameplayTest={(test: gdTest) =>
-            deleteGameplayTest({ type: 'project' }, test)
-          }
-          onRenameLayout={renameLayout}
-          onRenameExternalLayout={renameExternalLayout}
-          onRenameEventsFunctionsExtension={renameEventsFunctionsExtension}
-          onRenameExternalEvents={renameExternalEvents}
-          onRenameGameplayTest={(oldName: string, newName: string) =>
-            renameGameplayTest({ type: 'project' }, oldName, newName)
-          }
-          onOpenGameplayTest={(testName: string) =>
-            openGameplayTest({ type: 'project' }, testName)
-          }
-          onRunGameplayTest={(testName: string) =>
-            runGameplayTestFromUi({ type: 'project' }, testName)
-          }
-          onOpenResources={openResources}
-          onReloadEventsFunctionsExtensions={onReloadEventsFunctionsExtensions}
-          onWillInstallExtension={onWillInstallExtension}
-          onExtensionInstalled={onExtensionInstalled}
-          onSceneAdded={onSceneAdded}
-          onExternalLayoutAdded={onExternalLayoutAdded}
-          onShareProject={() => {
-            openShareDialog();
-          }}
-          isOpen={projectManagerOpen}
-          hotReloadPreviewButtonProps={hotReloadPreviewButtonProps}
-          resourceManagementProps={resourceManagementProps}
-          projectScopedContainersAccessor={projectScopedContainersAccessor}
-          gamesList={gamesList}
-          onOpenHomePage={openHomePage}
-          toggleProjectManager={toggleProjectManager}
-          mainMenuCallbacks={mainMenuCallbacks}
-          // $FlowFixMe[incompatible-type]
-          buildMainMenuProps={buildMainMenuProps}
-        />
+        {c3ProjectBarDocked ? null : projectManager}
       </ProjectManagerDrawer>
       {// Render games platform frame before the editors, so the editor have priority
       // in what to display (ex: Loader of play section)
@@ -6118,38 +6134,54 @@ const MainFrame = (props: Props): React.MixedElement => {
           gameId={currentProject ? currentProject.getProjectUuid() : ''}
         >
           {renderNpmScriptConfirmDialog()}
-          <PanesContainer
-            hasEditorsInLeftPane={hasEditorsInLeftPane}
-            hasEditorsInRightPane={hasEditorsInRightPane}
-            onRequestDrawerClose={requestCloseAskAiDrawerInPane}
-            renderPane={({
-              paneIdentifier,
-              isLeftMostPane,
-              isRightMostPane,
-              isDrawer,
-              areSidePanesDrawers,
-              onSetPointerEventsNone,
-              onSetPaneDrawerState,
-              onRequestPaneClose,
-              drawerState,
-              rightPaneDrawerOpen,
-            }) => (
-              <EditorTabsPane
-                {...editorTabsPaneProps}
-                paneIdentifier={paneIdentifier}
-                isLeftMostPane={isLeftMostPane}
-                isRightMostPane={isRightMostPane}
-                isDrawer={isDrawer}
-                areSidePanesDrawers={areSidePanesDrawers}
-                onSetPointerEventsNone={onSetPointerEventsNone}
-                onSetPaneDrawerState={onSetPaneDrawerState}
-                onPopOutTab={onPopOutTab}
-                onRequestPaneClose={onRequestPaneClose}
-                drawerState={drawerState}
-                rightPaneDrawerOpen={rightPaneDrawerOpen}
-              />
-            )}
-          />
+          <div className="c3-docked-row">
+            <PanesContainer
+              hasEditorsInLeftPane={hasEditorsInLeftPane}
+              hasEditorsInRightPane={hasEditorsInRightPane}
+              onRequestDrawerClose={requestCloseAskAiDrawerInPane}
+              renderPane={({
+                paneIdentifier,
+                isLeftMostPane,
+                isRightMostPane,
+                isDrawer,
+                areSidePanesDrawers,
+                onSetPointerEventsNone,
+                onSetPaneDrawerState,
+                onRequestPaneClose,
+                drawerState,
+                rightPaneDrawerOpen,
+              }) => (
+                <EditorTabsPane
+                  {...editorTabsPaneProps}
+                  paneIdentifier={paneIdentifier}
+                  isLeftMostPane={isLeftMostPane}
+                  isRightMostPane={isRightMostPane}
+                  isDrawer={isDrawer}
+                  areSidePanesDrawers={areSidePanesDrawers}
+                  onSetPointerEventsNone={onSetPointerEventsNone}
+                  onSetPaneDrawerState={onSetPaneDrawerState}
+                  onPopOutTab={onPopOutTab}
+                  onRequestPaneClose={onRequestPaneClose}
+                  drawerState={drawerState}
+                  rightPaneDrawerOpen={rightPaneDrawerOpen}
+                />
+              )}
+            />
+            {c3ProjectBarDocked ? (
+              <div className="c3-project-bar">
+                <div className="c3-project-bar-title">
+                  <span>{currentProject ? currentProject.getName() : ''}</span>
+                  <IconButton
+                    size="small"
+                    onClick={() => setC3ProjectBarShown(false)}
+                  >
+                    <Cross />
+                  </IconButton>
+                </div>
+                {projectManager}
+              </div>
+            ) : null}
+          </div>
         </LeaderboardProvider>
         <CommandPalette ref={commandPaletteRef} />
       </WindowCommandsProvider>
