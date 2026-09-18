@@ -16,6 +16,7 @@ import { renderInstructionOrExpressionTree } from '../SelectorListItems/Selector
 import EmptyMessage from '../../../UI/EmptyMessage';
 import ScrollView, { type ScrollViewInterface } from '../../../UI/ScrollView';
 import { Line } from '../../../UI/Grid';
+import Text from '../../../UI/Text'; // c3
 import RaisedButton from '../../../UI/RaisedButton';
 import {
   getInstructionListItemValue,
@@ -74,6 +75,25 @@ const InstructionOrExpressionSelector = <
   const scrollViewRef = React.useRef<?ScrollViewInterface>(null);
   const selectedItemRef = React.useRef<?ListItemRefType>(null);
   const [searchText, setSearchText] = React.useState<string>('');
+  // c3: Construct shows the description of the hovered item above the list.
+  // Items are found back from their DOM id (tree and search items differ).
+  const [hovered, setHovered] = React.useState<?T>(null);
+  const itemsById = React.useMemo(
+    () => {
+      const map = new Map<string, T>();
+      instructionsInfo.forEach(item => {
+        map.set('instruction-item-' + item.type.replace(/:/g, '-'), item);
+        map.set(getInstructionOrExpressionIdentifier(item), item);
+      });
+      return map;
+    },
+    [instructionsInfo]
+  );
+  const onHoverItem = (event: SyntheticMouseEvent<HTMLElement>) => {
+    const li = (event.target: any).closest('[id]');
+    const item = li ? itemsById.get(li.id) : null;
+    if (item !== hovered) setHovered(item || null);
+  };
   const searchApi = React.useMemo(
     () =>
       new Fuse(instructionsInfo, {
@@ -151,55 +171,62 @@ const InstructionOrExpressionSelector = <
         ref={searchBarRef}
         autoFocus={focusOnMount ? 'desktop' : undefined}
       />
+      <div style={{ minHeight: 36 }}>
+        <Text size="body2" color="secondary" noMargin>
+          {hovered ? hovered.metadata.getDescription() : ''}
+        </Text>
+      </div>
       <ScrollView autoHideScrollbar ref={scrollViewRef}>
         {hasResults && (
-          <List>
-            {searchText ? (
-              displayedInstructionsList.map(
-                ({
-                  item: enumeratedInstructionOrExpressionMetadata,
-                  matches,
-                }) =>
-                  renderInstructionOrExpressionListItem({
-                    instructionOrExpressionMetadata: enumeratedInstructionOrExpressionMetadata,
-                    id: getInstructionOrExpressionIdentifier(
-                      enumeratedInstructionOrExpressionMetadata
-                    ),
-                    iconSize: iconSize,
-                    onClick: () =>
-                      onChoose(
-                        enumeratedInstructionOrExpressionMetadata.type,
+          <div onMouseOver={onHoverItem} onMouseLeave={() => setHovered(null)}>
+            <List>
+              {searchText ? (
+                displayedInstructionsList.map(
+                  ({
+                    item: enumeratedInstructionOrExpressionMetadata,
+                    matches,
+                  }) =>
+                    renderInstructionOrExpressionListItem({
+                      instructionOrExpressionMetadata: enumeratedInstructionOrExpressionMetadata,
+                      id: getInstructionOrExpressionIdentifier(
                         enumeratedInstructionOrExpressionMetadata
                       ),
-                    matches,
+                      iconSize: iconSize,
+                      onClick: () =>
+                        onChoose(
+                          enumeratedInstructionOrExpressionMetadata.type,
+                          enumeratedInstructionOrExpressionMetadata
+                        ),
+                      matches,
+                      selectedValue: getInstructionListItemValue(selectedType),
+                    })
+                )
+              ) : (
+                <>
+                  {renderInstructionOrExpressionTree({
+                    instructionTreeNode: instructionsInfoTree,
+                    iconSize,
+                    onChoose,
+                    useSubheaders,
                     selectedValue: getInstructionListItemValue(selectedType),
-                  })
-              )
-            ) : (
-              <>
-                {renderInstructionOrExpressionTree({
-                  instructionTreeNode: instructionsInfoTree,
-                  iconSize,
-                  onChoose,
-                  useSubheaders,
-                  selectedValue: getInstructionListItemValue(selectedType),
-                  initiallyOpenedPath: initialInstructionTypePathRef.current,
-                  selectedItemRef: selectedItemRef,
-                  getGroupIconSrc,
-                })}
-                {onClickMore && (
-                  <ResponsiveLineStackLayout justifyContent="center">
-                    <RaisedButton
-                      primary
-                      icon={<Add />}
-                      onClick={onClickMore}
-                      label={<Trans>Add a new behavior to the object</Trans>}
-                    />
-                  </ResponsiveLineStackLayout>
-                )}
-              </>
-            )}
-          </List>
+                    initiallyOpenedPath: initialInstructionTypePathRef.current,
+                    selectedItemRef: selectedItemRef,
+                    getGroupIconSrc,
+                  })}
+                  {onClickMore && (
+                    <ResponsiveLineStackLayout justifyContent="center">
+                      <RaisedButton
+                        primary
+                        icon={<Add />}
+                        onClick={onClickMore}
+                        label={<Trans>Add a new behavior to the object</Trans>}
+                      />
+                    </ResponsiveLineStackLayout>
+                  )}
+                </>
+              )}
+            </List>
+          </div>
         )}
         {!hasResults && (
           <Line>

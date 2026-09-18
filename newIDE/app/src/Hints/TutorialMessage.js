@@ -16,7 +16,7 @@ type Props = {|
 |};
 
 // c3: GDevelop's video tutorials don't match this editor - never shown.
-const hideTutorials = true;
+const hideTutorials: boolean = true;
 
 /**
  * Show a link to a tutorial that can be permanently hidden. Hidden tutorials
