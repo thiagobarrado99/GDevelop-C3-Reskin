@@ -10,7 +10,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 
 ## Phase A — "Where is it?" (High)
 
-### A1. Category order in the add-object / add-behaviour grids
+### A1. Category order in the add-object / add-behaviour grids — done 2026-09-18 (`C3TileGrid` `categoryOrder`, `C3_OBJECT_CATEGORIES` / `C3_BEHAVIOR_CATEGORIES`, divider `Também disponíveis`)
 - **Symptom**: `Sprite` (Geral) and `Plataforma` / `8 Direções` (Movimentos) are below the fold because `UI/C3TileGrid.js` sorts categories alphabetically (`[...new Set(...)].sort()`, line ~37) and GDevelop-only categories (`Avançado`, `Câmera`, `Efeito visual`…) win.
 - **Do**: give `C3TileGrid` an optional `categoryOrder: string[]` prop; known categories keep that order, unknown ones follow alphabetically after a `GDevelop` divider row. Callers pass Construct's order: objects `3D · Dados & Armazenamento · Geral · Elementos HTML · Entrada · Mídia · Outro` (`AssetStore/NewObjectFromScratch.js`), behaviours `3D · Atributos · Geral · Movimentos` (`AssetStore/BehaviorStore/index.js`). Category labels come from `Utils/C3Objects.js` / `Utils/C3Behaviors.js`; the divider label needs pt-BR + en.
 - **Check**: both dialogs open with `Geral` visible without scrolling; `Sprite` is the first tile of the object grid after 3D; the extra GDevelop tiles are still there, after the divider.
@@ -23,7 +23,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 
 ### A3. Step 2 of Add condition/action: flat list, no dummy extension
 - **Symptom**: `InstructionOrExpressionSelector` renders a folded tree (`Geral ▸`, `Entrada ▸`…), GDevelop icons, and the dev-only `My Dummy Extension`.
-- **Do**: in `EventsSheet/InstructionEditor/InstructionOrExpressionSelector/index.js` (and `InstructionOrExpressionTreeViewItems.js`) — (1) start with every group expanded (`initiallyOpen`/`getAllGroupIds` fed to the tree's `openedNodeIds`); (2) hide instructions whose extension name is `MyDummyExtension` (grep `Dummy` — `ObjectsList/index.js` already filters it for objects; reuse the same predicate from a tiny helper in `Utils/C3Hidden.js`); (3) group-header icons through `Utils/C3Icons.js` (extension name → slug) with the GDevelop icon as fallback; (4) if the flat look is still off, drop the group nesting and render `Category` headers as non-collapsible rows, Construct-style two columns is optional (`columns: 2` in the list via CSS `column-count` inside the theme CSS, keyed on the theme root class).
+- **Do**: in `EventsSheet/InstructionEditor/InstructionOrExpressionSelector/index.js` (and `InstructionOrExpressionTreeViewItems.js`) — (1) start with every group expanded (`initiallyOpen`/`getAllGroupIds` fed to the tree's `openedNodeIds`); (2) nothing to do for `My Dummy Extension`: it is only loaded in dev builds (`filterExamples: !isDev` in `BrowserApp.js` / `LocalApp.js`); (3) group-header icons through `Utils/C3Icons.js` (extension name → slug) with the GDevelop icon as fallback; (4) if the flat look is still off, drop the group nesting and render `Category` headers as non-collapsible rows, Construct-style two columns is optional (`columns: 2` in the list via CSS `column-count` inside the theme CSS, keyed on the theme root class).
 - **Check**: `Sistema` → step 2 shows `Variáveis`, `Layout`, `Temporizadores e tempo`… all open with their rows; no `My Dummy Extension`; hovered row still shows its description on top (already done).
 
 ### A4. New Sprite: blank frame, `Animação 1`, straight into the image editor

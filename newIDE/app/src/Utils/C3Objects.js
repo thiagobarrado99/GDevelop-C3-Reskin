@@ -20,6 +20,19 @@ const html = { en: 'HTML elements', pt_BR: 'Elementos HTML' };
 const general = { en: 'General', pt_BR: 'Geral' };
 const media = { en: 'Media', pt_BR: 'Mídia' };
 const other = { en: 'Other', pt_BR: 'Outro' };
+const data = { en: 'Data & Storage', pt_BR: 'Dados & Armazenamento' };
+const input = { en: 'Input', pt_BR: 'Entrada' };
+
+// Construct's order in the add-object dialog.
+export const C3_OBJECT_CATEGORIES = [
+  threeD,
+  data,
+  general,
+  html,
+  input,
+  media,
+  other,
+];
 
 export const C3_OBJECTS: Array<C3Object> = [
   {

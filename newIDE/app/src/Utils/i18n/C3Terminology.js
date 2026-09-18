@@ -27,6 +27,7 @@ const reskinPtBr: { [string]: string } = {
     'Compartilhado por todas as instâncias do objeto.',
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',
+  'Also available': 'Também disponíveis',
   'Add layer below': 'Adicionar camada abaixo',
   System: 'Sistema',
   'Add another condition': 'Adicionar outra condição',

@@ -18,6 +18,7 @@ import { C3_EXTENSIONS } from '../../Utils/C3Extensions'; // c3
 import { c3BehaviorIcon, getC3BehaviorIconFilename } from '../../Utils/C3Icons'; // c3
 import {
   C3_BEHAVIORS,
+  C3_BEHAVIOR_CATEGORIES,
   c3Label,
   type C3Behavior,
 } from '../../Utils/C3Behaviors'; // c3
@@ -360,6 +361,9 @@ export const BehaviorStore = ({
         {useC3Grid && filteredSearchResults ? ( // c3: Construct-style tiles
           <C3TileGrid
             colorVariable="--c3-behavior-color"
+            categoryOrder={C3_BEHAVIOR_CATEGORIES.map(category =>
+              c3Label(category, preferences.values.language)
+            )}
             onChoose={id => {
               const tile = C3_BEHAVIORS.find(tile => tile.id === id);
               const type = tile ? tile.type : id;

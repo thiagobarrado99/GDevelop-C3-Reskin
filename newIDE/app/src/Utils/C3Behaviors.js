@@ -24,6 +24,9 @@ const general = { en: 'General', pt_BR: 'Geral' };
 const movements = { en: 'Movements', pt_BR: 'Movimentos' };
 const threeD = { en: '3D', pt_BR: '3D' };
 
+// Construct's order in the add-behaviour dialog.
+export const C3_BEHAVIOR_CATEGORIES = [threeD, attributes, general, movements];
+
 export const C3_BEHAVIORS: Array<C3Behavior> = [
   {
     id: 'solid',

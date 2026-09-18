@@ -25,7 +25,11 @@ import { ObjectListItem } from './ObjectListItem';
 import C3TileGrid from '../UI/C3TileGrid'; // c3
 import { c3ObjectIcon, getC3ObjectIconFilename } from '../Utils/C3Icons'; // c3
 import { translateExtensionCategory } from '../Utils/Extension/ExtensionCategories'; // c3
-import { C3_OBJECTS, type C3Object } from '../Utils/C3Objects'; // c3
+import {
+  C3_OBJECTS,
+  C3_OBJECT_CATEGORIES,
+  type C3Object,
+} from '../Utils/C3Objects'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
 import { ColumnStackLayout, LineStackLayout } from '../UI/Layout';
@@ -357,6 +361,9 @@ export default function NewObjectFromScratch({
         {useC3Grid && filteredSearchResults ? ( // c3
           <C3TileGrid
             colorVariable="--c3-object-label-color"
+            categoryOrder={C3_OBJECT_CATEGORIES.map(category =>
+              c3Label(category, preferences.values.language)
+            )}
             onChoose={id => {
               const found = c3Tiles.find(
                 ({ tile, header }) => (tile ? tile.id : header.type) === id

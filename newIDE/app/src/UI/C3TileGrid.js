@@ -24,6 +24,9 @@ type Props = {|
   onChoose: (id: string) => void,
   colorVariable: string, // e.g. '--c3-behavior-color'
   instant?: boolean, // a single click chooses; no footer
+  // Known categories in this order first; the others alphabetically after a
+  // divider (GDevelop-only items the Construct dialog does not have).
+  categoryOrder?: Array<string>,
 |};
 
 const C3TileGrid = ({
@@ -31,10 +34,18 @@ const C3TileGrid = ({
   onChoose,
   colorVariable,
   instant,
+  categoryOrder = [],
 }: Props): React.Node => {
   const [selectedId, setSelectedId] = React.useState<?string>(null);
   const selected = tiles.find(tile => tile.id === selectedId);
-  const categories = [...new Set(tiles.map(tile => tile.category))].sort();
+  const rank = category => {
+    const index = categoryOrder.indexOf(category);
+    return index === -1 ? Infinity : index;
+  };
+  const categories = [...new Set(tiles.map(tile => tile.category))].sort(
+    (a, b) => rank(a) - rank(b) || a.localeCompare(b)
+  );
+  const firstExtra = categories.find(category => rank(category) === Infinity);
 
   return (
     <div
@@ -44,6 +55,11 @@ const C3TileGrid = ({
       <div className="c3-tile-grid-body">
         {categories.map(category => (
           <React.Fragment key={category}>
+            {category === firstExtra && firstExtra !== categories[0] ? (
+              <div className="c3-tile-divider">
+                <Trans>Also available</Trans>
+              </div>
+            ) : null}
             {category ? (
               <div className="c3-tile-category">{category}</div>
             ) : null}
