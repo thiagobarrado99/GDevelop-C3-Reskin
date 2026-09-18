@@ -1,7 +1,8 @@
 // @flow
 
 import * as React from 'react';
-import { t } from '@lingui/macro';
+import ReactDOM from 'react-dom'; // c3
+import { t, Trans } from '@lingui/macro';
 import { I18n } from '@lingui/react';
 
 import PreferencesContext from '../../MainFrame/Preferences/PreferencesContext';
@@ -36,23 +37,50 @@ import { preventGameFramePointerEvents } from '../../EmbeddedGame/EmbeddedGameFr
 import { EmbeddedGameFrameHole } from '../../EmbeddedGame/EmbeddedGameFrameHole';
 import { exceptionallyGuardAgainstDeadObject } from '../../Utils/IsNullPtr';
 
-// c3: Construct-like arrangement - properties bar left, layout in the centre,
-// objects top-right (where Construct has its project bar) and layers below.
-const initialMosaicEditorNodes = {
+// c3: Construct-like arrangement - properties bar left, layout in the centre;
+// objects, families and layers live in the docked project bar (see
+// C3BarPanels below), not in the mosaic.
+const initialMosaicEditorNodes: any = {
   direction: 'row',
   first: 'properties',
+  second: 'instances-editor',
   splitPercentage: 20,
-  second: {
-    direction: 'row',
-    first: 'instances-editor',
-    second: {
-      direction: 'column',
-      first: 'objects-list',
-      second: 'layers-list',
-      splitPercentage: 60,
-    },
-    splitPercentage: 78,
-  },
+};
+const c3BarPanelIds = ['objects-list', 'object-groups-list', 'layers-list'];
+// Layouts saved before the panels moved to the bar are ignored.
+const withoutC3BarPanels = (node: any) =>
+  node && c3BarPanelIds.some(id => JSON.stringify(node).includes(`"${id}"`))
+    ? null
+    : node;
+
+// c3: the last scene editor that was active keeps its panels in the bar while
+// an event sheet is open.
+let c3LastActiveDisplayId = 0;
+let c3NextDisplayId = 1;
+
+const C3BarSection = ({
+  title,
+  height,
+  children,
+}: {|
+  title: React.Node,
+  height: number,
+  children: React.Node,
+|}) => {
+  const [open, setOpen] = React.useState(true);
+  return (
+    <div className="c3-bar-section">
+      <div className="c3-bar-section-title" onClick={() => setOpen(!open)}>
+        <span>{open ? '▾' : '▸'}</span>
+        {title}
+      </div>
+      {open ? (
+        <div className="c3-bar-section-body" style={{ height }}>
+          {children}
+        </div>
+      ) : null}
+    </div>
+  );
 };
 
 const noop = () => {};
@@ -299,6 +327,23 @@ const MosaicEditorsDisplay: React.ComponentType<{
     const isCustomVariant = eventsBasedObject
       ? eventsBasedObject.getDefaultVariant() !== eventsBasedObjectVariant
       : false;
+
+    // c3: panels rendered into the docked project bar.
+    const c3DisplayIdRef = React.useRef(c3NextDisplayId++);
+    if (isActive) c3LastActiveDisplayId = c3DisplayIdRef.current;
+    const c3BarTarget =
+      c3LastActiveDisplayId === c3DisplayIdRef.current
+        ? document.getElementById('c3-project-bar-panels')
+        : null;
+    const [, c3Rerender] = React.useReducer<number, void>(x => x + 1, 0);
+    React.useEffect(
+      () => {
+        // The bar can be (re)mounted after this render: check again.
+        if (c3BarTarget !== document.getElementById('c3-project-bar-panels'))
+          c3Rerender();
+      },
+      [isActive, c3BarTarget]
+    );
 
     const editors = {
       properties: {
@@ -584,27 +629,46 @@ const MosaicEditorsDisplay: React.ComponentType<{
     };
 
     return (
-      <EditorMosaic
-        // $FlowFixMe[incompatible-type]
-        editors={editors}
-        centralNodeId="instances-editor"
-        initialNodes={
+      <>
+        {c3BarTarget
+          ? ReactDOM.createPortal(
+              <>
+                <C3BarSection title={<Trans>Objects</Trans>} height={320}>
+                  {editors['objects-list'].renderEditor()}
+                </C3BarSection>
+                <C3BarSection title={<Trans>Object Groups</Trans>} height={160}>
+                  {editors['object-groups-list'].renderEditor()}
+                </C3BarSection>
+                <C3BarSection title={<Trans>Layers</Trans>} height={220}>
+                  {editors['layers-list'].renderEditor()}
+                </C3BarSection>
+              </>,
+              c3BarTarget
+            )
+          : null}
+        <EditorMosaic
           // $FlowFixMe[incompatible-type]
-          getDefaultEditorMosaicNode('scene-editor') || initialMosaicEditorNodes
-        }
-        isTransparent={gameEditorMode === 'embedded-game'}
-        onDragOrResizedStarted={() => {
-          preventGameFramePointerEvents(true);
-        }}
-        onDragOrResizedEnded={() => {
-          preventGameFramePointerEvents(false);
-        }}
-        onOpenedEditorsChanged={props.onOpenedEditorsChanged}
-        onPersistNodes={node =>
-          setDefaultEditorMosaicNode('scene-editor', node)
-        }
-        ref={editorMosaicRef}
-      />
+          editors={editors}
+          centralNodeId="instances-editor"
+          initialNodes={
+            // $FlowFixMe[incompatible-type]
+            withoutC3BarPanels(getDefaultEditorMosaicNode('scene-editor')) ||
+            initialMosaicEditorNodes
+          }
+          isTransparent={gameEditorMode === 'embedded-game'}
+          onDragOrResizedStarted={() => {
+            preventGameFramePointerEvents(true);
+          }}
+          onDragOrResizedEnded={() => {
+            preventGameFramePointerEvents(false);
+          }}
+          onOpenedEditorsChanged={props.onOpenedEditorsChanged}
+          onPersistNodes={node =>
+            setDefaultEditorMosaicNode('scene-editor', node)
+          }
+          ref={editorMosaicRef}
+        />
+      </>
     );
   }
 );

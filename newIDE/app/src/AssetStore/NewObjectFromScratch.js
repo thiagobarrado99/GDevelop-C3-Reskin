@@ -23,6 +23,7 @@ import { ObjectStoreContext, type ObjectCategory } from './ObjectStoreContext';
 import { ListSearchResults } from '../UI/Search/ListSearchResults';
 import { ObjectListItem } from './ObjectListItem';
 import C3TileGrid from '../UI/C3TileGrid'; // c3
+import { translateExtensionCategory } from '../Utils/Extension/ExtensionCategories'; // c3
 import { C3_OBJECTS, type C3Object } from '../Utils/C3Objects'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
@@ -252,10 +253,11 @@ export default function NewObjectFromScratch({
 
   const filteredSearchResults = searchResults ? searchResults : null;
   const useC3Grid: boolean = true; // c3: Construct's add-object tiles
-  const [showAllObjects, setShowAllObjects] = React.useState(false); // c3
   // c3: Construct tiles paired with the GDevelop object header they port.
+  // c3: Construct's tiles first, then every other GDevelop object type in
+  // its own category.
   const c3Tiles: Array<{|
-    tile: C3Object,
+    tile: ?C3Object,
     header: ObjectShortHeader,
   |}> = React.useMemo(
     () => {
@@ -264,10 +266,14 @@ export default function NewObjectFromScratch({
         // Categories carry `categoryId`; everything else is a header.
         if (!item.categoryId) headers.push((item: any));
       }
-      const tiles = [];
+      const tiles: Array<{| tile: ?C3Object, header: ObjectShortHeader |}> = [];
       for (const tile of C3_OBJECTS) {
         const header = headers.find(header => header.type === tile.type);
         if (header) tiles.push({ tile, header });
+      }
+      for (const header of headers) {
+        if (!C3_OBJECTS.some(tile => tile.type === header.type))
+          tiles.push({ tile: null, header });
       }
       return tiles;
     },
@@ -331,13 +337,6 @@ export default function NewObjectFromScratch({
                   </IconButton>
                 }
                 buildMenuTemplate={(i18n: I18nType) => [
-                  // c3: escape hatch out of the Construct list.
-                  {
-                    type: 'checkbox',
-                    label: i18n._(t`Show all GDevelop objects`),
-                    checked: showAllObjects,
-                    click: () => setShowAllObjects(!showAllObjects),
-                  },
                   {
                     label: preferences.values.showExperimentalExtensions
                       ? i18n._(t`Hide experimental objects`)
@@ -354,22 +353,28 @@ export default function NewObjectFromScratch({
           </ResponsiveLineStackLayout>
           {DismissableTutorialMessage}
         </ColumnStackLayout>
-        {useC3Grid && !showAllObjects && filteredSearchResults ? ( // c3
+        {useC3Grid && filteredSearchResults ? ( // c3
           <C3TileGrid
             colorVariable="--c3-object-label-color"
             onChoose={id => {
-              const found = c3Tiles.find(({ tile }) => tile.id === id);
+              const found = c3Tiles.find(
+                ({ tile, header }) => (tile ? tile.id : header.type) === id
+              );
               if (found) {
                 sendNewObjectCreated(found.header.name);
                 onObjectTypeSelected(found.header);
               }
             }}
             tiles={c3Tiles.map(({ tile, header }) => ({
-              id: tile.id,
-              name: c3Label(tile.name, preferences.values.language),
+              id: tile ? tile.id : header.type,
+              name: tile
+                ? c3Label(tile.name, preferences.values.language)
+                : header.fullName,
               description: header.description,
               iconUrl: header.previewIconUrl,
-              category: c3Label(tile.category, preferences.values.language),
+              category: tile
+                ? c3Label(tile.category, preferences.values.language)
+                : translateExtensionCategory(header.category, i18n),
               enabled: true,
             }))}
           />

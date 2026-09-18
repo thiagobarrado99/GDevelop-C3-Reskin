@@ -61,6 +61,7 @@ import {
   type ExternalEventsTreeViewItemProps,
   type ExternalEventsTreeViewItemCallbacks,
 } from './ExternalEventsTreeViewItemContent';
+import { LayoutEventsTreeViewItemContent } from './LayoutEventsTreeViewItemContent'; // c3
 import {
   ExternalLayoutTreeViewItemContent,
   getExternalLayoutTreeViewItemId,
@@ -422,6 +423,9 @@ export type ProjectManagerInterface = {|
 
 type Props = {|
   project: ?gdProject,
+  // c3: the docked project bar renders the tree in two halves around the
+  // Objects / Families / Layers panels (see MainFrame).
+  c3Section?: 'top' | 'bottom',
   onChangeProjectName: string => Promise<void>,
   onSaveProjectProperties: (options: { newName?: string }) => Promise<boolean>,
   ...SceneTreeViewItemCallbacks,
@@ -492,6 +496,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       onExtensionInstalled,
       onSceneAdded,
       onExternalLayoutAdded,
+      c3Section,
     },
     ref
   ) => {
@@ -1114,246 +1119,276 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
 
     const getTreeViewData = React.useCallback(
       (i18n: I18nType): Array<TreeViewItem> => {
-        return !project ||
-          !sceneTreeViewItemProps ||
-          !extensionTreeViewItemProps ||
-          !externalEventsTreeViewItemProps ||
-          !externalLayoutTreeViewItemProps ||
-          !gameplayTestTreeViewItemProps
-          ? []
-          : [
-              // c3: Construct order - layouts, event sheets, then the rest.
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  scenesRootFolderId,
-                  i18n._(t`Scenes`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Add a scene`),
-                    click: () => {
-                      // TODO Add after selected scene?
-                      const index = project.getLayoutsCount() - 1;
-                      addNewScene(index, i18n);
-                    },
-                    id: 'add-new-scene-button',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getLayoutsCount() === 0) {
+        // c3: docked bar halves.
+        const c3TopRootIds = [scenesRootFolderId, externalEventsRootFolderId];
+        const c3Filter = (items: Array<TreeViewItem>) =>
+          !c3Section
+            ? items
+            : items.filter(
+                item =>
+                  c3TopRootIds.includes(item.content.getId()) ===
+                  (c3Section === 'top')
+              );
+        return c3Filter(
+          !project ||
+            !sceneTreeViewItemProps ||
+            !extensionTreeViewItemProps ||
+            !externalEventsTreeViewItemProps ||
+            !externalLayoutTreeViewItemProps ||
+            !gameplayTestTreeViewItemProps
+            ? []
+            : [
+                // c3: Construct order - layouts, event sheets, then the rest.
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    scenesRootFolderId,
+                    i18n._(t`Scenes`),
+                    {
+                      icon: <Add />,
+                      label: i18n._(t`Add a scene`),
+                      click: () => {
+                        // TODO Add after selected scene?
+                        const index = project.getLayoutsCount() - 1;
+                        addNewScene(index, i18n);
+                      },
+                      id: 'add-new-scene-button',
+                    }
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                    if (project.getLayoutsCount() === 0) {
+                      return [
+                        new PlaceHolderTreeViewItem(
+                          scenesEmptyPlaceholderId,
+                          i18n._(t`Start by adding a new scene.`)
+                        ),
+                      ];
+                    }
+                    return mapFor(
+                      0,
+                      project.getLayoutsCount(),
+                      i =>
+                        new LeafTreeViewItem(
+                          new SceneTreeViewItemContent(
+                            project.getLayoutAt(i),
+                            sceneTreeViewItemProps
+                          )
+                        )
+                    );
+                  },
+                },
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    externalEventsRootFolderId,
+                    i18n._(t`External events`),
+                    {
+                      icon: <Add />,
+                      label: i18n._(t`Add external events`),
+                      click: () => {
+                        // TODO Add after selected scene?
+                        const index = project.getExternalEventsCount() - 1;
+                        addExternalEvents(index, i18n);
+                      },
+                      id: 'add-new-external-events-button',
+                    }
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                    if (
+                      project.getExternalEventsCount() === 0 &&
+                      project.getLayoutsCount() === 0
+                    ) {
+                      return [
+                        new PlaceHolderTreeViewItem(
+                          externalEventsEmptyPlaceholderId,
+                          i18n._(t`Start by adding new external events.`)
+                        ),
+                      ];
+                    }
                     return [
-                      new PlaceHolderTreeViewItem(
-                        scenesEmptyPlaceholderId,
-                        i18n._(t`Start by adding a new scene.`)
+                      // c3: every layout's own event sheet comes first.
+                      ...mapFor(
+                        0,
+                        project.getLayoutsCount(),
+                        i =>
+                          new LeafTreeViewItem(
+                            new LayoutEventsTreeViewItemContent(
+                              project.getLayoutAt(i),
+                              sceneTreeViewItemProps
+                            )
+                          )
+                      ),
+                      ...mapFor(
+                        0,
+                        project.getExternalEventsCount(),
+                        i =>
+                          new LeafTreeViewItem(
+                            new ExternalEventsTreeViewItemContent(
+                              project.getExternalEventsAt(i),
+                              externalEventsTreeViewItemProps
+                            )
+                          )
                       ),
                     ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getLayoutsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new SceneTreeViewItemContent(
-                          project.getLayoutAt(i),
-                          sceneTreeViewItemProps
-                        )
-                      )
-                  );
+                  },
                 },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  externalEventsRootFolderId,
-                  i18n._(t`External events`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Add external events`),
-                    click: () => {
-                      // TODO Add after selected scene?
-                      const index = project.getExternalEventsCount() - 1;
-                      addExternalEvents(index, i18n);
-                    },
-                    id: 'add-new-external-events-button',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getExternalEventsCount() === 0) {
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    externalLayoutsRootFolderId,
+                    i18n._(t`External layouts`),
+                    {
+                      icon: <Add />,
+                      label: i18n._(t`Add an external layout`),
+                      click: () => {
+                        // TODO Add after selected scene?
+                        const index = project.getExternalLayoutsCount() - 1;
+                        addExternalLayout(index, i18n);
+                      },
+                      id: 'add-new-external-layout-button',
+                    }
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                    if (project.getExternalLayoutsCount() === 0) {
+                      return [
+                        new PlaceHolderTreeViewItem(
+                          externalLayoutEmptyPlaceholderId,
+                          i18n._(t`Start by adding a new external layout.`)
+                        ),
+                      ];
+                    }
+                    return mapFor(
+                      0,
+                      project.getExternalLayoutsCount(),
+                      i =>
+                        new LeafTreeViewItem(
+                          new ExternalLayoutTreeViewItemContent(
+                            project.getExternalLayoutAt(i),
+                            externalLayoutTreeViewItemProps
+                          )
+                        )
+                    );
+                  },
+                },
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    extensionsRootFolderId,
+                    i18n._(t`Extensions`),
+                    {
+                      icon: <Add />,
+                      label: i18n._(t`Create or search for new extensions`),
+                      click: openSearchExtensionDialog,
+                      id: 'project-manager-extension-search-or-create',
+                    }
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                    if (project.getEventsFunctionsExtensionsCount() === 0) {
+                      return [
+                        new PlaceHolderTreeViewItem(
+                          extensionsEmptyPlaceholderId,
+                          i18n._(t`Start by adding a new extension.`)
+                        ),
+                      ];
+                    }
+                    return mapFor(
+                      0,
+                      project.getEventsFunctionsExtensionsCount(),
+                      i =>
+                        new LeafTreeViewItem(
+                          new ExtensionTreeViewItemContent(
+                            project.getEventsFunctionsExtensionAt(i),
+                            extensionTreeViewItemProps
+                          )
+                        )
+                    );
+                  },
+                },
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    gameSettingsRootFolderId,
+                    i18n._(t`Game settings`)
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
                     return [
-                      new PlaceHolderTreeViewItem(
-                        externalEventsEmptyPlaceholderId,
-                        i18n._(t`Start by adding new external events.`)
+                      new LeafTreeViewItem(
+                        new ActionTreeViewItemContent(
+                          gamePropertiesItemId,
+                          i18n._(t`Properties & Icons`),
+                          openProjectProperties,
+                          'res/icons_default/properties_black.svg'
+                        )
+                      ),
+                      new LeafTreeViewItem(
+                        new ActionTreeViewItemContent(
+                          globalVariablesItemId,
+                          i18n._(t`Global variables`),
+                          openProjectVariables,
+                          'res/icons_default/global_variable24_black.svg'
+                        )
+                      ),
+                      new LeafTreeViewItem(
+                        new ActionTreeViewItemContent(
+                          gameResourcesItemId,
+                          i18n._(t`Resources`),
+                          onOpenResources,
+                          'res/icons_default/project_resources_black.svg'
+                        )
+                      ),
+                      new LeafTreeViewItem(
+                        new ActionTreeViewItemContent(
+                          gameDashboardItemId,
+                          i18n._(t`Game Dashboard`),
+                          onOpenGamesDashboardDialog,
+                          'res/icons_default/graphs_black.svg'
+                        )
                       ),
                     ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getExternalEventsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new ExternalEventsTreeViewItemContent(
-                          project.getExternalEventsAt(i),
-                          externalEventsTreeViewItemProps
+                  },
+                },
+                {
+                  isRoot: true,
+                  content: new LabelTreeViewItemContent(
+                    gameplayTestsRootFolderId,
+                    i18n._(t`Gameplay tests`),
+                    {
+                      icon: <Add />,
+                      label: i18n._(t`Add a gameplay test`),
+                      click: () => {
+                        const index = project.getTests().getTestsCount() - 1;
+                        addGameplayTest(index, i18n);
+                      },
+                      id: 'add-new-gameplay-test-button',
+                    }
+                  ),
+                  getChildren(i18n: I18nType): ?Array<TreeViewItem> {
+                    if (project.getTests().getTestsCount() === 0) {
+                      return [
+                        new PlaceHolderTreeViewItem(
+                          gameplayTestsEmptyPlaceholderId,
+                          i18n._(t`Start by adding a new gameplay test.`)
+                        ),
+                      ];
+                    }
+                    return mapFor(
+                      0,
+                      project.getTests().getTestsCount(),
+                      i =>
+                        new LeafTreeViewItem(
+                          new GameplayTestTreeViewItemContent(
+                            project.getTests().getTestAt(i),
+                            gameplayTestTreeViewItemProps
+                          )
                         )
-                      )
-                  );
+                    );
+                  },
                 },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  externalLayoutsRootFolderId,
-                  i18n._(t`External layouts`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Add an external layout`),
-                    click: () => {
-                      // TODO Add after selected scene?
-                      const index = project.getExternalLayoutsCount() - 1;
-                      addExternalLayout(index, i18n);
-                    },
-                    id: 'add-new-external-layout-button',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getExternalLayoutsCount() === 0) {
-                    return [
-                      new PlaceHolderTreeViewItem(
-                        externalLayoutEmptyPlaceholderId,
-                        i18n._(t`Start by adding a new external layout.`)
-                      ),
-                    ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getExternalLayoutsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new ExternalLayoutTreeViewItemContent(
-                          project.getExternalLayoutAt(i),
-                          externalLayoutTreeViewItemProps
-                        )
-                      )
-                  );
-                },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  extensionsRootFolderId,
-                  i18n._(t`Extensions`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Create or search for new extensions`),
-                    click: openSearchExtensionDialog,
-                    id: 'project-manager-extension-search-or-create',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getEventsFunctionsExtensionsCount() === 0) {
-                    return [
-                      new PlaceHolderTreeViewItem(
-                        extensionsEmptyPlaceholderId,
-                        i18n._(t`Start by adding a new extension.`)
-                      ),
-                    ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getEventsFunctionsExtensionsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new ExtensionTreeViewItemContent(
-                          project.getEventsFunctionsExtensionAt(i),
-                          extensionTreeViewItemProps
-                        )
-                      )
-                  );
-                },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  gameSettingsRootFolderId,
-                  i18n._(t`Game settings`)
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  return [
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gamePropertiesItemId,
-                        i18n._(t`Properties & Icons`),
-                        openProjectProperties,
-                        'res/icons_default/properties_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        globalVariablesItemId,
-                        i18n._(t`Global variables`),
-                        openProjectVariables,
-                        'res/icons_default/global_variable24_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gameResourcesItemId,
-                        i18n._(t`Resources`),
-                        onOpenResources,
-                        'res/icons_default/project_resources_black.svg'
-                      )
-                    ),
-                    new LeafTreeViewItem(
-                      new ActionTreeViewItemContent(
-                        gameDashboardItemId,
-                        i18n._(t`Game Dashboard`),
-                        onOpenGamesDashboardDialog,
-                        'res/icons_default/graphs_black.svg'
-                      )
-                    ),
-                  ];
-                },
-              },
-              {
-                isRoot: true,
-                content: new LabelTreeViewItemContent(
-                  gameplayTestsRootFolderId,
-                  i18n._(t`Gameplay tests`),
-                  {
-                    icon: <Add />,
-                    label: i18n._(t`Add a gameplay test`),
-                    click: () => {
-                      const index = project.getTests().getTestsCount() - 1;
-                      addGameplayTest(index, i18n);
-                    },
-                    id: 'add-new-gameplay-test-button',
-                  }
-                ),
-                getChildren(i18n: I18nType): ?Array<TreeViewItem> {
-                  if (project.getTests().getTestsCount() === 0) {
-                    return [
-                      new PlaceHolderTreeViewItem(
-                        gameplayTestsEmptyPlaceholderId,
-                        i18n._(t`Start by adding a new gameplay test.`)
-                      ),
-                    ];
-                  }
-                  return mapFor(
-                    0,
-                    project.getTests().getTestsCount(),
-                    i =>
-                      new LeafTreeViewItem(
-                        new GameplayTestTreeViewItemContent(
-                          project.getTests().getTestAt(i),
-                          gameplayTestTreeViewItemProps
-                        )
-                      )
-                  );
-                },
-              },
-            ];
+              ]
+        );
       },
       [
+        c3Section,
         addExternalEvents,
         addExternalLayout,
         addGameplayTest,
@@ -1472,7 +1507,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
                 closeDrawer={toggleProjectManager}
               />
             )}
-            {!isNavigatingInMainMenuItem && project && (
+            {!isNavigatingInMainMenuItem && project && c3Section !== 'bottom' && (
               <Line noMargin>
                 <Column expand>
                   <CompactSearchBar
@@ -1489,24 +1524,33 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
                 <>
                   {isNavigatingInMainMenuItem ? null : project ? (
                     <div
-                      id="project-manager"
+                      id={
+                        c3Section === 'bottom'
+                          ? 'project-manager-bottom'
+                          : 'project-manager'
+                      }
                       style={{
                         ...styles.listContainer,
-                        ...styles.autoSizerContainer,
+                        ...(c3Section ? {} : styles.autoSizerContainer),
                       }}
                       onKeyDown={keyboardShortcutsRef.current.onKeyDown}
                       onKeyUp={keyboardShortcutsRef.current.onKeyUp}
                     >
-                      <AutoSizer style={styles.autoSizer} disableWidth>
+                      <AutoSizer
+                        style={styles.autoSizer}
+                        disableWidth
+                        disableHeight={!!c3Section}
+                      >
                         {({ height }) => (
                           // $FlowFixMe[incompatible-type]
                           // $FlowFixMe[incompatible-exact]
                           <TreeView
-                            enableStickyAncestors
+                            enableStickyAncestors={!c3Section}
+                            fitContent={!!c3Section}
                             key={listKey}
                             ref={treeViewRef}
                             items={getTreeViewData(i18n)}
-                            height={height}
+                            height={height || 0}
                             forceAllOpened={!!currentlyRunningInAppTutorial}
                             searchText={searchText}
                             getItemName={getTreeViewItemName}

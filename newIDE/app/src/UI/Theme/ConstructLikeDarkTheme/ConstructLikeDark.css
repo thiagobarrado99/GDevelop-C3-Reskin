@@ -111,41 +111,59 @@
 /* Project bar rows tinted by kind (see CLAUDE.md "Colour coding"): the row
    text takes the kind's colour and the black icon is redrawn as a mask filled
    with it. Rows carry data-scene / data-external-events / data-external-layout. */
-.ConstructLikeDarkTheme #project-manager [data-scene],
-.ConstructLikeDarkTheme #project-manager [data-external-layout] {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-scene],
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-layout] {
   color: var(--c3-layout-color);
 }
-.ConstructLikeDarkTheme #project-manager [data-external-events] {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-events],
+.ConstructLikeDarkTheme [id^='project-manager'] [data-layout-events] {
   color: var(--c3-event-sheet-color);
 }
-.ConstructLikeDarkTheme #project-manager [data-scene][aria-selected='true'],
 .ConstructLikeDarkTheme
-  #project-manager
+  [id^='project-manager']
+  [data-scene][aria-selected='true'],
+.ConstructLikeDarkTheme
+  [id^='project-manager']
   [data-external-layout][aria-selected='true'],
 .ConstructLikeDarkTheme
-  #project-manager
-  [data-external-events][aria-selected='true'] {
+  [id^='project-manager']
+  [data-external-events][aria-selected='true'],
+.ConstructLikeDarkTheme
+  [id^='project-manager']
+  [data-layout-events][aria-selected='true'] {
   color: #1f1f1f;
 }
-.ConstructLikeDarkTheme #project-manager [data-scene] div:has(> img),
-.ConstructLikeDarkTheme #project-manager [data-external-layout] div:has(> img),
-.ConstructLikeDarkTheme #project-manager [data-external-events] div:has(> img) {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-scene] div:has(> img),
+.ConstructLikeDarkTheme
+  [id^='project-manager']
+  [data-external-layout]
+  div:has(> img),
+.ConstructLikeDarkTheme
+  [id^='project-manager']
+  [data-external-events]
+  div:has(> img),
+.ConstructLikeDarkTheme
+  [id^='project-manager']
+  [data-layout-events]
+  div:has(> img) {
   background-color: currentColor;
   -webkit-mask: var(--c3-row-icon) center / 20px 20px no-repeat;
   mask: var(--c3-row-icon) center / 20px 20px no-repeat;
 }
-.ConstructLikeDarkTheme #project-manager [data-scene] {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-scene] {
   --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/scene_black.svg);
 }
-.ConstructLikeDarkTheme #project-manager [data-external-layout] {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-layout] {
   --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/external_layout_black.svg);
 }
-.ConstructLikeDarkTheme #project-manager [data-external-events] {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-events],
+.ConstructLikeDarkTheme [id^='project-manager'] [data-layout-events] {
   --c3-row-icon: /* webpackIgnore: true */ url(/res/icons_default/external_events_black.svg);
 }
-.ConstructLikeDarkTheme #project-manager [data-scene] img,
-.ConstructLikeDarkTheme #project-manager [data-external-layout] img,
-.ConstructLikeDarkTheme #project-manager [data-external-events] img {
+.ConstructLikeDarkTheme [id^='project-manager'] [data-scene] img,
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-layout] img,
+.ConstructLikeDarkTheme [id^='project-manager'] [data-external-events] img,
+.ConstructLikeDarkTheme [id^='project-manager'] [data-layout-events] img {
   visibility: hidden;
 }
 
@@ -228,11 +246,12 @@
   min-height: 0;
 }
 .c3-project-bar {
-  width: 300px;
+  width: 320px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow-y: auto;
   border-left: 1px solid #6b6b6b;
   background: #474747;
 }
@@ -254,4 +273,29 @@
 }
 .ConstructLikeDarkTheme .c3-effect-name input {
   color: var(--c3-effect-color);
+}
+
+/* Objects / Families / Layers sections in the docked project bar. */
+.c3-bar-section {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-top: 1px solid #6b6b6b;
+}
+.c3-bar-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  min-height: 32px;
+  font-family: var(--gdevelop-modern-font-family, sans-serif);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.c3-bar-section-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }

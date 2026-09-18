@@ -165,6 +165,8 @@ export type TreeViewInterface<Item> = {|
 
 type Props<Item> = {|
   height: number,
+  // c3: size the list to its rows (the container scrolls, not the list).
+  fitContent?: boolean,
   width?: number,
   items: Item[],
   getItemName: Item => string | React.Node,
@@ -247,6 +249,7 @@ const END_OF_LIST_DROP_ZONE_HEIGHT = TREE_VIEW_ROW_HEIGHT;
 const InnerTreeView = <Item: ItemBaseAttributes>(
   {
     height,
+    fitContent,
     width,
     items,
     searchText,
@@ -948,7 +951,9 @@ const InnerTreeView = <Item: ItemBaseAttributes>(
   const renderList = () => (
     <>
       <FixedSizeList
-        height={height}
+        height={
+          fitContent ? flattenedData.length * TREE_VIEW_ROW_HEIGHT : height
+        }
         itemCount={flattenedData.length}
         itemSize={TREE_VIEW_ROW_HEIGHT}
         width={typeof width === 'number' ? width : '100%'}

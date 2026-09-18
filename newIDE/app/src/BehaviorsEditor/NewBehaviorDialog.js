@@ -339,6 +339,7 @@ export default function NewBehaviorDialog({
           id="new-behavior-dialog"
         >
           <BehaviorStore
+            i18n={i18n}
             project={project}
             objectType={objectType}
             objectBehaviorsTypes={objectBehaviorsTypes}

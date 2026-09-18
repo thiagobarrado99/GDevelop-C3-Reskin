@@ -13,6 +13,7 @@ import { BehaviorStoreContext } from './BehaviorStoreContext';
 import { ListSearchResults } from '../../UI/Search/ListSearchResults';
 import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
 import C3TileGrid from '../../UI/C3TileGrid'; // c3
+import { translateExtensionCategory } from '../../Utils/Extension/ExtensionCategories'; // c3
 import { C3_EXTENSIONS } from '../../Utils/C3Extensions'; // c3
 import {
   C3_BEHAVIORS,
@@ -69,6 +70,7 @@ export const useExtensionUpdateAlertDialog = (): ((
 };
 
 type Props = {|
+  i18n: I18nType, // c3
   isInstalling: boolean,
   project: gdProject,
   objectType: string,
@@ -85,6 +87,7 @@ const getBehaviorType = (behaviorShortHeader: BehaviorShortHeader) =>
   behaviorShortHeader.type;
 
 export const BehaviorStore = ({
+  i18n,
   isInstalling,
   project,
   objectType,
@@ -170,8 +173,26 @@ export const BehaviorStore = ({
       type: tile.type,
     }: any): BehaviorShortHeader);
   };
+  // c3: Construct's tiles first, then every other GDevelop behaviour in its
+  // own category.
+  const c3TileItems: Array<{|
+    item: BehaviorShortHeader,
+    tile: ?C3Behavior,
+  |}> = [];
+  if (filteredSearchResults) {
+    const items = filteredSearchResults.map(({ item }) => item);
+    C3_BEHAVIORS.forEach(tile => {
+      const item =
+        items.find(item => item.type === tile.type) ||
+        getBundledBehaviorHeader(tile);
+      if (item) c3TileItems.push({ item, tile });
+    });
+    items.forEach(item => {
+      if (!C3_BEHAVIORS.some(tile => tile.type === item.type))
+        c3TileItems.push({ item, tile: null });
+    });
+  }
   const useC3Grid: boolean = true; // c3: tiles like Construct's add-behaviour dialog
-  const [showAllBehaviors, setShowAllBehaviors] = React.useState(false); // c3
 
   const getExtensionsMatches = React.useCallback(
     (extensionShortHeader: BehaviorShortHeader): SearchMatch[] => {
@@ -317,13 +338,6 @@ export const BehaviorStore = ({
                       );
                     },
                   },
-                  // c3: escape hatch out of the 1:1 Construct list.
-                  {
-                    type: 'checkbox',
-                    label: i18n._(t`Show all GDevelop behaviors`),
-                    checked: showAllBehaviors,
-                    click: () => setShowAllBehaviors(!showAllBehaviors),
-                  },
                   {
                     label: showDeprecated
                       ? i18n._(
@@ -355,20 +369,7 @@ export const BehaviorStore = ({
                 (tile ? getBundledBehaviorHeader(tile) : null);
               if (header) installAndChoose(header, tile ? tile.id : undefined);
             }}
-            tiles={(showAllBehaviors
-              ? filteredSearchResults.map(({ item }) => ({
-                  item,
-                  tile: (null: ?C3Behavior),
-                }))
-              : C3_BEHAVIORS.map(tile => ({
-                  tile,
-                  item:
-                    filteredSearchResults
-                      .map(({ item }) => item)
-                      .find(item => item.type === tile.type) ||
-                    getBundledBehaviorHeader(tile),
-                })).filter(({ item }) => !!item)
-            ).map(({ item, tile }) => {
+            tiles={c3TileItems.map(({ item, tile }) => {
               const usable = isBehaviorUsable({
                 objectType,
                 objectBehaviorsTypes,
@@ -385,7 +386,7 @@ export const BehaviorStore = ({
                 iconUrl: item.previewIconUrl,
                 category: tile
                   ? c3Label(tile.category, language)
-                  : item.category,
+                  : translateExtensionCategory(item.category, i18n),
                 enabled:
                   !usable.alreadyAdded &&
                   usable.isObjectCompatible &&

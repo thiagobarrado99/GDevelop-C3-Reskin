@@ -5980,8 +5980,9 @@ const MainFrame = (props: Props): React.MixedElement => {
   // c3: Construct's Project bar - docked at the right of the editors on
   // desktop (the drawer stays for mobile), hidden/shown by the toolbar button.
   const c3ProjectBarDocked = !!currentProject && !isMobile && c3ProjectBarShown;
-  const projectManager = (
+  const renderProjectManager = (c3Section: ?('top' | 'bottom')) => (
     <ProjectManager
+      c3Section={c3Section || undefined}
       project={currentProject}
       onChangeProjectName={onChangeProjectName}
       onSaveProjectProperties={onSaveProjectProperties}
@@ -6115,7 +6116,7 @@ const MainFrame = (props: Props): React.MixedElement => {
             : i18n._(t`Menu`)
         }
       >
-        {c3ProjectBarDocked ? null : projectManager}
+        {c3ProjectBarDocked ? null : renderProjectManager(null)}
       </ProjectManagerDrawer>
       {// Render games platform frame before the editors, so the editor have priority
       // in what to display (ex: Loader of play section)
@@ -6178,7 +6179,9 @@ const MainFrame = (props: Props): React.MixedElement => {
                     <Cross />
                   </IconButton>
                 </div>
-                {projectManager}
+                {renderProjectManager('top')}
+                <div id="c3-project-bar-panels" />
+                {renderProjectManager('bottom')}
               </div>
             ) : null}
           </div>
