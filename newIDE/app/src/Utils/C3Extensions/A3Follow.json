@@ -1,0 +1,283 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Seguir",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/positionAutour24.png",
+  "name": "A3Follow",
+  "previewIconUrl": "res/actions/positionAutour24.png",
+  "shortDescription": "Faz o objeto seguir outro objeto, mantendo uma distância.",
+  "version": "1.0.0",
+  "description": "Faz o objeto seguir outro objeto, mantendo uma distância.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Faz o objeto seguir outro objeto. Use a ação \"Seguir objeto\" em um evento sem condições (a cada quadro).",
+      "fullName": "Seguir",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "Follow",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "description": "Aproxima o objeto do objeto seguido (use a cada quadro).",
+          "fullName": "Seguir objeto",
+          "functionType": "Action",
+          "name": "FollowObject",
+          "sentence": "_PARAM0_ segue _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "Object.Distance(Target)",
+                    ">",
+                    "Distance"
+                  ]
+                }
+              ],
+              "actions": [],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberVariable"
+                      },
+                      "parameters": [
+                        "Speed",
+                        "<=",
+                        "0"
+                      ]
+                    }
+                  ],
+                  "actions": [],
+                  "events": [
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "BooleanVariable"
+                          },
+                          "parameters": [
+                            "FollowX",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetX"
+                          },
+                          "parameters": [
+                            "Object",
+                            "=",
+                            "Target.CenterX() - (Object.CenterX() - Object.X()) - cos(Object.AngleToObject(Target) * Pi() / 180) * Distance"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "BooleanVariable"
+                          },
+                          "parameters": [
+                            "FollowY",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetY"
+                          },
+                          "parameters": [
+                            "Object",
+                            "=",
+                            "Target.CenterY() - (Object.CenterY() - Object.Y()) - sin(Object.AngleToObject(Target) * Pi() / 180) * Distance"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberVariable"
+                      },
+                      "parameters": [
+                        "Speed",
+                        ">",
+                        "0"
+                      ]
+                    }
+                  ],
+                  "actions": [],
+                  "events": [
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "BooleanVariable"
+                          },
+                          "parameters": [
+                            "FollowX",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetX"
+                          },
+                          "parameters": [
+                            "Object",
+                            "+",
+                            "cos(Object.AngleToObject(Target) * Pi() / 180) * min(Speed * TimeDelta(), Object.Distance(Target) - Distance)"
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "BooleanVariable"
+                          },
+                          "parameters": [
+                            "FollowY",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetY"
+                          },
+                          "parameters": [
+                            "Object",
+                            "+",
+                            "sin(Object.AngleToObject(Target) * Pi() / 180) * min(Speed * TimeDelta(), Object.Distance(Target) - Distance)"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Follow::Follow",
+              "type": "behavior"
+            },
+            {
+              "description": "Objeto a seguir",
+              "name": "Target",
+              "type": "objectList"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "FollowObject"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Seguir em X",
+          "description": "Acompanha a posição horizontal.",
+          "name": "FollowX"
+        },
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Seguir em Y",
+          "description": "Acompanha a posição vertical.",
+          "name": "FollowY"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Distância (pixels)",
+          "description": "Distância mínima mantida do objeto seguido.",
+          "name": "Distance"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Velocidade (pixels por segundo)",
+          "description": "0 = acompanha instantaneamente.",
+          "name": "Speed"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "FollowX"
+          },
+          {
+            "propertyName": "FollowY"
+          },
+          {
+            "propertyName": "Distance"
+          },
+          {
+            "propertyName": "Speed"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

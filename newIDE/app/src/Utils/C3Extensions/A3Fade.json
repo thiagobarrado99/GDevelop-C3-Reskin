@@ -1,0 +1,688 @@
+{
+  "author": "Assemble3",
+  "category": "Visual effect",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Esmaecer",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/opacity24.png",
+  "name": "A3Fade",
+  "previewIconUrl": "res/actions/opacity24.png",
+  "shortDescription": "Surge e desaparece gradualmente, destruindo o objeto no fim.",
+  "version": "1.0.0",
+  "description": "Surge e desaparece gradualmente, destruindo o objeto no fim.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Surge gradualmente, espera e desaparece gradualmente; pode destruir o objeto no fim.",
+      "fullName": "Esmaecer",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "Fade",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "onCreated",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "ActiveAtStart",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "A3Fade::Fade::Restart"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Behavior"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Fade::Fade",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPreEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Finished",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    ">",
+                    "0"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    "+",
+                    "TimeDelta()"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "1"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "OpacityCapability::OpacityBehavior::SetValue"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Opacity",
+                    "=",
+                    "min(255, 255 * Elapsed / max(FadeInTime, 0.0001))"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberVariable"
+                      },
+                      "parameters": [
+                        "Elapsed",
+                        ">=",
+                        "FadeInTime"
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Elapsed",
+                        "=",
+                        "0"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Phase",
+                        "=",
+                        "2"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "2"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    ">=",
+                    "WaitTime"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    "=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "3"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "3"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "OpacityCapability::OpacityBehavior::SetValue"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Opacity",
+                    "=",
+                    "max(0, 255 * (1 - Elapsed / max(FadeOutTime, 0.0001)))"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberVariable"
+                      },
+                      "parameters": [
+                        "Elapsed",
+                        ">=",
+                        "FadeOutTime"
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Phase",
+                        "=",
+                        "0"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Finished",
+                        "True",
+                        ""
+                      ]
+                    }
+                  ],
+                  "events": [
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "BooleanVariable"
+                          },
+                          "parameters": [
+                            "DestroyAfterFadeOut",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "Delete"
+                          },
+                          "parameters": [
+                            "Object",
+                            ""
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Fade::Fade",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Recomeça o esmaecimento (surgimento, espera, desaparecimento).",
+          "fullName": "Reiniciar",
+          "functionType": "Action",
+          "name": "Restart",
+          "sentence": "Reiniciar o esmaecimento de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    "=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "1"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "FadeInTime",
+                    "<=",
+                    "0"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    "=",
+                    "2"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "OpacityCapability::OpacityBehavior::SetValue"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Opacity",
+                    "=",
+                    "255"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "FadeInTime",
+                    ">",
+                    "0"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "OpacityCapability::OpacityBehavior::SetValue"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Opacity",
+                    "=",
+                    "0"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Fade::Fade",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se o esmaecimento está em andamento.",
+          "fullName": "Está esmaecendo",
+          "functionType": "Condition",
+          "name": "IsFading",
+          "sentence": "_PARAM0_ está esmaecendo",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "NumberVariable"
+                  },
+                  "parameters": [
+                    "Phase",
+                    ">",
+                    "0"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Fade::Fade",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verdadeiro no quadro em que o desaparecimento termina.",
+          "fullName": "Ao terminar de desaparecer",
+          "functionType": "Condition",
+          "name": "OnFadeOutFinished",
+          "sentence": "_PARAM0_ terminou de desaparecer",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Finished",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Fade::Fade",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "onCreated"
+          },
+          {
+            "functionName": "doStepPreEvents"
+          },
+          {
+            "functionName": "Restart"
+          },
+          {
+            "functionName": "IsFading"
+          },
+          {
+            "functionName": "OnFadeOutFinished"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "",
+          "type": "Behavior",
+          "label": "Opacidade",
+          "extraInformation": [
+            "OpacityCapability::OpacityBehavior"
+          ],
+          "choices": [],
+          "hidden": true,
+          "name": "Opacity"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Tempo de surgimento (segundos)",
+          "name": "FadeInTime"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Tempo de espera (segundos)",
+          "name": "WaitTime"
+        },
+        {
+          "value": "1",
+          "type": "Number",
+          "label": "Tempo de desaparecimento (segundos)",
+          "name": "FadeOutTime"
+        },
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Destruir ao desaparecer",
+          "name": "DestroyAfterFadeOut"
+        },
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Ativo no início",
+          "description": "Começa a esmaecer assim que o objeto é criado.",
+          "name": "ActiveAtStart"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Phase"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Elapsed"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Finished"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "Opacity"
+          },
+          {
+            "propertyName": "FadeInTime"
+          },
+          {
+            "propertyName": "WaitTime"
+          },
+          {
+            "propertyName": "FadeOutTime"
+          },
+          {
+            "propertyName": "DestroyAfterFadeOut"
+          },
+          {
+            "propertyName": "ActiveAtStart"
+          },
+          {
+            "propertyName": "Phase"
+          },
+          {
+            "propertyName": "Elapsed"
+          },
+          {
+            "propertyName": "Finished"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

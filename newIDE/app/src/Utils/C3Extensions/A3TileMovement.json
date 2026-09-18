@@ -1,0 +1,799 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Movimento em grid",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/direction24_black.png",
+  "name": "A3TileMovement",
+  "previewIconUrl": "res/actions/direction24_black.png",
+  "shortDescription": "Movimento célula a célula em uma grade, com controles padrão pelas setas.",
+  "version": "1.0.0",
+  "description": "Movimento célula a célula em uma grade, com controles padrão pelas setas.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Move o objeto uma célula por vez em uma grade (setas por padrão, ou a ação \"Mover na direção\").",
+      "fullName": "Movimento em grid",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "TileMovement",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPreEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "False",
+                    ""
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "DefaultControls",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "KeyFromTextPressed"
+                      },
+                      "parameters": [
+                        "",
+                        "\"Right\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "A3TileMovement::TileMovement::MoveInDirection"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Behavior",
+                        "\"Direita\""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "KeyFromTextPressed"
+                      },
+                      "parameters": [
+                        "",
+                        "\"Left\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "A3TileMovement::TileMovement::MoveInDirection"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Behavior",
+                        "\"Esquerda\""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "KeyFromTextPressed"
+                      },
+                      "parameters": [
+                        "",
+                        "\"Up\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "A3TileMovement::TileMovement::MoveInDirection"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Behavior",
+                        "\"Cima\""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "KeyFromTextPressed"
+                      },
+                      "parameters": [
+                        "",
+                        "\"Down\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "A3TileMovement::TileMovement::MoveInDirection"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Behavior",
+                        "\"Baixo\""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetX"
+                  },
+                  "parameters": [
+                    "Object",
+                    "+",
+                    "clamp(TargetX - Object.X(), -Speed * GridWidth * TimeDelta(), Speed * GridWidth * TimeDelta())"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetY"
+                  },
+                  "parameters": [
+                    "Object",
+                    "+",
+                    "clamp(TargetY - Object.Y(), -Speed * GridHeight * TimeDelta(), Speed * GridHeight * TimeDelta())"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "BuiltinCommonInstructions::CompareNumbers"
+                      },
+                      "parameters": [
+                        "abs(TargetX - Object.X())",
+                        "<",
+                        "0.01"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "BuiltinCommonInstructions::CompareNumbers"
+                      },
+                      "parameters": [
+                        "abs(TargetY - Object.Y())",
+                        "<",
+                        "0.01"
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetXY"
+                      },
+                      "parameters": [
+                        "Object",
+                        "=",
+                        "TargetX",
+                        "=",
+                        "TargetY"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Moving",
+                        "False",
+                        ""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Move uma célula na direção indicada (se não estiver se movendo).",
+          "fullName": "Mover na direção",
+          "functionType": "Action",
+          "name": "MoveInDirection",
+          "sentence": "Mover _PARAM0_ uma célula para _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "False",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Direction",
+                        "=",
+                        "\"Direita\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetX",
+                        "=",
+                        "round((Object.X() - OffsetX) / GridWidth) * GridWidth + OffsetX + (1) * GridWidth"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetY",
+                        "=",
+                        "round((Object.Y() - OffsetY) / GridHeight) * GridHeight + OffsetY + (0) * GridHeight"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Moving",
+                        "True",
+                        ""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Direction",
+                        "=",
+                        "\"Esquerda\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetX",
+                        "=",
+                        "round((Object.X() - OffsetX) / GridWidth) * GridWidth + OffsetX + (-1) * GridWidth"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetY",
+                        "=",
+                        "round((Object.Y() - OffsetY) / GridHeight) * GridHeight + OffsetY + (0) * GridHeight"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Moving",
+                        "True",
+                        ""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Direction",
+                        "=",
+                        "\"Cima\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetX",
+                        "=",
+                        "round((Object.X() - OffsetX) / GridWidth) * GridWidth + OffsetX + (0) * GridWidth"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetY",
+                        "=",
+                        "round((Object.Y() - OffsetY) / GridHeight) * GridHeight + OffsetY + (-1) * GridHeight"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Moving",
+                        "True",
+                        ""
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Direction",
+                        "=",
+                        "\"Baixo\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetX",
+                        "=",
+                        "round((Object.X() - OffsetX) / GridWidth) * GridWidth + OffsetX + (0) * GridWidth"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "TargetY",
+                        "=",
+                        "round((Object.Y() - OffsetY) / GridHeight) * GridHeight + OffsetY + (1) * GridHeight"
+                      ]
+                    },
+                    {
+                      "type": {
+                        "value": "SetBooleanVariable"
+                      },
+                      "parameters": [
+                        "Moving",
+                        "True",
+                        ""
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Direção",
+              "name": "Direction",
+              "supplementaryInformation": "[\"Esquerda\",\"Direita\",\"Cima\",\"Baixo\"]",
+              "type": "stringWithSelector"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Interrompe o movimento atual.",
+          "fullName": "Parar",
+          "functionType": "Action",
+          "name": "Stop",
+          "sentence": "Parar o movimento em grid de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se o objeto está entre duas células.",
+          "fullName": "Está se movendo",
+          "functionType": "Condition",
+          "name": "IsMoving",
+          "sentence": "_PARAM0_ está se movendo na grade",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Índice da coluna atual.",
+          "fullName": "Coluna na grade",
+          "functionType": "Expression",
+          "name": "GridX",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "round((Object.X() - OffsetX) / GridWidth)"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Índice da linha atual.",
+          "fullName": "Linha na grade",
+          "functionType": "Expression",
+          "name": "GridY",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "round((Object.Y() - OffsetY) / GridHeight)"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3TileMovement::TileMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "doStepPreEvents"
+          },
+          {
+            "functionName": "MoveInDirection"
+          },
+          {
+            "functionName": "Stop"
+          },
+          {
+            "functionName": "IsMoving"
+          },
+          {
+            "functionName": "GridX"
+          },
+          {
+            "functionName": "GridY"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "32",
+          "type": "Number",
+          "label": "Largura da célula",
+          "description": "Largura de uma célula da grade, em pixels.",
+          "name": "GridWidth"
+        },
+        {
+          "value": "32",
+          "type": "Number",
+          "label": "Altura da célula",
+          "description": "Altura de uma célula da grade, em pixels.",
+          "name": "GridHeight"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Deslocamento X da grade",
+          "name": "OffsetX"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Deslocamento Y da grade",
+          "name": "OffsetY"
+        },
+        {
+          "value": "5",
+          "type": "Number",
+          "label": "Velocidade (células por segundo)",
+          "name": "Speed"
+        },
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Controles padrão",
+          "description": "Setas do teclado.",
+          "name": "DefaultControls"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "TargetX"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "TargetY"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Moving"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "GridWidth"
+          },
+          {
+            "propertyName": "GridHeight"
+          },
+          {
+            "propertyName": "OffsetX"
+          },
+          {
+            "propertyName": "OffsetY"
+          },
+          {
+            "propertyName": "Speed"
+          },
+          {
+            "propertyName": "DefaultControls"
+          },
+          {
+            "propertyName": "TargetX"
+          },
+          {
+            "propertyName": "TargetY"
+          },
+          {
+            "propertyName": "Moving"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

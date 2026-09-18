@@ -13,6 +13,9 @@ export type C3Behavior = {|
   defaultName: string,
   presets: { [string]: string },
   icon: string,
+  // Events-based extension bundled with the editor (Utils/C3Extensions),
+  // installed into the project when the tile is chosen.
+  bundledExtension?: string,
 |};
 
 const attributes = { en: 'Attributes', pt_BR: 'Atributos' };
@@ -229,9 +232,98 @@ export const C3_BEHAVIORS: Array<C3Behavior> = [
     presets: {},
     icon: 'centrar-em',
   },
-  // No port yet (nothing close enough in GDevelop or the reviewed store):
-  // Sine, Rotate, MoveTo, Follow, Tile movement, Custom, Fade, Timer
-  // (GDevelop has object timers built in), Line of sight (raycast conditions).
+  // Our own events-based extensions (nothing close enough in GDevelop or the
+  // reviewed store), see Utils/C3Extensions.
+  {
+    id: 'sine',
+    name: { en: 'Sine', pt_BR: 'Senóide' },
+    category: movements,
+    type: 'A3Sine::Sine',
+    defaultName: 'Sine',
+    presets: {},
+    icon: 'senoide',
+    bundledExtension: 'A3Sine',
+  },
+  {
+    id: 'rotate',
+    name: { en: 'Rotate', pt_BR: 'Girar' },
+    category: movements,
+    type: 'A3Rotate::Rotate',
+    defaultName: 'Rotate',
+    presets: {},
+    icon: 'girar',
+    bundledExtension: 'A3Rotate',
+  },
+  {
+    id: 'move-to',
+    name: { en: 'MoveTo', pt_BR: 'Mover para' },
+    category: movements,
+    type: 'A3MoveTo::MoveTo',
+    defaultName: 'MoveTo',
+    presets: {},
+    icon: 'mover-para',
+    bundledExtension: 'A3MoveTo',
+  },
+  {
+    id: 'follow',
+    name: { en: 'Follow', pt_BR: 'Seguir' },
+    category: movements,
+    type: 'A3Follow::Follow',
+    defaultName: 'Follow',
+    presets: {},
+    icon: 'seguir',
+    bundledExtension: 'A3Follow',
+  },
+  {
+    id: 'tile-movement',
+    name: { en: 'Tile movement', pt_BR: 'Movimento em grid' },
+    category: movements,
+    type: 'A3TileMovement::TileMovement',
+    defaultName: 'TileMovement',
+    presets: {},
+    icon: 'movimento-em-grid',
+    bundledExtension: 'A3TileMovement',
+  },
+  {
+    id: 'custom',
+    name: { en: 'Custom', pt_BR: 'Personalizado' },
+    category: movements,
+    type: 'A3CustomMovement::CustomMovement',
+    defaultName: 'Custom',
+    presets: {},
+    icon: 'personalizado',
+    bundledExtension: 'A3CustomMovement',
+  },
+  {
+    id: 'fade',
+    name: { en: 'Fade', pt_BR: 'Esmaecer' },
+    category: general,
+    type: 'A3Fade::Fade',
+    defaultName: 'Fade',
+    presets: {},
+    icon: 'esmaecer',
+    bundledExtension: 'A3Fade',
+  },
+  {
+    id: 'timer',
+    name: { en: 'Timer', pt_BR: 'Cronômetro' },
+    category: general,
+    type: 'A3Timer::Timer',
+    defaultName: 'Timer',
+    presets: {},
+    icon: 'cronometro',
+    bundledExtension: 'A3Timer',
+  },
+  {
+    id: 'line-of-sight',
+    name: { en: 'Line of sight', pt_BR: 'Campo de visão' },
+    category: general,
+    type: 'A3LineOfSight::LineOfSight',
+    defaultName: 'LineOfSight',
+    presets: {},
+    icon: 'campo-de-visao',
+    bundledExtension: 'A3LineOfSight',
+  },
 ];
 
 export const getC3Behavior = (id: ?string): ?C3Behavior =>

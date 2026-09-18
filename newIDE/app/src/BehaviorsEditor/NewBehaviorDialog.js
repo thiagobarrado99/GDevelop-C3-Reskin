@@ -27,6 +27,7 @@ import {
 } from '../Utils/GDevelopServices/Badge';
 import { mapVector } from '../Utils/MapFor';
 import { getC3Behavior } from '../Utils/C3Behaviors'; // c3
+import { C3_EXTENSIONS } from '../Utils/C3Extensions'; // c3
 import Add from '../UI/CustomSvgIcons/Add';
 import { useResponsiveWindowSize } from '../UI/Responsive/ResponsiveWindowMeasurer';
 
@@ -226,6 +227,28 @@ export default function NewBehaviorDialog({
   ) => {
     setIsInstalling(true);
     try {
+      // c3: behaviours bundled with the editor are installed from their JSON.
+      const bundledExtension = C3_EXTENSIONS[behaviorShortHeader.extensionName];
+      if (bundledExtension) {
+        return await installExtension({
+          project,
+          requiredExtensionInstallation: {
+            requiredExtensionShortHeaders: [],
+            missingExtensionShortHeaders: [],
+            outOfDateExtensionShortHeaders: [],
+            breakingChangesExtensionShortHeaders: [],
+            incompatibleWithIdeExtensionShortHeaders: [],
+            safeToUpdateExtensions: [],
+            unknownExtensionDependencies: [],
+            isGDevelopUpdateNeeded: false,
+          },
+          importedSerializedExtensions: [bundledExtension],
+          onWillInstallExtension,
+          onExtensionInstalled,
+          updateMode: 'all',
+          reason: 'behavior',
+        });
+      }
       const behaviorShortHeaders: Array<BehaviorShortHeader> = [
         behaviorShortHeader,
       ];

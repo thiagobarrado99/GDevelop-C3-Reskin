@@ -13,6 +13,7 @@ import { BehaviorStoreContext } from './BehaviorStoreContext';
 import { ListSearchResults } from '../../UI/Search/ListSearchResults';
 import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
 import C3TileGrid from '../../UI/C3TileGrid'; // c3
+import { C3_EXTENSIONS } from '../../Utils/C3Extensions'; // c3
 import {
   C3_BEHAVIORS,
   c3Label,
@@ -141,6 +142,34 @@ export const BehaviorStore = ({
   );
 
   const filteredSearchResults = searchResults ? searchResults : null;
+  // c3: a header for a tile whose (bundled) extension is not installed yet.
+  const getBundledBehaviorHeader = (tile: C3Behavior): ?BehaviorShortHeader => {
+    const extensionName = tile.bundledExtension;
+    const serializedExtension = extensionName && C3_EXTENSIONS[extensionName];
+    if (!extensionName || !serializedExtension) return null;
+    const behavior = serializedExtension.eventsBasedBehaviors.find(
+      behavior => tile.type === extensionName + '::' + behavior.name
+    );
+    if (!behavior) return null;
+    return (({
+      tier: 'reviewed',
+      name: behavior.name,
+      fullName: behavior.fullName,
+      description: behavior.description,
+      extensionName,
+      version: serializedExtension.version,
+      gdevelopVersion: '',
+      previewIconUrl: serializedExtension.previewIconUrl,
+      category: serializedExtension.category,
+      url: 'bundled',
+      headerUrl: '',
+      tags: [],
+      authors: [],
+      objectType: behavior.objectType,
+      allRequiredBehaviorTypes: [],
+      type: tile.type,
+    }: any): BehaviorShortHeader);
+  };
   const useC3Grid: boolean = true; // c3: tiles like Construct's add-behaviour dialog
   const [showAllBehaviors, setShowAllBehaviors] = React.useState(false); // c3
 
@@ -319,9 +348,11 @@ export const BehaviorStore = ({
             onChoose={id => {
               const tile = C3_BEHAVIORS.find(tile => tile.id === id);
               const type = tile ? tile.type : id;
-              const header = filteredSearchResults
-                .map(({ item }) => item)
-                .find(item => item.type === type);
+              const header =
+                filteredSearchResults
+                  .map(({ item }) => item)
+                  .find(item => item.type === type) ||
+                (tile ? getBundledBehaviorHeader(tile) : null);
               if (header) installAndChoose(header, tile ? tile.id : undefined);
             }}
             tiles={(showAllBehaviors
@@ -331,9 +362,11 @@ export const BehaviorStore = ({
                 }))
               : C3_BEHAVIORS.map(tile => ({
                   tile,
-                  item: filteredSearchResults
-                    .map(({ item }) => item)
-                    .find(item => item.type === tile.type),
+                  item:
+                    filteredSearchResults
+                      .map(({ item }) => item)
+                      .find(item => item.type === tile.type) ||
+                    getBundledBehaviorHeader(tile),
                 })).filter(({ item }) => !!item)
             ).map(({ item, tile }) => {
               const usable = isBehaviorUsable({

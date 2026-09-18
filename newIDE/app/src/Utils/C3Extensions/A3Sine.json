@@ -1,0 +1,727 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Senóide",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/forceTourne24.png",
+  "name": "A3Sine",
+  "previewIconUrl": "res/actions/forceTourne24.png",
+  "shortDescription": "Oscila a posição, o ângulo ou um valor do objeto seguindo uma onda senoidal.",
+  "version": "1.0.0",
+  "description": "Oscila a posição, o ângulo ou um valor do objeto seguindo uma onda senoidal.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Oscila a posição, o ângulo ou apenas um valor (expressão Valor) seguindo uma onda senoidal.",
+      "fullName": "Senóide",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "Sine",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPostEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Started",
+                    "False",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Started",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Horizontal\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Initial",
+                        "=",
+                        "Object.X()"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Vertical\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Initial",
+                        "=",
+                        "Object.Y()"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Ângulo\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetNumberVariable"
+                      },
+                      "parameters": [
+                        "Initial",
+                        "=",
+                        "Object.Angle()"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Active",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    "+",
+                    "TimeDelta()"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Value",
+                    "=",
+                    "sin((Elapsed + PeriodOffset) * 2 * Pi() / max(Period, 0.0001)) * Magnitude"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Horizontal\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetX"
+                      },
+                      "parameters": [
+                        "Object",
+                        "=",
+                        "Initial + Value"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Vertical\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetY"
+                      },
+                      "parameters": [
+                        "Object",
+                        "=",
+                        "Initial + Value"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "StringVariable"
+                      },
+                      "parameters": [
+                        "Movement",
+                        "=",
+                        "\"Ângulo\""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetAngle"
+                      },
+                      "parameters": [
+                        "Object",
+                        "=",
+                        "Initial + Value"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Ativa ou pausa a oscilação.",
+          "fullName": "Ativar ou desativar",
+          "functionType": "Action",
+          "name": "SetActive",
+          "sentence": "Ativar a senóide de _PARAM0_: _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Enabled",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Active",
+                    "True",
+                    ""
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Enabled",
+                    "False",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Active",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            },
+            {
+              "description": "Ativo",
+              "name": "Enabled",
+              "type": "yesorno"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a duração de um ciclo, em segundos.",
+          "fullName": "Definir período",
+          "functionType": "Action",
+          "name": "SetPeriod",
+          "sentence": "Definir o período da senóide de _PARAM0_ para _PARAM2_ segundos",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Period",
+                    "=",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            },
+            {
+              "description": "Período (segundos)",
+              "name": "Value",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a amplitude da oscilação.",
+          "fullName": "Definir magnitude",
+          "functionType": "Action",
+          "name": "SetMagnitude",
+          "sentence": "Definir a magnitude da senóide de _PARAM0_ para _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Magnitude",
+                    "=",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            },
+            {
+              "description": "Magnitude",
+              "name": "Value",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Recomeça o ciclo a partir da posição atual.",
+          "fullName": "Reiniciar",
+          "functionType": "Action",
+          "name": "Restart",
+          "sentence": "Reiniciar a senóide de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Elapsed",
+                    "=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Started",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se a oscilação está ativa.",
+          "fullName": "Está ativo",
+          "functionType": "Condition",
+          "name": "IsActive",
+          "sentence": "A senóide de _PARAM0_ está ativa",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Active",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Valor atual da onda (entre -magnitude e +magnitude).",
+          "fullName": "Valor",
+          "functionType": "Expression",
+          "name": "Value",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Sine::Sine",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "doStepPostEvents"
+          },
+          {
+            "functionName": "SetActive"
+          },
+          {
+            "functionName": "SetPeriod"
+          },
+          {
+            "functionName": "SetMagnitude"
+          },
+          {
+            "functionName": "Restart"
+          },
+          {
+            "functionName": "IsActive"
+          },
+          {
+            "functionName": "Value"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "true",
+          "type": "Boolean",
+          "label": "Ativo",
+          "description": "Desative para pausar a oscilação.",
+          "name": "Active"
+        },
+        {
+          "value": "Horizontal",
+          "type": "Choice",
+          "label": "Movimento",
+          "description": "O que oscila: a posição X, a posição Y, o ângulo ou apenas o valor da expressão Valor.",
+          "extraInformation": [
+            "Horizontal",
+            "Vertical",
+            "Ângulo",
+            "Somente valor"
+          ],
+          "choices": [],
+          "name": "Movement"
+        },
+        {
+          "value": "4",
+          "type": "Number",
+          "label": "Período (segundos)",
+          "description": "Duração de um ciclo completo.",
+          "name": "Period"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "Deslocamento do período (segundos)",
+          "description": "Ponto de partida dentro do ciclo.",
+          "name": "PeriodOffset"
+        },
+        {
+          "value": "50",
+          "type": "Number",
+          "label": "Magnitude",
+          "description": "Amplitude da oscilação (pixels ou graus).",
+          "name": "Magnitude"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Elapsed"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Initial"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Value"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Started"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "Active"
+          },
+          {
+            "propertyName": "Movement"
+          },
+          {
+            "propertyName": "Period"
+          },
+          {
+            "propertyName": "PeriodOffset"
+          },
+          {
+            "propertyName": "Magnitude"
+          },
+          {
+            "propertyName": "Elapsed"
+          },
+          {
+            "propertyName": "Initial"
+          },
+          {
+            "propertyName": "Value"
+          },
+          {
+            "propertyName": "Started"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

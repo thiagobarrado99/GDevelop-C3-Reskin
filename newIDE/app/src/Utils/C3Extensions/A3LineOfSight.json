@@ -1,0 +1,475 @@
+{
+  "author": "Assemble3",
+  "category": "Game mechanic",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Campo de visão",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/conditions/distance24.png",
+  "name": "A3LineOfSight",
+  "previewIconUrl": "res/conditions/distance24.png",
+  "shortDescription": "Verifica se um objeto enxerga outro dentro de um alcance e de um cone, sem obstáculos no caminho.",
+  "version": "1.0.0",
+  "description": "Verifica se um objeto enxerga outro dentro de um alcance e de um cone, sem obstáculos no caminho.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Condições para saber se o objeto enxerga outro objeto: dentro do alcance, dentro do cone de visão e sem obstáculos entre os dois.",
+      "fullName": "Campo de visão",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "LineOfSight",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "description": "Verdadeiro se o objeto alvo está no alcance, dentro do cone de visão e sem obstáculos entre os dois (o caminho é testado a cada 8 pixels).",
+          "fullName": "Tem campo de visão para",
+          "functionType": "Condition",
+          "name": "HasLineOfSightTo",
+          "sentence": "_PARAM0_ tem campo de visão para _PARAM2_ (obstáculos: _PARAM3_)",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "Object.Distance(Target)",
+                    "<=",
+                    "Range"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "abs(AngleDifference(Object.Angle(), Object.AngleToObject(Target)))",
+                    "<=",
+                    "ConeOfView / 2"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Blocked",
+                    "False",
+                    ""
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Steps",
+                    "=",
+                    "max(1, ceil(Object.Distance(Target) / 8))"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Step",
+                    "=",
+                    "1"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Repeat",
+                  "repeatExpression": "Steps - 1",
+                  "conditions": [],
+                  "actions": [],
+                  "events": [
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [
+                        {
+                          "type": {
+                            "value": "CollisionPoint"
+                          },
+                          "parameters": [
+                            "Obstacles",
+                            "Object.CenterX() + (Target.CenterX() - Object.CenterX()) * Step / Steps",
+                            "Object.CenterY() + (Target.CenterY() - Object.CenterY()) * Step / Steps"
+                          ]
+                        }
+                      ],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetBooleanVariable"
+                          },
+                          "parameters": [
+                            "Blocked",
+                            "True",
+                            ""
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BuiltinCommonInstructions::Standard",
+                      "conditions": [],
+                      "actions": [
+                        {
+                          "type": {
+                            "value": "SetNumberVariable"
+                          },
+                          "parameters": [
+                            "Step",
+                            "+",
+                            "1"
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "BooleanVariable"
+                      },
+                      "parameters": [
+                        "Blocked",
+                        "False",
+                        ""
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "SetReturnBoolean"
+                      },
+                      "parameters": [
+                        "True"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3LineOfSight::LineOfSight",
+              "type": "behavior"
+            },
+            {
+              "description": "Objeto alvo",
+              "name": "Target",
+              "type": "objectList"
+            },
+            {
+              "description": "Obstáculos",
+              "name": "Obstacles",
+              "optional": true,
+              "type": "objectList"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verdadeiro se o objeto alvo está dentro do alcance e do cone de visão (ignora obstáculos).",
+          "fullName": "Está no alcance",
+          "functionType": "Condition",
+          "name": "IsInRange",
+          "sentence": "_PARAM2_ está no campo de visão de _PARAM0_ (sem obstáculos)",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "Object.Distance(Target)",
+                    "<=",
+                    "Range"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "abs(AngleDifference(Object.Angle(), Object.AngleToObject(Target)))",
+                    "<=",
+                    "ConeOfView / 2"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3LineOfSight::LineOfSight",
+              "type": "behavior"
+            },
+            {
+              "description": "Objeto alvo",
+              "name": "Target",
+              "type": "objectList"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define o alcance de visão.",
+          "fullName": "Definir alcance",
+          "functionType": "Action",
+          "name": "SetRange",
+          "sentence": "Definir o alcance de visão de _PARAM0_ para _PARAM2_ pixels",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Range",
+                    "=",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3LineOfSight::LineOfSight",
+              "type": "behavior"
+            },
+            {
+              "description": "Alcance (pixels)",
+              "name": "Value",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a abertura do cone de visão.",
+          "fullName": "Definir cone de visão",
+          "functionType": "Action",
+          "name": "SetConeOfView",
+          "sentence": "Definir o cone de visão de _PARAM0_ para _PARAM2_ graus",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "ConeOfView",
+                    "=",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3LineOfSight::LineOfSight",
+              "type": "behavior"
+            },
+            {
+              "description": "Cone (graus)",
+              "name": "Value",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Alcance de visão, em pixels.",
+          "fullName": "Alcance",
+          "functionType": "Expression",
+          "name": "Range",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "Range"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3LineOfSight::LineOfSight",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "HasLineOfSightTo"
+          },
+          {
+            "functionName": "IsInRange"
+          },
+          {
+            "functionName": "SetRange"
+          },
+          {
+            "functionName": "SetConeOfView"
+          },
+          {
+            "functionName": "Range"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "300",
+          "type": "Number",
+          "label": "Alcance (pixels)",
+          "description": "Distância máxima de visão.",
+          "name": "Range"
+        },
+        {
+          "value": "180",
+          "type": "Number",
+          "label": "Cone de visão (graus)",
+          "description": "Abertura total do cone, centrada no ângulo do objeto.",
+          "name": "ConeOfView"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Steps"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "Step"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Blocked"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "Range"
+          },
+          {
+            "propertyName": "ConeOfView"
+          },
+          {
+            "propertyName": "Steps"
+          },
+          {
+            "propertyName": "Step"
+          },
+          {
+            "propertyName": "Blocked"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

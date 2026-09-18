@@ -1,0 +1,623 @@
+{
+  "author": "Assemble3",
+  "category": "General",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Cronômetro",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/time24.png",
+  "name": "A3Timer",
+  "previewIconUrl": "res/actions/time24.png",
+  "shortDescription": "Cronômetros com etiqueta por objeto, únicos ou regulares.",
+  "version": "1.0.0",
+  "description": "Cronômetros com etiqueta por objeto, únicos ou regulares.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Inicia cronômetros identificados por uma etiqueta; a condição \"Ao cronômetro\" dispara quando a duração termina (uma vez ou regularmente).",
+      "fullName": "Cronômetro",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "Timer",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "description": "Inicia (ou reinicia) um cronômetro com a etiqueta e a duração dadas.",
+          "fullName": "Iniciar cronômetro",
+          "functionType": "Action",
+          "name": "StartTimer",
+          "sentence": "Iniciar o cronômetro _PARAM4_ de _PARAM0_ por _PARAM2_ segundos (_PARAM3_)",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberObjectVariable"
+                  },
+                  "parameters": [
+                    "Object",
+                    "__A3Timer[Tag]",
+                    "=",
+                    "Duration"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberObjectVariable"
+                  },
+                  "parameters": [
+                    "Object",
+                    "__A3TimerRegular[Tag]",
+                    "=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "ResetObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "StringVariable"
+                  },
+                  "parameters": [
+                    "Type",
+                    "=",
+                    "\"Regular\""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberObjectVariable"
+                  },
+                  "parameters": [
+                    "Object",
+                    "__A3TimerRegular[Tag]",
+                    "=",
+                    "1"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Duração (segundos)",
+              "name": "Duration",
+              "type": "expression"
+            },
+            {
+              "description": "Tipo",
+              "name": "Type",
+              "supplementaryInformation": "[\"Uma vez\",\"Regular\"]",
+              "type": "stringWithSelector"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Para e remove o cronômetro.",
+          "fullName": "Parar cronômetro",
+          "functionType": "Action",
+          "name": "StopTimer",
+          "sentence": "Parar o cronômetro _PARAM2_ de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "RemoveObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Pausa o cronômetro.",
+          "fullName": "Pausar cronômetro",
+          "functionType": "Action",
+          "name": "PauseTimer",
+          "sentence": "Pausar o cronômetro _PARAM2_ de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "PauseObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Retoma um cronômetro pausado.",
+          "fullName": "Retomar cronômetro",
+          "functionType": "Action",
+          "name": "ResumeTimer",
+          "sentence": "Retomar o cronômetro _PARAM2_ de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "UnPauseObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verdadeiro quando o cronômetro termina (reinicia se for regular, para se for único).",
+          "fullName": "Ao cronômetro",
+          "functionType": "Condition",
+          "name": "OnTimer",
+          "sentence": "Ao terminar o cronômetro _PARAM2_ de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "CompareObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag",
+                    ">=",
+                    "Object.Variable(__A3Timer[Tag])"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ],
+              "events": [
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberObjectVariable"
+                      },
+                      "parameters": [
+                        "Object",
+                        "__A3TimerRegular[Tag]",
+                        "=",
+                        "1"
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "ResetObjectTimer"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Tag"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BuiltinCommonInstructions::Standard",
+                  "conditions": [
+                    {
+                      "type": {
+                        "value": "NumberObjectVariable"
+                      },
+                      "parameters": [
+                        "Object",
+                        "__A3TimerRegular[Tag]",
+                        "=",
+                        "0"
+                      ]
+                    }
+                  ],
+                  "actions": [
+                    {
+                      "type": {
+                        "value": "RemoveObjectTimer"
+                      },
+                      "parameters": [
+                        "Object",
+                        "Tag"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se o cronômetro existe e não está pausado.",
+          "fullName": "Cronômetro em andamento",
+          "functionType": "Condition",
+          "name": "IsTimerRunning",
+          "sentence": "O cronômetro _PARAM2_ de _PARAM0_ está em andamento",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "CompareObjectTimer"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag",
+                    ">=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "inverted": true,
+                    "value": "ObjectTimerPaused"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se o cronômetro está pausado.",
+          "fullName": "Cronômetro pausado",
+          "functionType": "Condition",
+          "name": "IsTimerPaused",
+          "sentence": "O cronômetro _PARAM2_ de _PARAM0_ está pausado",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "ObjectTimerPaused"
+                  },
+                  "parameters": [
+                    "Object",
+                    "Tag"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Segundos decorridos do cronômetro.",
+          "fullName": "Tempo atual",
+          "functionType": "Expression",
+          "name": "CurrentTime",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "Object.ObjectTimerElapsedTime(Tag)"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Duração configurada do cronômetro.",
+          "fullName": "Duração",
+          "functionType": "Expression",
+          "name": "Duration",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "Object.Variable(__A3Timer[Tag])"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Timer::Timer",
+              "type": "behavior"
+            },
+            {
+              "description": "Etiqueta",
+              "name": "Tag",
+              "type": "string"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "StartTimer"
+          },
+          {
+            "functionName": "StopTimer"
+          },
+          {
+            "functionName": "PauseTimer"
+          },
+          {
+            "functionName": "ResumeTimer"
+          },
+          {
+            "functionName": "OnTimer"
+          },
+          {
+            "functionName": "IsTimerRunning"
+          },
+          {
+            "functionName": "IsTimerPaused"
+          },
+          {
+            "functionName": "CurrentTime"
+          },
+          {
+            "functionName": "Duration"
+          }
+        ]
+      },
+      "propertyDescriptors": [],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT"
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

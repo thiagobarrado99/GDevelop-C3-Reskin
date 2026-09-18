@@ -1,0 +1,598 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Mover para",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/forceVers24.png",
+  "name": "A3MoveTo",
+  "previewIconUrl": "res/actions/forceVers24.png",
+  "shortDescription": "Move o objeto em linha reta até uma posição ou objeto.",
+  "version": "1.0.0",
+  "description": "Move o objeto em linha reta até uma posição ou objeto.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Move o objeto em linha reta até uma posição ou até outro objeto, a uma velocidade máxima.",
+      "fullName": "Mover para",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "MoveTo",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPreEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Arrived",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "Object.DistanceToPosition(TargetX, TargetY)",
+                    "<=",
+                    "MaxSpeed * TimeDelta()"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetXY"
+                  },
+                  "parameters": [
+                    "Object",
+                    "=",
+                    "TargetX",
+                    "=",
+                    "TargetY"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "False",
+                    ""
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Arrived",
+                    "True",
+                    ""
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetXY"
+                  },
+                  "parameters": [
+                    "Object",
+                    "+",
+                    "cos(Object.AngleToPosition(TargetX, TargetY) * Pi() / 180) * MaxSpeed * TimeDelta()",
+                    "+",
+                    "sin(Object.AngleToPosition(TargetX, TargetY) * Pi() / 180) * MaxSpeed * TimeDelta()"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Começa a mover o objeto até uma posição.",
+          "fullName": "Mover para a posição",
+          "functionType": "Action",
+          "name": "MoveToPosition",
+          "sentence": "Mover _PARAM0_ para _PARAM2_;_PARAM3_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "TargetX",
+                    "=",
+                    "X"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "TargetY",
+                    "=",
+                    "Y"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            },
+            {
+              "description": "X",
+              "name": "X",
+              "type": "expression"
+            },
+            {
+              "description": "Y",
+              "name": "Y",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Começa a mover o objeto até a posição atual de outro objeto.",
+          "fullName": "Mover para o objeto",
+          "functionType": "Action",
+          "name": "MoveToObject",
+          "sentence": "Mover _PARAM0_ para a posição de _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "TargetX",
+                    "=",
+                    "Target.CenterX() - (Object.CenterX() - Object.X())"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "TargetY",
+                    "=",
+                    "Target.CenterY() - (Object.CenterY() - Object.Y())"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            },
+            {
+              "description": "Objeto de destino",
+              "name": "Target",
+              "type": "objectList"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Interrompe o movimento.",
+          "fullName": "Parar",
+          "functionType": "Action",
+          "name": "Stop",
+          "sentence": "Parar o movimento de _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetBooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "False",
+                    ""
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se o objeto está a caminho do destino.",
+          "fullName": "Está se movendo",
+          "functionType": "Condition",
+          "name": "IsMoving",
+          "sentence": "_PARAM0_ está se movendo",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Moving",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verdadeiro no quadro em que o objeto chega ao destino.",
+          "fullName": "Ao chegar",
+          "functionType": "Condition",
+          "name": "OnArrived",
+          "sentence": "_PARAM0_ chegou ao destino",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BooleanVariable"
+                  },
+                  "parameters": [
+                    "Arrived",
+                    "True",
+                    ""
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Posição X do destino.",
+          "fullName": "X do destino",
+          "functionType": "Expression",
+          "name": "TargetX",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "TargetX"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Posição Y do destino.",
+          "fullName": "Y do destino",
+          "functionType": "Expression",
+          "name": "TargetY",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "TargetY"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3MoveTo::MoveTo",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "doStepPreEvents"
+          },
+          {
+            "functionName": "MoveToPosition"
+          },
+          {
+            "functionName": "MoveToObject"
+          },
+          {
+            "functionName": "Stop"
+          },
+          {
+            "functionName": "IsMoving"
+          },
+          {
+            "functionName": "OnArrived"
+          },
+          {
+            "functionName": "TargetX"
+          },
+          {
+            "functionName": "TargetY"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "200",
+          "type": "Number",
+          "label": "Velocidade máxima (pixels por segundo)",
+          "description": "Velocidade do deslocamento.",
+          "name": "MaxSpeed"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "TargetX"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "TargetY"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Moving"
+        },
+        {
+          "value": "false",
+          "type": "Boolean",
+          "label": "",
+          "hidden": true,
+          "name": "Arrived"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "MaxSpeed"
+          },
+          {
+            "propertyName": "TargetX"
+          },
+          {
+            "propertyName": "TargetY"
+          },
+          {
+            "propertyName": "Moving"
+          },
+          {
+            "propertyName": "Arrived"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

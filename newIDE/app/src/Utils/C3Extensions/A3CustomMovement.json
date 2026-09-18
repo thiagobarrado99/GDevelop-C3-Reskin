@@ -1,0 +1,668 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Personalizado",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/force24.png",
+  "name": "A3CustomMovement",
+  "previewIconUrl": "res/actions/force24.png",
+  "shortDescription": "Movimento por velocidade e aceleração controladas por eventos.",
+  "version": "1.0.0",
+  "description": "Movimento por velocidade e aceleração controladas por eventos.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Movimento controlado por eventos: defina a velocidade (X/Y ou velocidade e ângulo) ou acelere em uma direção.",
+      "fullName": "Personalizado",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "CustomMovement",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPreEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetXY"
+                  },
+                  "parameters": [
+                    "Object",
+                    "+",
+                    "VX * TimeDelta()",
+                    "+",
+                    "VY * TimeDelta()"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define as componentes X e Y da velocidade, em pixels por segundo.",
+          "fullName": "Definir velocidade (X, Y)",
+          "functionType": "Action",
+          "name": "SetVelocity",
+          "sentence": "Definir a velocidade de _PARAM0_ para _PARAM2_;_PARAM3_ pixels por segundo",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VX",
+                    "=",
+                    "X"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VY",
+                    "=",
+                    "Y"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Velocidade X",
+              "name": "X",
+              "type": "expression"
+            },
+            {
+              "description": "Velocidade Y",
+              "name": "Y",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a componente X da velocidade.",
+          "fullName": "Definir velocidade X",
+          "functionType": "Action",
+          "name": "SetVelocityX",
+          "sentence": "Definir a velocidade X de _PARAM0_ para _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VX",
+                    "=",
+                    "X"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Velocidade X",
+              "name": "X",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a componente Y da velocidade.",
+          "fullName": "Definir velocidade Y",
+          "functionType": "Action",
+          "name": "SetVelocityY",
+          "sentence": "Definir a velocidade Y de _PARAM0_ para _PARAM2_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VY",
+                    "=",
+                    "Y"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Velocidade Y",
+              "name": "Y",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a velocidade a partir de um módulo e um ângulo, em graus.",
+          "fullName": "Definir velocidade e ângulo",
+          "functionType": "Action",
+          "name": "SetSpeedAndAngle",
+          "sentence": "Definir a velocidade de _PARAM0_ para _PARAM2_ pixels por segundo no ângulo _PARAM3_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VX",
+                    "=",
+                    "cos(Angle * Pi() / 180) * Speed"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VY",
+                    "=",
+                    "sin(Angle * Pi() / 180) * Speed"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Velocidade",
+              "name": "Speed",
+              "type": "expression"
+            },
+            {
+              "description": "Ângulo (graus)",
+              "name": "Angle",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Acelera em uma direção (use a cada quadro).",
+          "fullName": "Acelerar",
+          "functionType": "Action",
+          "name": "Accelerate",
+          "sentence": "Acelerar _PARAM0_ a _PARAM2_ pixels por segundo² no ângulo _PARAM3_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VX",
+                    "+",
+                    "cos(Angle * Pi() / 180) * Acceleration * TimeDelta()"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VY",
+                    "+",
+                    "sin(Angle * Pi() / 180) * Acceleration * TimeDelta()"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            },
+            {
+              "description": "Aceleração",
+              "name": "Acceleration",
+              "type": "expression"
+            },
+            {
+              "description": "Ângulo (graus)",
+              "name": "Angle",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Zera a velocidade.",
+          "fullName": "Parar",
+          "functionType": "Action",
+          "name": "Stop",
+          "sentence": "Parar _PARAM0_",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VX",
+                    "=",
+                    "0"
+                  ]
+                },
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "VY",
+                    "=",
+                    "0"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Verifica se a velocidade não é zero.",
+          "fullName": "Está se movendo",
+          "functionType": "Condition",
+          "name": "IsMoving",
+          "sentence": "_PARAM0_ está se movendo",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [
+                {
+                  "type": {
+                    "value": "BuiltinCommonInstructions::CompareNumbers"
+                  },
+                  "parameters": [
+                    "abs(VX) + abs(VY)",
+                    ">",
+                    "0"
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnBoolean"
+                  },
+                  "parameters": [
+                    "True"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Componente X da velocidade.",
+          "fullName": "Velocidade X",
+          "functionType": "Expression",
+          "name": "VelocityX",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "VX"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Componente Y da velocidade.",
+          "fullName": "Velocidade Y",
+          "functionType": "Expression",
+          "name": "VelocityY",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "VY"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Módulo da velocidade.",
+          "fullName": "Velocidade",
+          "functionType": "Expression",
+          "name": "Speed",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "sqrt(VX * VX + VY * VY)"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Ângulo da velocidade, em graus.",
+          "fullName": "Ângulo do movimento",
+          "functionType": "Expression",
+          "name": "MovingAngle",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "atan2(VY, VX) * 180 / Pi()"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3CustomMovement::CustomMovement",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "doStepPreEvents"
+          },
+          {
+            "functionName": "SetVelocity"
+          },
+          {
+            "functionName": "SetVelocityX"
+          },
+          {
+            "functionName": "SetVelocityY"
+          },
+          {
+            "functionName": "SetSpeedAndAngle"
+          },
+          {
+            "functionName": "Accelerate"
+          },
+          {
+            "functionName": "Stop"
+          },
+          {
+            "functionName": "IsMoving"
+          },
+          {
+            "functionName": "VelocityX"
+          },
+          {
+            "functionName": "VelocityY"
+          },
+          {
+            "functionName": "Speed"
+          },
+          {
+            "functionName": "MovingAngle"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "VX"
+        },
+        {
+          "value": "0",
+          "type": "Number",
+          "label": "",
+          "hidden": true,
+          "name": "VY"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "VX"
+          },
+          {
+            "propertyName": "VY"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}

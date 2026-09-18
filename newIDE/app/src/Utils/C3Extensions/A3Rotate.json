@@ -1,0 +1,191 @@
+{
+  "author": "Assemble3",
+  "category": "Movement",
+  "dimension": "",
+  "extensionNamespace": "",
+  "fullName": "Girar",
+  "gdevelopVersion": "",
+  "helpPath": "",
+  "iconUrl": "res/actions/rotate24_black.png",
+  "name": "A3Rotate",
+  "previewIconUrl": "res/actions/rotate24_black.png",
+  "shortDescription": "Gira o objeto continuamente a uma velocidade constante.",
+  "version": "1.0.0",
+  "description": "Gira o objeto continuamente a uma velocidade constante.",
+  "tags": [],
+  "authorIds": [],
+  "dependencies": [],
+  "globalVariables": [],
+  "sceneVariables": [],
+  "eventsFunctions": [],
+  "eventsFunctionsFolderStructure": {
+    "folderName": "__ROOT"
+  },
+  "eventsBasedBehaviors": [
+    {
+      "description": "Gira o objeto continuamente, em graus por segundo.",
+      "fullName": "Girar",
+      "helpPath": "",
+      "iconUrl": "",
+      "name": "Rotate",
+      "objectType": "",
+      "previewIconUrl": "",
+      "eventsFunctions": [
+        {
+          "fullName": "",
+          "functionType": "Action",
+          "name": "doStepPostEvents",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetAngle"
+                  },
+                  "parameters": [
+                    "Object",
+                    "+",
+                    "Speed * TimeDelta()"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Rotate::Rotate",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Define a velocidade de rotação, em graus por segundo.",
+          "fullName": "Definir velocidade",
+          "functionType": "Action",
+          "name": "SetSpeed",
+          "sentence": "Definir a velocidade de rotação de _PARAM0_ para _PARAM2_ graus por segundo",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetNumberVariable"
+                  },
+                  "parameters": [
+                    "Speed",
+                    "=",
+                    "Value"
+                  ]
+                }
+              ]
+            }
+          ],
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Rotate::Rotate",
+              "type": "behavior"
+            },
+            {
+              "description": "Velocidade (graus por segundo)",
+              "name": "Value",
+              "type": "expression"
+            }
+          ],
+          "objectGroups": []
+        },
+        {
+          "description": "Velocidade de rotação, em graus por segundo.",
+          "fullName": "Velocidade de rotação",
+          "functionType": "Expression",
+          "name": "Speed",
+          "sentence": "",
+          "events": [
+            {
+              "type": "BuiltinCommonInstructions::Standard",
+              "conditions": [],
+              "actions": [
+                {
+                  "type": {
+                    "value": "SetReturnNumber"
+                  },
+                  "parameters": [
+                    "Speed"
+                  ]
+                }
+              ]
+            }
+          ],
+          "expressionType": {
+            "type": "expression"
+          },
+          "parameters": [
+            {
+              "description": "Objeto",
+              "name": "Object",
+              "type": "object"
+            },
+            {
+              "description": "Comportamento",
+              "name": "Behavior",
+              "supplementaryInformation": "A3Rotate::Rotate",
+              "type": "behavior"
+            }
+          ],
+          "objectGroups": []
+        }
+      ],
+      "eventsFunctionsFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "functionName": "doStepPostEvents"
+          },
+          {
+            "functionName": "SetSpeed"
+          },
+          {
+            "functionName": "Speed"
+          }
+        ]
+      },
+      "propertyDescriptors": [
+        {
+          "value": "90",
+          "type": "Number",
+          "label": "Velocidade (graus por segundo)",
+          "description": "Velocidade de rotação; negativa para girar no sentido anti-horário.",
+          "name": "Speed"
+        }
+      ],
+      "propertiesFolderStructure": {
+        "folderName": "__ROOT",
+        "children": [
+          {
+            "propertyName": "Speed"
+          }
+        ]
+      }
+    }
+  ],
+  "eventsBasedObjects": []
+}
