@@ -1740,9 +1740,17 @@ const MainFrame = (props: Props): React.MixedElement => {
     true
   ); // c3
   const { isMobile } = useResponsiveWindowSize(); // c3
+  // c3: "open the project bar" shows the docked bar on desktop (the drawer on
+  // mobile); only the bar's ✕ hides it.
+  const c3SetProjectBarShown = React.useCallback(
+    (open: boolean) => {
+      if (isMobile) openProjectManager(open);
+      else setC3ProjectBarShown(open);
+    },
+    [isMobile]
+  );
   const toggleProjectManager = React.useCallback(
     () => {
-      // c3: on desktop the button shows/hides the docked project bar.
       if (!isMobile) setC3ProjectBarShown(shown => !shown);
       else openProjectManager(projectManagerOpen => !projectManagerOpen);
     },
@@ -5642,7 +5650,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       !!state.currentProject &&
       state.currentProject.getLayoutsCount() > 0 &&
       !isGameplayTestRunInProgress,
-    onOpenProjectManager: toggleProjectManager,
+    onOpenProjectManager: () => c3SetProjectBarShown(true), // c3
     hasPreviewsRunning:
       hasNonEditionPreviewsRunning && !isGameplayTestRunInProgress,
     allowNetworkPreview:
@@ -5831,7 +5839,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       openShareDialog('invite');
     },
     onCreateProject: () => setNewProjectSetupDialogOpen(true),
-    onOpenProjectManager: () => openProjectManager(true),
+    onOpenProjectManager: () => c3SetProjectBarShown(true), // c3
     onOpenHomePage: openHomePage,
     onOpenDebugger: openDebugger,
     onOpenGlobalSearch: openGlobalSearch,
@@ -5925,7 +5933,7 @@ const MainFrame = (props: Props): React.MixedElement => {
     openOpenFromStorageProviderDialog: openOpenFromStorageProviderDialog,
     openFromFileMetadataWithStorageProvider: openFromFileMetadataWithStorageProvider,
     openNewProjectDialog: openNewProjectDialog,
-    openProjectManager: openProjectManager,
+    openProjectManager: c3SetProjectBarShown, // c3
     askToCloseProject: askToCloseProject,
     closeProject: closeProject,
     onSelectExampleShortHeader: onSelectExampleShortHeader,
@@ -5980,6 +5988,9 @@ const MainFrame = (props: Props): React.MixedElement => {
   // c3: Construct's Project bar - docked at the right of the editors on
   // desktop (the drawer stays for mobile), hidden/shown by the toolbar button.
   const c3ProjectBarDocked = !!currentProject && !isMobile && c3ProjectBarShown;
+  // c3: the drawer is mobile-only; on desktop only the bar's ✕ and the
+  // toolbar button show/hide the docked bar.
+  const c3DrawerOpen = projectManagerOpen && isMobile;
   const renderProjectManager = (c3Section: ?('top' | 'bottom')) => (
     <ProjectManager
       c3Section={c3Section || undefined}
@@ -6019,7 +6030,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       onShareProject={() => {
         openShareDialog();
       }}
-      isOpen={projectManagerOpen || c3ProjectBarDocked}
+      isOpen={c3DrawerOpen || c3ProjectBarDocked} // c3
       hotReloadPreviewButtonProps={hotReloadPreviewButtonProps}
       resourceManagementProps={resourceManagementProps}
       projectScopedContainersAccessor={projectScopedContainersAccessor}
@@ -6108,7 +6119,7 @@ const MainFrame = (props: Props): React.MixedElement => {
         }
       />
       <ProjectManagerDrawer
-        projectManagerOpen={projectManagerOpen && !c3ProjectBarDocked}
+        projectManagerOpen={c3DrawerOpen} // c3
         toggleProjectManager={toggleProjectManager}
         title={
           state.currentProject
