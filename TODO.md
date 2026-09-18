@@ -29,7 +29,7 @@ Hide
 - [x] Ask AI / announcements / paid products: classroom `hide*` flags forced on (9 sites, grep `// c3:`)
 - [x] "Baixe o app" header button removed; "Compartilhar" → "Exportar" (whole-string rule); default names Layout 1 / Folha de eventos 1 / Camada 0 via `C3Terminology.js`
 - [x] Login/signup header chips removed (`HomePageHeader.js`)
-- [ ] View ▸ Example browser still opens GDevelop's template dialog with the Remix row (start page button already removed)
+- [x] View ▸ Example browser opens the searchable example grid only (`NewProjectSetupDialog.js` `browseExamples`, no templates / premium rows)
 
 ## Phase 2 — Shell (see `docs/c3-reference/ui-survey.md`)
 - [x] Start page per survey (`HomePage/C3StartPage.js`): NEW / OPEN / BROWSE EXAMPLES, RECENT PROJECTS, LEARN/PARTICIPATE/EXPLORE cards, RECOMMENDED EXAMPLES
@@ -48,7 +48,7 @@ Hide
 - [x] Project bar tree order: Layouts · Folhas de eventos · Layouts externos · Extensões · Configurações do jogo (`ProjectManager/index.js` root array reordered, `// c3:`); object types/families/resources stay per-scene / in the Resources editor
 - [x] Layers bar: visibility · lock · rename already upstream; context menu gained Adicionar camada acima/abaixo (`LayerTreeViewItemContent.js`, names `Camada N`); z-index column skipped
 - [x] Panel arrangement: properties left, canvas centre, objects top-right, layers bottom-right (`MosaicEditorsDisplay/index.js` `initialMosaicEditorNodes`; users with a saved layout keep theirs)
-- [ ] Project bar as a docked panel — needs a new editor-tab kind for the side panes; for now the drawer opens from the toolbar's first button and View ▸ Project bar, and no longer carries the old File/View/Help row
+- [x] Project bar docked at the right of the editors on desktop (`MainFrame/index.js` `.c3-project-bar` column, toolbar button shows/hides it; drawer kept for mobile)
 - [x] Panel headers: 13 px plain title, square bars (`ConstructLikeDarkTheme/ConstructLikeDark.css`, scoped to the theme's body class)
 - [x] Toolbar: Save · Preview ▾ · Export on the left (`MainFrame/Toolbar/index.js`); version-history buttons removed (cloud only)
 - [x] Tabs: cream active tab, square corners (theme CSS)
@@ -63,7 +63,7 @@ Hide
 - [x] "+ Add…" menu: Event · Comment · Group · Include event sheet · loops (`EnumerateEventsMetadata.js` order + runtime renames)
 - [x] Event context menu in Construct's order: Add ▸ (Condition C · Action A · Event E · Sub-event B · Local variable L · Comment Q · Group · Include · Else · loops) · Edit · Toggle disabled · Cut · Copy · Paste · Delete · Select/Deselect all · … (`EventsSheet/index.js` `_buildEventContextMenu`)
 - [x] Construct's event sheet keys as the default shortcut map (`KeyboardShortcuts/DefaultShortcuts.js`): E event, B sub-event, Q comment, C condition, A action, X else, G group, I invert, L local variable, D toggle disabled; new commands `ADD_CONDITION` / `ADD_ACTION` / `ADD_ELSE_EVENT` / `ADD_GROUP_EVENT` (`CommandsList.js`, `EventsSheet/ToolbarCommands.js`); keys shared with the layout editor resolve to the active tab's command (`useKeyboardShortcuts` tries every command bound to the key)
-- [ ] Per-event `Add…` link (GDevelop's per-row `+ Add condition / + Add action` cover it)
+- [~] Per-event `Add…` link — covered by the per-row `+ Add condition / + Add action` links and the event's Add ▸ context menu
 
 ## Phase 4 — Layout view (see survey)
 - [x] Instance panel sections in Construct's order: Common (position/size/angle/layer/Z) · Instance variables · Behaviors · Effects (`CompactInstancePropertiesEditor/index.js`); object panel: Properties · Object variables · Behaviors · Effects (`CompactObjectPropertiesEditor/index.js`)
@@ -71,18 +71,18 @@ Hide
 - [x] Double-click on empty space = Insert new object under the cursor (`InstancesEditor/index.js` `onBackgroundDoubleClicked`, `// c3`)
 - [x] Status bar `Mouse: (x, y)   Layer: …   Zoom: N%` (`InstancesEditor/StatusBar.js`, PIXI text, English labels only)
 - [x] Snap/grid defaults already Construct's (32×32, grid and snap off)
-- [~] Layout colours: new layouts default to rgb(50, 50, 50) (project data, `MainFrame/index.js` + `ProjectManager/index.js`); dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`) still theme work
+- [x] Layout colours: new layouts default to rgb(50, 50, 50) (project data, `MainFrame/index.js` + `ProjectManager/index.js`); dark `#1f1f1f` surround outside the layout frame, layout colour inside (`InstancesEditor/Background.js`)
 - [x] Canvas hover tooltip says "Layer 0" for the base layer (`HighlightedInstance.js`)
-- [ ] Z-order bar, Align ▸ submenu
+- [x] Align ▸ submenu (Left · Horizontal center · Right · Top · Vertical center · Bottom on the selection's bounding box, `SceneEditor/index.js` `_alignSelection`); Z-order bar = GDevelop's Instances list (toolbar button, sorted by Z by default)
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
 - [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
 - [x] Project bar rows tinted per kind — theme CSS only, keyed on the rows' `data-scene` / `data-external-events` / `data-external-layout` and `#project-manager`; icons redrawn as masks (`/* webpackIgnore: true */ url(/res/…)` so css-loader leaves public URLs alone)
 - [x] Editor tabs tinted by kind: `DraggableEditorTabs.js` adds `data-kind` to the tab button, theme CSS fills the active tab / colours the inactive label
 - [x] Properties panel: Behaviors/Effects section titles and each behaviour/effect name tinted; object editor dialog tabs too (`TopLevelCollapsibleSection`/`CollapsibleSubPanel` got a `color` prop)
-- [ ] Add-behaviour / add-effect dialogs and the full behaviours editor tinted too
+- [x] Full behaviours editor (behaviour names) and effects list (effect names) tinted (theme CSS)
 - [x] Add-behaviour dialog as a Construct-style grid: `UI/C3TileGrid.js` (+ `.css`) mounted in `AssetStore/BehaviorStore/index.js` (`useC3Grid`), description + Add in the footer, double-click adds; compatibility check shared via `isBehaviorUsable` in `BehaviorListItem.js`
-- [~] 1:1 behaviour parity (user, 2026-09-18) — 22 of 32 tiles ported (built-ins + Persist/No save + 8 reviewed store extensions installed on demand; presets + default names applied via `addBehaviorToObject(…, presets)`; ⋮ menu has "Mostrar todos os comportamentos do GDevelop"). No port yet: Sine, Rotate, MoveTo, Follow, Tile movement, Custom, Fade, Timer, Line of sight — write our own events-based extensions later. Spec: `Utils/C3Behaviors.js` table (Construct tile → GDevelop type + presets + default name + category + icon slug) feeds the grid instead of the full GDevelop/store list; presets applied after `addNewBehavior` (Solid = Platform behaviour with `platformType=NormalPlatform`, Jump-thru = same with `Jumpthru`); *ext* rows need the community extension bundled or installed on demand; keep a "show all GDevelop behaviours" toggle in the ⋮ menu
+- [x] 1:1 behaviour parity (user, 2026-09-18) — 31 of 32 tiles ported (built-ins + Persist/No save + 8 reviewed store extensions installed on demand + 9 of our own events-based extensions; presets + default names applied via `addBehaviorToObject(…, presets)`; ⋮ menu has "Mostrar todos os comportamentos do GDevelop"; Billboard only for 3D objects). Own extensions (2026-09-19): Sine, Rotate, MoveTo, Follow, Tile movement, Custom, Fade, Timer, Line of sight — generated JSON in `Utils/C3Extensions/A3*.json` (generator script kept in the session scratchpad, rebuild with libGD.js when changing them), `bundledExtension` rows in `Utils/C3Behaviors.js`, installed through `installExtension({ importedSerializedExtensions })` in `NewBehaviorDialog.js`; `C3Extensions.spec.js` checks each one generates code without errors; runtime checked in a preview (MoveTo, Timer once/regular, Tile movement snapping, Custom velocity, Fade + destroy, Follow, Line of sight in range/blocked/behind/far). pt-BR labels only (extension strings are not translated by lingui). Spec: `Utils/C3Behaviors.js` table (Construct tile → GDevelop type + presets + default name + category + icon slug) feeds the grid instead of the full GDevelop/store list; presets applied after `addNewBehavior` (Solid = Platform behaviour with `platformType=NormalPlatform`, Jump-thru = same with `Jumpthru`); *ext* rows need the community extension bundled or installed on demand; keep a "show all GDevelop behaviours" toggle in the ⋮ menu
 - [ ] Icons: copy `C3-Icons/{behaviour,object}_icons` to `public/res/c3-icons/{behaviors,objects}/`, add `Utils/C3Icons.js` (type → file map from CLAUDE.md) and wrap `gd.BehaviorMetadata/ObjectMetadata.prototype.getIconFilename` in `src/index.js` — no call-site edits (user decides first whether the files are committed)
 - [ ] Icons: render as CSS masks tinted by `--c3-behavior-color` / `--c3-object-color` and drop `IconContainer`'s white gradient under the theme; check add-object dialog, add-condition step 1, objects bar, behaviour tiles/rows, event sheet rows
 - [x] Add-object dialog: asset-store tab hidden (`NewObjectDialog.js`, `hideAssetStore`), opens straight on the object types
@@ -97,7 +97,31 @@ Hide
 - [x] Shortcut parity for the event sheet (see Phase 3); layout editor keeps GDevelop's letters (O objects, P properties, L layers, I instances, G groups…)
 - [x] GDevelop's video tutorial banners hidden (`Hints/TutorialMessage.js`)
 - [x] README banner for the fork
-- [ ] Animation editor (GDevelop's sprite editor + Piskel stay), examples
+- [~] Animation editor: GDevelop's sprite editor + Piskel stay (decision); examples = View ▸ Example browser (GDevelop's example grid)
+
+## Briefing for 2026-09-20 (user request 2026-09-19, not started)
+
+Three changes, in the user's order. Nothing done yet — this is the plan.
+
+### 1. The first layout's event sheet is missing from the project bar
+Today `Folhas de eventos` (the `External events` root of `ProjectManager/index.js`, ~line 1165) lists only external events; a layout's own event sheet opens from the layout row's ⋮ → "Abrir folha de eventos" (`SceneTreeViewItemContent.js`, `onOpenLayout(name, { openEventsEditor: true })`). Construct lists every layout's sheet under Event sheets.
+- Option A (recommended, Construct-like): in the `External events` root's `getChildren`, prepend one row per layout — a small `LayoutEventsTreeViewItemContent` (new file next to `ExternalEventsTreeViewItemContent.js`, `// c3`) named like the layout, green icon, click → `onOpenLayout(layoutName, { openEventsEditor: true, openSceneEditor: false, focusWhenOpened: 'events' })`, context menu Open only (rename/delete belong to the layout row). Keep the external events after them. Tabs already exist for it (`kind: 'layout events'`, green).
+- Option B: drop the layout's own sheet (make "open events" open an external events sheet created per layout) — more invasive, changes GDevelop's model; not recommended.
+- Also check the empty placeholder text ("Comece adicionando novas folhas de eventos") disappears once a layout row is listed, and the tinted rows CSS (`ProjectManager` `data-external-events` rule in `ConstructLikeDark.css`) applies to the new row (add a `data-layout-events` attribute + rule).
+
+### 2. Extra GDevelop objects and behaviours must be visible, not hidden
+Everything Construct has stays as tiles; GDevelop-only things are shown as well, no ⋮ toggle.
+- Behaviours: `AssetStore/BehaviorStore/index.js` — the tiles list is `showAllBehaviors ? all : C3_BEHAVIORS…`; change to C3 tiles first (their Construct categories) followed by every `filteredSearchResults` item whose type is not covered by a tile (use `item.category` as the group, GDevelop labels/icons), drop the `showAllBehaviors` state and the ⋮ "Mostrar todos os comportamentos do GDevelop" entry (and its pt-BR string in `C3Terminology.js`). Keep `isBehaviorUsable` greying.
+- Objects: `AssetStore/NewObjectFromScratch.js` — same: `C3_OBJECTS` tiles first, then the remaining `filteredSearchResults` object types grouped by their GDevelop category; remove `showAllObjects` + the ⋮ entry ("Mostrar todos os objetos do GDevelop"). Category order: Construct's groups (`3D · Elementos HTML · Geral · Mídia · Outro`) then GDevelop's.
+- `UI/C3TileGrid.js` already takes `{ id, name, description, iconUrl, category, enabled }` tiles, so both are data changes; check the store items' `previewIconUrl` shows for the extra tiles.
+
+### 3. Objects, Families and Layers move into the docked project bar
+One right column only. Target order in the bar: Layouts · Folhas de eventos · **Objetos · Famílias · Camadas** · Layouts externos · Extensões · Configurações do jogo; the column scrolls.
+- The three panels are scene-editor panels (`ObjectsList`, `ObjectGroupsList`, `LayersList`) rendered by `SceneEditor/MosaicEditorsDisplay/index.js` (`editors` map, `initialMosaicEditorNodes` puts objects top-right / layers bottom-right) and need the active scene editor's props/refs (`objectsListRef`, `layersListRef`, selection callbacks, `forceUpdateObjectsList`…). Inactive tabs stay mounted with `display: none` (`UI/ClosableTabs.js` `TabContentContainer`) and each editor gets `isActive`.
+- Plan: `MainFrame/index.js` renders the docked column as a scrollable stack (`.c3-project-bar { overflow: auto }`): the project tree split in two `<ProjectManager>` instances via a new `sections` prop (`'top'` = Layouts + Folhas de eventos, `'bottom'` = Layouts externos + Extensões + Configurações; root array at `ProjectManager/index.js` ~line 1125 filtered by the prop), with a `<div id="c3-project-bar-panels">` portal target between them. The active `SceneEditor` (`isActive`) renders `ReactDOM.createPortal(<three collapsible sections>, document.getElementById('c3-project-bar-panels'))` from `MosaicEditorsDisplay` — each section = uppercase title row (Objetos / Famílias / Camadas, `.c3-project-bar-title` style, collapsible) + the existing panel component with a max height (e.g. 40vh, own scroll). Remove `objects-list` / `layers-list` from `initialMosaicEditorNodes` (layout editor = properties left + canvas) and from `defaultPanelConfigByEditor`; keep the toolbar toggles working by mapping them to the bar sections (or hide them). When an event sheet tab is active, keep showing the panels of the last active scene editor (gate the portal on `isActive || wasLastActiveSceneEditor`, tracked in MainFrame). Mobile (`SwipeableDrawerEditorsDisplay`) unchanged.
+- Alternative if the portal is awkward: lift the three panels out of `SceneEditor` into MainFrame and pass the active scene's `objectsContainer`/`layout` down — much bigger diff, avoid.
+- Column width: 300 px today (`.c3-project-bar`), may need 340 px; the properties panel stays on the left.
+- Verify with Playwright: new project → bar shows the six sections in order, adding an object from `Objetos` selects it in the layout, `Camadas` add-layer works, scrolling with many layouts.
 
 ## Log
 - 2026-09-16: repo forked, CLAUDE.md + references committed. Phase 0 done: web + desktop run.
@@ -108,3 +132,4 @@ Hide
 - 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
 - 2026-09-19: Phase 4 layout view — Construct context menus, double-click inserts an object, status bar, properties panel section order. `C3-Icons/` stays local (user decision, `.git/info/exclude`).
 - 2026-09-19 (later): docked project bar (Phase 2 leftover closed), Construct event sheet keys + new add-condition/action commands, hovered-item description in the picker, event context menu order, tutorial banners hidden, README banner.
+- 2026-09-19 (night): leftovers closed — dark surround outside the layout frame, Align ▸ submenu, example browser = example grid only, behaviours editor / effects list tinted; the 9 Construct behaviours without a GDevelop port shipped as our own events-based extensions (`Utils/C3Extensions`), runtime-checked in a preview. User briefing for tomorrow added above (event sheet rows, show extra GDevelop objects/behaviours, Objects/Families/Layers into the project bar).
