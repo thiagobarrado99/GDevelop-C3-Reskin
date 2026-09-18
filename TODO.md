@@ -58,10 +58,12 @@ Hide
 ## Phase 3 — Event sheet (see survey)
 - [x] Rows: margin number on the drag handle (`data-event-number`, theme CSS), `[icon Object] condition` block, `+ Add action` placeholder, cream selected block
 - [~] Condition context: Edit · Add another condition · Invert · Cut · Copy · Paste · Delete (done); Replace condition/object, Toggle, Copy as text not offered
-- [~] Picker step 2: two-column grouped list with category headers + search (done; description of the hovered item not shown); step 3 params with Back/Done — operator labels stay GDevelop's `= (igual a)` form
+- [x] Picker step 2: two-column grouped list with category headers + search, description of the hovered item above the list (`InstructionOrExpressionSelector/index.js`, items found back from their DOM id); step 3 params with Back/Done — operator labels stay GDevelop's `= (igual a)` form
 - [x] Add condition/action flow: System + object tiles → list → params (`InstructionEditor/C3ObjectPicker.js`, `InstructionEditorDialog.js` `useC3Steps`)
 - [x] "+ Add…" menu: Event · Comment · Group · Include event sheet · loops (`EnumerateEventsMetadata.js` order + runtime renames)
-- [ ] Per-event `Add…` link; event context menu in Construct's order
+- [x] Event context menu in Construct's order: Add ▸ (Condition C · Action A · Event E · Sub-event B · Local variable L · Comment Q · Group · Include · Else · loops) · Edit · Toggle disabled · Cut · Copy · Paste · Delete · Select/Deselect all · … (`EventsSheet/index.js` `_buildEventContextMenu`)
+- [x] Construct's event sheet keys as the default shortcut map (`KeyboardShortcuts/DefaultShortcuts.js`): E event, B sub-event, Q comment, C condition, A action, X else, G group, I invert, L local variable, D toggle disabled; new commands `ADD_CONDITION` / `ADD_ACTION` / `ADD_ELSE_EVENT` / `ADD_GROUP_EVENT` (`CommandsList.js`, `EventsSheet/ToolbarCommands.js`); keys shared with the layout editor resolve to the active tab's command (`useKeyboardShortcuts` tries every command bound to the key)
+- [ ] Per-event `Add…` link (GDevelop's per-row `+ Add condition / + Add action` cover it)
 
 ## Phase 4 — Layout view (see survey)
 - [x] Instance panel sections in Construct's order: Common (position/size/angle/layer/Z) · Instance variables · Behaviors · Effects (`CompactInstancePropertiesEditor/index.js`); object panel: Properties · Object variables · Behaviors · Effects (`CompactObjectPropertiesEditor/index.js`)
@@ -70,7 +72,8 @@ Hide
 - [x] Status bar `Mouse: (x, y)   Layer: …   Zoom: N%` (`InstancesEditor/StatusBar.js`, PIXI text, English labels only)
 - [x] Snap/grid defaults already Construct's (32×32, grid and snap off)
 - [~] Layout colours: new layouts default to rgb(50, 50, 50) (project data, `MainFrame/index.js` + `ProjectManager/index.js`); dark surround outside the layout frame (`InstancesEditor/WindowMask.js`, `Background.js`) still theme work
-- [ ] Z-order bar, Align ▸ submenu, the canvas hover tooltip still says "Base layer" (PIXI text in `HighlightedInstance.js`)
+- [x] Canvas hover tooltip says "Layer 0" for the base layer (`HighlightedInstance.js`)
+- [ ] Z-order bar, Align ▸ submenu
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
 - [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
@@ -91,7 +94,10 @@ Hide
 - [x] Survey of the reviewed extension store done (registry fetched from `api.gdevelop.io/asset/extension`); ports recorded in `Utils/C3Behaviors.js` and the CLAUDE.md table; on-demand install kept (no bundling)
 
 ## Phase 5 — Polish
-- [ ] Animation editor, shortcut parity, examples, docs
+- [x] Shortcut parity for the event sheet (see Phase 3); layout editor keeps GDevelop's letters (O objects, P properties, L layers, I instances, G groups…)
+- [x] GDevelop's video tutorial banners hidden (`Hints/TutorialMessage.js`)
+- [x] README banner for the fork
+- [ ] Animation editor (GDevelop's sprite editor + Piskel stay), examples
 
 ## Log
 - 2026-09-16: repo forked, CLAUDE.md + references committed. Phase 0 done: web + desktop run.
@@ -101,3 +107,4 @@ Hide
 - 2026-09-18 (night): Phase 2 leftovers shipped (close-tab prompt only on unsaved changes, project bar order, recent-project context menu, layer add above/below, Construct dialog chrome); docked project bar still open. Phase 6: rows/tabs coloured by kind, Solid/Platform/Jump-thru renames, `C3TileGrid` for add-behaviour (22/32 Construct behaviours ported 1:1 with presets, store extensions installed on demand) and add-object (13 tiles), instance panel edits physics behaviours + effects through to the object. Icons wait on the user's answer.
 - 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
 - 2026-09-19: Phase 4 layout view — Construct context menus, double-click inserts an object, status bar, properties panel section order. `C3-Icons/` stays local (user decision, `.git/info/exclude`).
+- 2026-09-19 (later): docked project bar (Phase 2 leftover closed), Construct event sheet keys + new add-condition/action commands, hovered-item description in the picker, event context menu order, tutorial banners hidden, README banner.

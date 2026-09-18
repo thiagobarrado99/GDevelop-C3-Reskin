@@ -104,7 +104,7 @@ export default class HighlightedInstance {
         : '') +
       '\n' +
       'Layer: ' +
-      (highlightedInstance.getLayer() || 'Base layer') +
+      (highlightedInstance.getLayer() || 'Layer 0') + // c3: Construct's default layer name
       (this.isHighlightedInstanceOf3DObject
         ? ''
         : '\nZ order: ' + highlightedInstance.getZOrder()) +
