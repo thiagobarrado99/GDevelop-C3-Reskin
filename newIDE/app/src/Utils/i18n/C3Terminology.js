@@ -158,6 +158,19 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     ...exactRules(reskinPtBr),
     // Whole-string labels, as named in Construct 3 (pt-BR).
     [/^Cena sem título$/, 'Layout 1'],
+    // Objects and families are project-wide by default (parity guide A6).
+    [/^Objetos Globais$/, 'Tipos de objeto'],
+    [/^Objetos da Cena$/, 'Tipos de objeto deste layout'],
+    [/^Grupos Globais$/, 'Famílias'],
+    [/^Grupos de Cenas$/, 'Famílias deste layout'],
+    [
+      /^Comece adicionando um novo grupo\.$/,
+      'Comece adicionando uma nova família.',
+    ],
+    [/^Criar um novo grupo$/, 'Criar uma nova família'],
+    [/^Nome do grupo$/, 'Nome da família'],
+    [/^Editar grupo$/, 'Editar família'],
+    [/^Adicionar um novo grupo(\.\.\.)?$/, 'Adicionar uma nova família$1'],
     [/^Eventos externos sem título$/, 'Folha de eventos 1'],
     [/^Camada base$/, 'Camada 0'],
     [/^Compartilhar$/, 'Exportar'],

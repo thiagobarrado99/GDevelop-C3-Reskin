@@ -24,6 +24,10 @@ const data = { en: 'Data & Storage', pt_BR: 'Dados & Armazenamento' };
 const input = { en: 'Input', pt_BR: 'Entrada' };
 
 // Construct's order in the add-object dialog.
+// Construct's object types and families are project-wide: new objects and
+// groups go to the global containers (user decision 2026-09-18, option (a)).
+export const C3_GLOBAL_BY_DEFAULT: boolean = true;
+
 export const C3_OBJECT_CATEGORIES = [
   threeD,
   data,

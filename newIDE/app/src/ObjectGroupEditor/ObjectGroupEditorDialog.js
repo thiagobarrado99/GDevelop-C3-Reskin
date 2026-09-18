@@ -2,6 +2,7 @@
 import React from 'react';
 import { ProjectScopedContainersAccessor } from '../InstructionOrExpression/EventsScope';
 import NewObjectGroupEditorDialog from './NewObjectGroupEditorDialog';
+import { C3_GLOBAL_BY_DEFAULT } from '../Utils/C3Objects'; // c3
 import EditedObjectGroupEditorDialog, {
   type ObjectGroupEditorTab,
 } from './EditedObjectGroupEditorDialog';
@@ -69,12 +70,21 @@ const ObjectGroupEditorDialog = ({
       if (editedObjectGroup) {
         objectGroup = editedObjectGroup;
       } else {
+        // c3: families are project-wide by default, like Construct's.
+        const global =
+          !bypassedObjectGroupsContainer &&
+          C3_GLOBAL_BY_DEFAULT &&
+          !!globalObjectsContainer;
         const name = getValidatedObjectOrGroupName(
           objectGroupName || 'Group',
-          false
+          global
         );
         const objectGroupContainer =
-          bypassedObjectGroupsContainer || objectsContainer.getObjectGroups();
+          bypassedObjectGroupsContainer ||
+          (global && globalObjectsContainer
+            ? globalObjectsContainer
+            : objectsContainer
+          ).getObjectGroups();
         objectGroup = objectGroupContainer.insertNew(
           name,
           objectGroupContainer.count()

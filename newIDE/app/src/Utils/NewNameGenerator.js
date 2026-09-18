@@ -33,4 +33,17 @@ export const splitNameAndNumberSuffix = (
   return [text, null];
 };
 
+// c3: "Layout 1" → "Layout 2", "Layout 3"… (Construct's numbering; the default
+// generator would give "Layout2").
+export const c3NumberedNameGenerator = (
+  name /*:string */,
+  exists /*:(string) => boolean */
+): string => {
+  const [radix] = splitNameAndNumberSuffix(name);
+  const base = radix.trim();
+  let i = 1;
+  while (exists(base + ' ' + i)) ++i;
+  return base + ' ' + i;
+};
+
 export default newNameGenerator;

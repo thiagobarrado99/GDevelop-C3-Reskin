@@ -10,7 +10,9 @@ import CompactSearchBar, {
 } from '../UI/CompactSearchBar';
 import GlobalVariablesDialog from '../VariablesList/GlobalVariablesDialog';
 import ProjectPropertiesDialog from './ProjectPropertiesDialog';
-import newNameGenerator from '../Utils/NewNameGenerator';
+import newNameGenerator, {
+  c3NumberedNameGenerator,
+} from '../Utils/NewNameGenerator';
 import ExtensionsSearchDialog from '../AssetStore/ExtensionStore/ExtensionsSearchDialog';
 import ScenePropertiesDialog from '../SceneEditor/ScenePropertiesDialog';
 import SceneVariablesDialog from '../VariablesList/SceneVariablesDialog';
@@ -671,8 +673,10 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       (index: number, i18n: I18nType) => {
         if (!project) return;
 
-        const newName = newNameGenerator(i18n._(t`Untitled scene`), name =>
-          project.hasLayoutNamed(name)
+        // c3: Layout 1, Layout 2…
+        const newName = c3NumberedNameGenerator(
+          i18n._(t`Untitled scene`),
+          name => project.hasLayoutNamed(name)
         );
         const newScene = project.insertNewLayout(newName, index + 1);
         newScene.setName(newName);
@@ -773,7 +777,8 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       (index: number, i18n: I18nType) => {
         if (!project) return;
 
-        const newName = newNameGenerator(
+        const newName = c3NumberedNameGenerator(
+          // c3
           i18n._(t`Untitled external events`),
           name => project.hasExternalEventsNamed(name)
         );
@@ -839,7 +844,8 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       (index: number, i18n: I18nType) => {
         if (!project) return;
 
-        const newName = newNameGenerator(
+        const newName = c3NumberedNameGenerator(
+          // c3
           i18n._(t`Untitled external layout`),
           name => project.hasExternalLayoutNamed(name)
         );

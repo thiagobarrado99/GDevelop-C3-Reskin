@@ -27,6 +27,7 @@ import ErrorBoundary from '../UI/ErrorBoundary';
 import KeyboardShortcuts from '../UI/KeyboardShortcuts';
 import { ProjectScopedContainersAccessor } from '../InstructionOrExpression/EventsScope';
 import { getLabelsForObjectsAndGroupsLists } from '../ObjectsList';
+import { C3_GLOBAL_BY_DEFAULT } from '../Utils/C3Objects'; // c3
 import { type MenuItemTemplate } from '../UI/Menu/Menu.flow';
 
 export const groupWithContextReactDndType = 'GD_GROUP_WITH_CONTEXT';
@@ -573,9 +574,12 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
       ]
     );
 
+    // c3: with project-wide families the global section carries the button.
+    const c3GlobalFirst = C3_GLOBAL_BY_DEFAULT && !!globalObjectGroups;
     const getRightButton = React.useCallback(
       (i18n: I18nType) => (item: TreeViewItem) =>
-        item.id === sceneGroupsRootFolderId
+        item.id ===
+        (c3GlobalFirst ? globalGroupsRootFolderId : sceneGroupsRootFolderId)
           ? {
               icon: <Add />,
               label: i18n._(t`Add a new group`),
@@ -584,7 +588,7 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
               enabled: !isListLocked,
             }
           : null,
-      [isListLocked, onCreateGroup]
+      [isListLocked, onCreateGroup, c3GlobalFirst]
     );
 
     const labels = React.useMemo(
@@ -614,7 +618,11 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
               globalObjectGroupsList.length > 0
                 ? globalObjectGroupsList
                 : // $FlowFixMe[incompatible-type]
-                  [getGlobalGroupsEmptyPlaceholder(i18n)],
+                  [
+                    c3GlobalFirst
+                      ? getSceneGroupsEmptyPlaceholder(i18n) // c3
+                      : getGlobalGroupsEmptyPlaceholder(i18n),
+                  ],
             isRoot: true,
             id: globalGroupsRootFolderId,
           },
@@ -632,7 +640,7 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
 
         return treeViewItems;
       },
-      [globalObjectGroups, objectGroups, labels]
+      [globalObjectGroups, objectGroups, labels, c3GlobalFirst]
     );
 
     React.useEffect(
@@ -693,14 +701,25 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
             {({ i18n }) => {
               const treeViewData = getTreeViewData(i18n);
               const globalRootItem = treeViewData[0];
-              const initiallyOpenedNodeIds = [
-                globalRootItem.isRoot &&
-                globalRootItem.children.length === 1 &&
-                globalRootItem.children[0].isPlaceholder
-                  ? null
-                  : globalGroupsRootFolderId,
-                sceneGroupsRootFolderId,
-              ].filter(Boolean);
+              const sceneRootItem = treeViewData[treeViewData.length - 1];
+              const isEmptySection = (item: TreeViewItem) =>
+                item.isRoot &&
+                item.children.length === 1 &&
+                item.children[0].isPlaceholder;
+              // c3: the per-layout section stays folded while empty.
+              const initiallyOpenedNodeIds = c3GlobalFirst
+                ? [
+                    globalGroupsRootFolderId,
+                    isEmptySection(sceneRootItem)
+                      ? null
+                      : sceneGroupsRootFolderId,
+                  ].filter(Boolean)
+                : [
+                    isEmptySection(globalRootItem)
+                      ? null
+                      : globalGroupsRootFolderId,
+                    sceneGroupsRootFolderId,
+                  ].filter(Boolean);
 
               return (
                 <div style={{ flex: 1 }}>

@@ -66,7 +66,10 @@ import type { MessageDescriptor } from '../Utils/i18n/MessageDescriptor.flow';
 import type { EventsScope } from '../InstructionOrExpression/EventsScope';
 import { type InstallAssetOutput } from '../AssetStore/InstallAsset';
 import { exceptionallyGuardAgainstDeadObject } from '../Utils/IsNullPtr';
-import { getC3ObjectDefaultName } from '../Utils/C3Objects'; // c3
+import {
+  getC3ObjectDefaultName,
+  C3_GLOBAL_BY_DEFAULT,
+} from '../Utils/C3Objects'; // c3
 import { addBlankAnimation } from '../Utils/C3Sprite'; // c3
 
 const gd: libGDevelop = global.gd;
@@ -694,17 +697,22 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
             ]);
           }
         } else {
-          object = objectsContainer.insertNewObject(
+          // c3: project-wide by default, like Construct's object types.
+          const container =
+            C3_GLOBAL_BY_DEFAULT && globalObjectsContainer
+              ? globalObjectsContainer
+              : objectsContainer;
+          object = container.insertNewObject(
             project,
             objectType,
             name,
-            objectsContainer.getObjectsCount()
+            container.getObjectsCount()
           );
           objectFolderOrObjectWithContext = {
-            objectFolderOrObject: objectsContainer
+            objectFolderOrObject: container
               .getRootFolder()
               .getObjectChild(name),
-            global: false,
+            global: container !== objectsContainer,
           };
         }
 
@@ -712,7 +720,11 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
         if (objectType === 'Sprite') addBlankAnimation(project, object);
 
         if (treeViewRef.current)
-          treeViewRef.current.openItems([sceneObjectsRootFolderId]);
+          treeViewRef.current.openItems([
+            objectFolderOrObjectWithContext.global
+              ? globalObjectsRootFolderId
+              : sceneObjectsRootFolderId,
+          ]);
 
         // Scroll to the new object.
         // Ideally, we'd wait for the list to be updated to scroll, but
@@ -1266,8 +1278,25 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
       [isListLocked, pasteIntoFolder]
     );
 
+    // c3: with project-wide objects the global section is the main one: it
+    // carries the "Add object" button, the per-layout one is the advanced fold.
+    const c3GlobalFirst = C3_GLOBAL_BY_DEFAULT && !!globalObjectsRootFolder;
+
     const getTreeViewData = React.useCallback(
       (i18n: I18nType): Array<TreeViewItem> => {
+        const addObjectButton: MenuButton = {
+          primary: true,
+          showPrimaryLabel: isEntirelyEmpty,
+          icon: <Add />,
+          label: t`Add object`,
+          click: () => {
+            onAddNewObject(
+              c3GlobalFirst ? null : selectedObjectFolderOrObjectsWithContext[0]
+            );
+          },
+          id: 'add-new-object-button',
+          enabled: !isListLocked,
+        };
         const treeViewItems = [
           globalObjectsRootFolder &&
             new ObjectFolderTreeViewItem({
@@ -1277,7 +1306,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
               content: new LabelTreeViewItemContent(
                 globalObjectsRootFolderId,
                 i18n._(labels.higherScopeObjectsTitle),
-                null,
+                c3GlobalFirst ? addObjectButton : null,
                 () => [
                   buildPasteMenuItem(i18n, globalObjectsRootFolder, true),
                   { type: 'separator' },
@@ -1305,7 +1334,9 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
               ),
               placeholder: new PlaceHolderTreeViewItem(
                 globalObjectsEmptyPlaceholderId,
-                (
+                c3GlobalFirst ? (
+                  i18n._(t`Start by adding a new object.`)
+                ) : (
                   <Trans>
                     There is no{' '}
                     <Link
@@ -1331,17 +1362,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
             content: new LabelTreeViewItemContent(
               sceneObjectsRootFolderId,
               i18n._(labels.localScopeObjectsTitle),
-              {
-                primary: true,
-                showPrimaryLabel: isEntirelyEmpty,
-                icon: <Add />,
-                label: t`Add object`,
-                click: () => {
-                  onAddNewObject(selectedObjectFolderOrObjectsWithContext[0]);
-                },
-                id: 'add-new-object-button',
-                enabled: !isListLocked,
-              },
+              c3GlobalFirst ? null : addObjectButton,
               () => [
                 buildPasteMenuItem(i18n, objectsRootFolder, false),
                 { type: 'separator' },
@@ -1390,6 +1411,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
         return treeViewItems;
       },
       [
+        c3GlobalFirst,
         globalObjectsRootFolder,
         labels.higherScopeObjectsTitle,
         labels.localScopeObjectsTitle,
@@ -1866,12 +1888,20 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
     // has been changed. Avoid accessing to invalid objects that could
     // crash the app.
     const listKey = project.ptr + ';' + objectsContainer.ptr;
-    const initiallyOpenedNodeIds = [
-      globalObjectsRootFolder && globalObjectsRootFolder.getChildrenCount() > 0
-        ? globalObjectsRootFolderId
-        : null,
-      sceneObjectsRootFolderId,
-    ].filter(Boolean);
+    const initiallyOpenedNodeIds = c3GlobalFirst
+      ? [
+          globalObjectsRootFolderId,
+          objectsRootFolder.getChildrenCount() > 0
+            ? sceneObjectsRootFolderId
+            : null,
+        ].filter(Boolean)
+      : [
+          globalObjectsRootFolder &&
+          globalObjectsRootFolder.getChildrenCount() > 0
+            ? globalObjectsRootFolderId
+            : null,
+          sceneObjectsRootFolderId,
+        ].filter(Boolean);
 
     const arrowKeyNavigationProps = React.useMemo(
       () => ({
