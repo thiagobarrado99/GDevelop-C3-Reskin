@@ -141,6 +141,7 @@ type Props = {|
   storageProvider: ?StorageProvider,
   privateGameTemplateListingDatasFromSameCreator: ?Array<PrivateGameTemplateListingData>,
   preventBackHome?: boolean,
+  browseExamples?: boolean, // c3: Construct's Example browser (examples only)
   onOpenLayout: (
     sceneName: string,
     options: {|
@@ -180,6 +181,7 @@ const NewProjectSetupDialog = ({
   onOpenLayout,
   onWillInstallExtension,
   onExtensionInstalled,
+  browseExamples,
 }: Props): React.Node => {
   const authenticatedUser = React.useContext(AuthenticatedUserContext);
   const {
@@ -627,7 +629,13 @@ const NewProjectSetupDialog = ({
       {({ i18n }) => (
         <Dialog
           open
-          title={<Trans>Create a new game</Trans>}
+          title={
+            browseExamples ? (
+              <Trans>Example browser</Trans>
+            ) : (
+              <Trans>Create a new game</Trans>
+            )
+          }
           id="project-pre-creation-dialog"
           maxWidth="md"
           // $FlowFixMe[incompatible-type]
@@ -678,7 +686,22 @@ const NewProjectSetupDialog = ({
                 <Spacer />
               </>
             )}
-            {isOnHomePage && (
+            {isOnHomePage && browseExamples && (
+              // c3: Construct's Example browser - the searchable example grid
+              // only, no templates or premium content.
+              <ExampleStore
+                onSelectExampleShortHeader={onSelectExampleShortHeader}
+                onSelectPrivateGameTemplateListingData={
+                  onSelectPrivateGameTemplateListingData
+                }
+                i18n={i18n}
+                getColumnsFromWindowSize={getItemsColumns}
+                hideStartingPoints
+                hidePremiumTemplates
+                disabled={isLoading}
+              />
+            )}
+            {isOnHomePage && !browseExamples && (
               <ColumnStackLayout noMargin>
                 <AskAiStandAloneForm
                   i18n={i18n}

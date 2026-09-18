@@ -249,6 +249,7 @@ const useNewProjectDialog = ({
             !!selectedExampleShortHeader ||
             !!selectedPrivateGameTemplateListingData) && (
             <NewProjectSetupDialog
+              browseExamples={browseExamples} // c3
               project={project}
               fileMetadata={fileMetadata}
               resourceManagementProps={resourceManagementProps}
