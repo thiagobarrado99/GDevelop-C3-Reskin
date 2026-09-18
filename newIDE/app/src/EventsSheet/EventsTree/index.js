@@ -1127,12 +1127,16 @@ const EventsTree: React.ComponentType<{
       depth === 0 && eventsList.getEventsCount() === 0
         ? {
             title: () => (
+              // c3: Construct's wording, no tutorial link.
               <EmptyPlaceholder
-                title={<Trans>Add your first event</Trans>}
-                description={<Trans>Events define the rules of a game.</Trans>}
-                actionLabel={<Trans>Add an event</Trans>}
+                title={<Trans>This event sheet is empty</Trans>}
+                description={
+                  <Trans>
+                    Click "Add event": pick a condition, then add its actions.
+                  </Trans>
+                }
+                actionLabel={<Trans>Add event</Trans>}
                 helpPagePath="/events"
-                tutorialId="the-events"
                 actionButtonId="add-event-button"
                 onAction={() =>
                   props.onAddNewEvent(

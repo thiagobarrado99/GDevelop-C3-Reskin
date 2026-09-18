@@ -114,10 +114,10 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C2. Picker dialogs sized like windows
 - `C3ObjectPicker.js` (step 1) and `AssetStore/NewObjectFromScratch.js`: `maxWidth="sm"`, not full-screen; step 1 gains a search box (filter tiles by label) and a `Próximo` button enabled when a tile is selected; add-object dialog gains a `Nome` field prefilled with the tile's default name (`C3Objects.js` `defaultName`), title `Criar novo tipo de objeto`, buttons `Inserir · Cancelar`.
 
-### C3. Empty event sheet placeholder
+### C3. Empty event sheet placeholder — done 2026-09-18 (Construct-style text, no tutorial link)
 - `EventsTree/index.js` `EmptyPlaceholder` (line ~1125): drop `Assistir ao tutorial`; text = Construct's explanation ("Clique em *Adicionar evento*…"); optional sample event image drawn with our own CSS (no Construct asset).
 
-### C4. Event sheet toolbar
+### C4. Event sheet toolbar — done 2026-09-18 (only delete · search · settings remain)
 - `EventsSheet/Toolbar.js`: hide the add-event / sub-event / local-variable / comment / choose-and-add buttons once B1–B2 cover them; keep search, undo/redo until B11.
 
 ### C5. Instance context menu

@@ -40,6 +40,9 @@ const reskinPtBr: { [string]: string } = {
   'Preview layout': 'Visualizar layout',
   'Layout variables': 'Variáveis do layout',
   Clone: 'Clonar',
+  'This event sheet is empty': 'Esta folha de eventos está vazia',
+  'Click "Add event": pick a condition, then add its actions.':
+    'Clique em "Adicionar evento": escolha uma condição e depois as ações.',
   'Already in the events: pick this tile in Add condition / Add action.':
     'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',
