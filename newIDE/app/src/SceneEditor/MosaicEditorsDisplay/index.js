@@ -201,7 +201,11 @@ const MosaicEditorsDisplay: React.ComponentType<{
       },
       [onInstancesModified, forceUpdateInstancesList]
     );
+    // c3: while the Objects / Families / Layers panels live in the project
+    // bar, the mosaic never opens them (they count as visible).
+    const c3PanelsInBarRef = React.useRef(false);
     const toggleEditorView = React.useCallback((editorId: EditorId) => {
+      if (c3PanelsInBarRef.current && c3BarPanelIds.includes(editorId)) return;
       if (!editorMosaicRef.current) return;
       const config = defaultPanelConfigByEditor[editorId];
       editorMosaicRef.current.toggleEditor(
@@ -211,6 +215,8 @@ const MosaicEditorsDisplay: React.ComponentType<{
       );
     }, []);
     const isEditorVisible = React.useCallback((editorId: EditorId) => {
+      if (c3PanelsInBarRef.current && c3BarPanelIds.includes(editorId))
+        return true;
       if (!editorMosaicRef.current) return false;
       return editorMosaicRef.current.getOpenedEditorNames().includes(editorId);
     }, []);
@@ -341,6 +347,7 @@ const MosaicEditorsDisplay: React.ComponentType<{
       c3LastActiveDisplayId === c3DisplayIdRef.current
         ? document.getElementById('c3-project-bar-panels')
         : null;
+    c3PanelsInBarRef.current = !!c3BarTarget;
     const [, c3Rerender] = React.useReducer<number, void>(x => x + 1, 0);
     React.useEffect(
       () => {

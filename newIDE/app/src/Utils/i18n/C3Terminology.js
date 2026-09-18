@@ -38,6 +38,8 @@ const reskinPtBr: { [string]: string } = {
   'Send to bottom of layer': 'Enviar para o fundo da camada',
   Lock: 'Bloquear',
   'Unlock all': 'Desbloquear tudo',
+  'Lock instances on scene': 'Bloquear instâncias no layout',
+  'Unlock instances on scene': 'Desbloquear instâncias no layout',
   Align: 'Alinhar',
   'Horizontal center': 'Centro horizontal',
   'Vertical center': 'Centro vertical',

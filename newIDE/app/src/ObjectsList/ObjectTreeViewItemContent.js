@@ -10,7 +10,10 @@ import {
 } from '../Utils/Serializer';
 import { type TreeViewItemContent } from '.';
 import { canSwapAssetOfObject } from '../AssetStore/AssetSwapper';
-import { getInstanceCountInLayoutForObject } from '../Utils/Layout';
+import {
+  getInstanceCountInLayoutForObject,
+  getInstancesInLayoutForObject, // c3
+} from '../Utils/Layout';
 import {
   enumerateFoldersInContainer,
   type ObjectFolderOrObjectWithContext,
@@ -560,6 +563,27 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
             enabled: instanceCountOnScene > 0,
           }
         : undefined,
+      // c3: locked instances can't be clicked on the canvas, so the object
+      // row is where they get unlocked (selecting them afterwards refreshes
+      // the canvas and shows the result).
+      ...(initialInstances && onSelectAllInstancesOfObjectInLayout
+        ? [true, false].map(locked => ({
+            label: i18n._(
+              locked ? t`Lock instances on scene` : t`Unlock instances on scene`
+            ),
+            enabled: (instanceCountOnScene || 0) > 0,
+            click: () => {
+              getInstancesInLayoutForObject(
+                initialInstances,
+                object.getName()
+              ).forEach(instance => {
+                instance.setLocked(locked);
+                instance.setSealed(locked);
+              });
+              onSelectAllInstancesOfObjectInLayout(object.getName());
+            },
+          }))
+        : []),
     ].filter(Boolean);
   }
 

@@ -2700,6 +2700,7 @@ export default class SceneEditor extends React.Component<Props, State> {
       return [
         insertItem,
         viewItem,
+        this.getContextMenuLockItems(i18n), // c3: reach "Unlock all"
         ...this.getContextMenuLayoutItems(i18n),
         pasteItem,
       ];

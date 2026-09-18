@@ -67,7 +67,7 @@ Hide
 
 ## Phase 4 — Layout view (see survey)
 - [x] Instance panel sections in Construct's order: Common (position/size/angle/layer/Z) · Instance variables · Behaviors · Effects (`CompactInstancePropertiesEditor/index.js`); object panel: Properties · Object variables · Behaviors · Effects (`CompactObjectPropertiesEditor/index.js`)
-- [x] Context menus (`SceneEditor/index.js` `buildContextMenu`, `// c3`): empty space = Insert new object · View ▸ (zoom) · Edit event sheet · Layout properties · Paste; instance = Edit · Insert new object · Add ▸ (Instance variable / Behavior / Effect) · Z Order ▸ · Lock ▸ (Lock = locked + sealed, Unlock all) · View ▸ · Cut · Copy · Paste · Duplicate · Delete · Extract ▸
+- [x] Context menus (`SceneEditor/index.js` `buildContextMenu`, `// c3`): empty space = Insert new object · View ▸ (zoom) · Lock ▸ (Unlock all) · Edit event sheet · Layout properties · Paste; the object row in the Objects panel has "Bloquear / Desbloquear instâncias no layout" (`ObjectTreeViewItemContent.js`) since locked instances can't be clicked; instance = Edit · Insert new object · Add ▸ (Instance variable / Behavior / Effect) · Z Order ▸ · Lock ▸ (Lock = locked + sealed, Unlock all) · View ▸ · Cut · Copy · Paste · Duplicate · Delete · Extract ▸
 - [x] Double-click on empty space = Insert new object under the cursor (`InstancesEditor/index.js` `onBackgroundDoubleClicked`, `// c3`)
 - [x] Status bar `Mouse: (x, y)   Layer: …   Zoom: N%` (`InstancesEditor/StatusBar.js`, PIXI text, English labels only)
 - [x] Snap/grid defaults already Construct's (32×32, grid and snap off)
@@ -117,6 +117,7 @@ Every object type and behaviour shown in the add dialogs has a flat C3-style ico
 - 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
 - 2026-09-19: Phase 4 layout view — Construct context menus, double-click inserts an object, status bar, properties panel section order. `C3-Icons/` stays local (user decision, `.git/info/exclude`).
 - 2026-09-19 (later): docked project bar (Phase 2 leftover closed), Construct event sheet keys + new add-condition/action commands, hovered-item description in the picker, event context menu order, tutorial banners hidden, README banner.
+- 2026-09-20 (later): lock/unlock instances from the object row + Unlock all in the empty-space menu; the mosaic no longer re-opens the panels that live in the bar.
 - 2026-09-20 (later): behaviour and new-object default names follow the UI language (`Plataforma`, `Texto`…, `Utils/C3Language.js`); any add path gets the tile name; tiles fit two-line names.
 - 2026-09-20 (evening): the 122 GDevelop-only icons drawn by the user are in too — every tile has a flat icon now.
 - 2026-09-20 (later): C3 icons applied (committed under `public/res/c3-icons`), bar sections fixed (readable title, collapsible with chevrons); missing-icon list above.
