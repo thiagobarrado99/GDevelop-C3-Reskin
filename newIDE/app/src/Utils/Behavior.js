@@ -1,6 +1,7 @@
 // @flow
 import newNameGenerator from './NewNameGenerator';
 import Window from './Window';
+import { C3_BEHAVIORS } from './C3Behaviors'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -31,6 +32,19 @@ export const addBehaviorToObject = (
     if (!answer) return false;
   }
 
+  // c3: every path that adds a behaviour with GDevelop's default name (events
+  // sheet, AI, required behaviours) gets the Construct tile's name and presets.
+  const c3Tile = C3_BEHAVIORS.find(tile => tile.type === type);
+  const gdDefaultName = gd.MetadataProvider.getBehaviorMetadata(
+    project.getCurrentPlatform(),
+    type
+  ).getDefaultName();
+  if (c3Tile && defaultName === gdDefaultName) {
+    defaultName = c3Tile.defaultName;
+    if (!presets) presets = c3Tile.presets;
+  }
+  const behaviorNamesBefore = object.getAllBehaviorNames().toJSArray();
+
   const name = newNameGenerator(defaultName, name =>
     object.hasBehaviorNamed(name)
   );
@@ -49,6 +63,24 @@ export const addBehaviorToObject = (
     for (const property of Object.keys(presets))
       behavior.updateProperty(property, presets[property]);
   }
+  // c3: required behaviours added along get their tile name too.
+  object
+    .getAllBehaviorNames()
+    .toJSArray()
+    .filter(
+      behaviorName =>
+        behaviorName !== name && !behaviorNamesBefore.includes(behaviorName)
+    )
+    .forEach(behaviorName => {
+      const tile = C3_BEHAVIORS.find(
+        tile => tile.type === object.getBehavior(behaviorName).getTypeName()
+      );
+      if (!tile || tile.defaultName === behaviorName) return;
+      const newName = newNameGenerator(tile.defaultName, name =>
+        object.hasBehaviorNamed(name)
+      );
+      object.renameBehavior(behaviorName, newName);
+    });
 
   return true;
 };
