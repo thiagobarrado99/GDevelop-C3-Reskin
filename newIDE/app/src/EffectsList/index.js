@@ -57,6 +57,7 @@ import InlineCheckbox from '../UI/InlineCheckbox';
 import VisibilityIcon from '../UI/CustomSvgIcons/Visibility';
 import VisibilityOffIcon from '../UI/CustomSvgIcons/VisibilityOff';
 import PropertiesEditorByVisibility from '../PropertiesEditor/PropertiesEditorByVisibility';
+import { c3DefaultName, C3_DEFAULT_NAMES } from '../Utils/C3Language'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -503,9 +504,9 @@ export const useManageEffects = ({
 
   const _addEffect = React.useCallback(
     (is3D: boolean) => {
-      const newName = newNameGenerator('Effect', name =>
-        effectsContainer.hasEffectNamed(name)
-      );
+      const newName = newNameGenerator(c3DefaultName(C3_DEFAULT_NAMES.effect), (
+        name // c3
+      ) => effectsContainer.hasEffectNamed(name));
       const effect = effectsContainer.insertNewEffect(
         newName,
         effectsContainer.getEffectsCount()

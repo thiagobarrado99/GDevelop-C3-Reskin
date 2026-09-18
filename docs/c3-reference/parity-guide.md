@@ -80,7 +80,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `ObjectEditor/ObjectEditorDialog.js`: not `fullScreen`; `maxWidth="md"`; Esc/✕ = apply (drop the "Cancelar as alterações?" prompt under `// c3:` — the changes are already in the undo stack); keep `Aplicar` as the primary button labelled `Fechar`. Behaviour properties stay in the dialog (Construct puts them in the bar; the instance panel already edits through).
 - Check: open `Editar objeto`, press Esc → closes, no prompt, changes kept.
 
-### B8. Default names + add-variable dialog
+### B8. Default names + add-variable dialog — done 2026-09-18 (`C3_DEFAULT_NAMES` / `c3DefaultName` in `Utils/C3Language.js`: `Variavel`, `Efeito`, `Familia`; `Booleano`; the optional add-variable dialog was not needed)
 - Translate default names at creation: `Variable` (`VariablesList/VariablesList.js` line ~1533, `VariablesEditorDialog.js`, `ObjectGroupVariablesDialog.js`), `Effect` (`EffectsList/index.js`), `Group` (`ObjectGroupsList`) → `Variavel` / `Efeito` / `Grupo` via `Utils/C3Language.js` (identifiers: no accents). `Boleano` typo → `Booleano` (`reskinPtBr` rule). Optional: a small `Adicionar variável` dialog (Nome · Tipo · Valor inicial) — only if the inline row confuses students in practice.
 - Check: `+` on Variáveis → row `Variavel`; type menu says `Booleano`.
 

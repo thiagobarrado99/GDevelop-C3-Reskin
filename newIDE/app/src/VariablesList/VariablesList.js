@@ -90,6 +90,7 @@ import { ProjectScopedContainersAccessor } from '../InstructionOrExpression/Even
 import ContextMenu, { type ContextMenuInterface } from '../UI/Menu/ContextMenu';
 import { exceptionallyGuardAgainstDeadObject } from '../Utils/IsNullPtr';
 import classes from './VariablesList.module.css';
+import { c3DefaultName, C3_DEFAULT_NAMES } from '../Utils/C3Language'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -1530,7 +1531,7 @@ const VariablesList: React.ComponentType<{
       if (addAtTopLevel) {
         const { name: newName } = insertInVariablesContainer(
           variablesContainer,
-          'Variable',
+          c3DefaultName(C3_DEFAULT_NAMES.variable), // c3
           null,
           variablesContainer.count(),
           props.inheritedVariablesContainer
@@ -1556,7 +1557,7 @@ const VariablesList: React.ComponentType<{
       }
       const { name: newName } = insertInVariablesContainer(
         props.variablesContainer,
-        'Variable',
+        c3DefaultName(C3_DEFAULT_NAMES.variable), // c3
         null,
         position,
         props.inheritedVariablesContainer

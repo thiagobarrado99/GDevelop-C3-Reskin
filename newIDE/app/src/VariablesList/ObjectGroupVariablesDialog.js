@@ -20,6 +20,7 @@ import {
 import { getRootVariableName } from '../EventsSheet/ParameterFields/VariableField';
 import { getNodeIdFromVariableName } from './VariableToTreeNodeHandling';
 import useValueWithInit from '../Utils/UseRefInitHook';
+import { c3DefaultName, C3_DEFAULT_NAMES } from '../Utils/C3Language'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -154,7 +155,7 @@ const ObjectGroupVariablesDialog = ({
       groupVariablesContainer,
       initiallySelectedVariableName
         ? getRootVariableName(initiallySelectedVariableName)
-        : 'Variable',
+        : c3DefaultName(C3_DEFAULT_NAMES.variable), // c3
       null,
       groupVariablesContainer.count(),
       null

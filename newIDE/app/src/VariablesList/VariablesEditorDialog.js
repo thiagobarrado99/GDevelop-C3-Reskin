@@ -18,6 +18,7 @@ import { ProjectScopedContainersAccessor } from '../InstructionOrExpression/Even
 import { insertInVariablesContainer } from '../Utils/VariablesUtils';
 import { getRootVariableName } from '../EventsSheet/ParameterFields/VariableField';
 import { getNodeIdFromVariableName } from './VariableToTreeNodeHandling';
+import { c3DefaultName, C3_DEFAULT_NAMES } from '../Utils/C3Language'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -127,7 +128,7 @@ const VariablesEditorDialog = ({
       variablesContainer,
       initiallySelectedVariable
         ? getRootVariableName(initiallySelectedVariable.variableName)
-        : 'Variable',
+        : c3DefaultName(C3_DEFAULT_NAMES.variable), // c3
       null,
       variablesContainer.count(),
       inheritedVariablesContainer,

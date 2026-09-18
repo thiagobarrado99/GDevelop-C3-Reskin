@@ -3,6 +3,7 @@ import React from 'react';
 import { ProjectScopedContainersAccessor } from '../InstructionOrExpression/EventsScope';
 import NewObjectGroupEditorDialog from './NewObjectGroupEditorDialog';
 import { C3_GLOBAL_BY_DEFAULT } from '../Utils/C3Objects'; // c3
+import { c3DefaultName, C3_DEFAULT_NAMES } from '../Utils/C3Language'; // c3
 import EditedObjectGroupEditorDialog, {
   type ObjectGroupEditorTab,
 } from './EditedObjectGroupEditorDialog';
@@ -76,7 +77,7 @@ const ObjectGroupEditorDialog = ({
           C3_GLOBAL_BY_DEFAULT &&
           !!globalObjectsContainer;
         const name = getValidatedObjectOrGroupName(
-          objectGroupName || 'Group',
+          objectGroupName || c3DefaultName(C3_DEFAULT_NAMES.group), // c3
           global
         );
         const objectGroupContainer =
