@@ -84,7 +84,7 @@ import GDevelopThemeContext from '../UI/Theme/GDevelopThemeContext';
 import { type GDevelopTheme } from '../UI/Theme';
 import { ExtensionStoreContext } from '../AssetStore/ExtensionStore/ExtensionStoreContext';
 import { type HTMLDataset } from '../Utils/HTMLDataset';
-import RouterContext from '../MainFrame/RouterContext';
+// c3: RouterContext import dropped with the Game Dashboard row.
 import {
   type MainMenuCallbacks,
   type BuildMainMenuProps,
@@ -101,7 +101,8 @@ export const getProjectManagerItemId = (identifier: string): string =>
 const gameSettingsRootFolderId = getProjectManagerItemId('game-settings');
 const c3ProjectRootId = getProjectManagerItemId('c3-project'); // c3
 const gamePropertiesItemId = getProjectManagerItemId('game-properties');
-const gameDashboardItemId = 'manage';
+// c3: the Game Dashboard row is gone (gd.games only); `gameDashboardItemId`
+// was 'manage'.
 const globalVariablesItemId = getProjectManagerItemId('global-variables');
 const gameResourcesItemId = getProjectManagerItemId('game-resources');
 export const scenesRootFolderId: string = getProjectManagerItemId('scenes');
@@ -520,7 +521,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
     const { isMobile } = useResponsiveWindowSize();
     const { showDeleteConfirmation } = useAlertDialog();
     const { fetchGames } = gamesList;
-    const { navigateToRoute } = React.useContext(RouterContext);
+    // c3: RouterContext no longer needed here (Game Dashboard row removed).
 
     const forceUpdateList = React.useCallback(
       () => {
@@ -578,28 +579,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       },
       [fetchGames, userId]
     );
-    const onOpenGamesDashboardDialog = React.useCallback(
-      () => {
-        if (!project) return;
-
-        navigateToRoute('games-dashboard', {
-          'game-id': project.getProjectUuid(),
-          'games-dashboard-tab': 'details',
-        });
-        onOpenHomePage();
-        toggleProjectManager();
-        // Refresh the games as it could have been modified using the game dashboard
-        // in the "Manage" tab from the home page.
-        fetchGames();
-      },
-      [
-        fetchGames,
-        navigateToRoute,
-        onOpenHomePage,
-        toggleProjectManager,
-        project,
-      ]
-    );
+    // c3: onOpenGamesDashboardDialog removed with the row.
 
     const [
       projectVariablesEditorOpen,
@@ -1128,20 +1108,26 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
 
     const getTreeViewData = React.useCallback(
       (i18n: I18nType): Array<TreeViewItem> => {
-        // c3: docked bar halves.
+        // c3: docked bar halves; no extensions / gameplay tests rows
+        // (Construct has none, the team does not use them).
         const c3TopRootIds = [
           c3ProjectRootId,
           scenesRootFolderId,
           externalEventsRootFolderId,
         ];
+        const c3HiddenRootIds = [
+          extensionsRootFolderId,
+          gameplayTestsRootFolderId,
+        ];
         const c3Filter = (items: Array<TreeViewItem>) =>
-          !c3Section
-            ? items
-            : items.filter(
-                item =>
-                  c3TopRootIds.includes(item.content.getId()) ===
+          items
+            .filter(item => !c3HiddenRootIds.includes(item.content.getId()))
+            .filter(
+              item =>
+                !c3Section ||
+                c3TopRootIds.includes(item.content.getId()) ===
                   (c3Section === 'top')
-              );
+            );
         return c3Filter(
           !project ||
             !sceneTreeViewItemProps ||
@@ -1369,14 +1355,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
                           'res/icons_default/project_resources_black.svg'
                         )
                       ),
-                      new LeafTreeViewItem(
-                        new ActionTreeViewItemContent(
-                          gameDashboardItemId,
-                          i18n._(t`Game Dashboard`),
-                          onOpenGamesDashboardDialog,
-                          'res/icons_default/graphs_black.svg'
-                        )
-                      ),
+                      // c3: no Game Dashboard row (gd.games only).
                     ];
                   },
                 },
@@ -1430,7 +1409,6 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
         externalEventsTreeViewItemProps,
         externalLayoutTreeViewItemProps,
         gameplayTestTreeViewItemProps,
-        onOpenGamesDashboardDialog,
         onOpenResources,
         openProjectProperties,
         openProjectVariables,

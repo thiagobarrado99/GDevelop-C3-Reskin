@@ -168,6 +168,7 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     [/^Cena sem título$/, 'Layout 1'],
     [/^Mostrar grade$/, 'Exibir grid'],
     [/^Configurações do jogo$/, 'Propriedades do projeto'],
+    [/^Recursos$/, 'Arquivos do projeto'],
     // Objects and families are project-wide by default (parity guide A6).
     [/^Objetos Globais$/, 'Tipos de objeto'],
     [/^Objetos da Cena$/, 'Tipos de objeto deste layout'],

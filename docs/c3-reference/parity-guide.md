@@ -68,7 +68,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `ProjectManager/index.js`: a first row `Novo projeto` (project name, project icon) whose click opens the properties dialog (`ProjectPropertiesDialog.js`) and whose context menu = `Propriedades · Variáveis globais · Recursos`. Rename `Configurações do jogo` → `Propriedades do projeto` (`reskinPtBr`). Clicking a layout row calls `onSelectLayout` → the layout editor (if open) sets its properties panel to "layout" mode (`SceneEditor/index.js` `_onSelectLayoutProperties`; the same thing the empty-canvas click does).
 - Check: click `Layout 1` row → Properties bar shows layout properties; root row opens the dialog.
 
-### B5. Extra project-bar rows
+### B5. Extra project-bar rows — done 2026-09-18 (`Extensões`, `Testes de jogabilidade`, `Painel do jogo` gone — `c3HiddenRootIds` in `ProjectManager/index.js`; `Recursos` → `Arquivos do projeto`; resources split by kind left for later)
 - `ProjectManager/index.js`: hide `Painel do jogo`, `Testes de jogabilidade` (`GameplayTestTreeViewItemContent.js`), `Extensões` (`ExtensionTreeViewItemContent.js`) under the existing classroom `hide*` flags or a `c3` constant; keep `Layouts externos` (used) but move it after `Camadas`; rename `Recursos` → `Arquivos do projeto`. Optional later: split resources by kind into `Sons · Música · Vídeos · Fontes · Arquivos` folders (`ResourcesList` filter by `resource.getKind()`).
 - Check: bar tree = Layouts · Folhas de eventos · Objetos · Famílias · Camadas · Layouts externos · Propriedades do projeto · Arquivos do projeto.
 
