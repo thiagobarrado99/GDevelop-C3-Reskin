@@ -1,8 +1,10 @@
 // @flow
 import * as PIXI from 'pixi.js-legacy';
+import { type InstancesEditorSettings } from './InstancesEditorSettings'; // c3
 
 type Props = {
   getLastCursorSceneCoordinates: () => [number, number] | null,
+  getInstancesEditorSettings?: () => InstancesEditorSettings, // c3: Construct's "Mouse · Active layer · Zoom" status bar
   width: number,
   height: number,
 };
@@ -11,6 +13,7 @@ export default class StatusBar {
   _width: number;
   _height: number;
   _getLastCursorSceneCoordinates: () => [number, number] | null;
+  _getInstancesEditorSettings: ?() => InstancesEditorSettings;
   // $FlowFixMe[value-as-type]
   _statusBarContainer: PIXI.Container;
   // $FlowFixMe[value-as-type]
@@ -18,14 +21,20 @@ export default class StatusBar {
   // $FlowFixMe[value-as-type]
   _statusBarText: PIXI.Text;
 
-  constructor({ getLastCursorSceneCoordinates, width, height }: Props) {
+  constructor({
+    getLastCursorSceneCoordinates,
+    getInstancesEditorSettings,
+    width,
+    height,
+  }: Props) {
     this._getLastCursorSceneCoordinates = getLastCursorSceneCoordinates;
+    this._getInstancesEditorSettings = getInstancesEditorSettings; // c3
     this._statusBarContainer = new PIXI.Container();
     this._statusBarContainer.alpha = 0.8;
     this._statusBarContainer.hitArea = new PIXI.Rectangle(0, 0, 0, 0);
     this._statusBarBackground = new PIXI.Graphics();
     this._statusBarText = new PIXI.Text('', {
-      fontSize: 15,
+      fontSize: getInstancesEditorSettings ? 12 : 15, // c3
       fill: 0xffffff,
       align: 'left',
     });
@@ -58,7 +67,16 @@ export default class StatusBar {
     const lastCursorSceneCoordinates = this._getLastCursorSceneCoordinates();
     if (!lastCursorSceneCoordinates) return;
     const [x, y] = lastCursorSceneCoordinates;
-    this._statusBarText.text = `${x.toFixed(0)};${y.toFixed(0)}`;
+    // c3: Construct's status bar text.
+    const settings = this._getInstancesEditorSettings
+      ? this._getInstancesEditorSettings()
+      : null;
+    this._statusBarText.text = settings
+      ? `Mouse: (${x.toFixed(0)}, ${y.toFixed(
+          0
+        )})   Layer: ${settings.selectedLayer ||
+          'Layer 0'}   Zoom: ${Math.round(settings.zoomFactor * 100)}%`
+      : `${x.toFixed(0)};${y.toFixed(0)}`;
     this._statusBarText.position.x = textXPosition;
     this._statusBarText.position.y = textYPosition;
 
@@ -76,13 +94,13 @@ export default class StatusBar {
     const statusBarHeight = this._statusBarText.height + textPadding * 2;
 
     this._statusBarBackground.clear();
-    this._statusBarBackground.beginFill(0x000000, 0.8);
+    this._statusBarBackground.beginFill(settings ? 0x303030 : 0x000000, 0.8); // c3
     this._statusBarBackground.drawRoundedRect(
       statusBarXPosition,
       statusBarYPosition,
       statusBarWidth,
       statusBarHeight,
-      borderRadius
+      settings ? 2 : borderRadius // c3
     );
     this._statusBarBackground.endFill();
   }

@@ -32,6 +32,15 @@ const reskinPtBr: { [string]: string } = {
   System: 'Sistema',
   'Add another condition': 'Adicionar outra condição',
   'Add another action': 'Adicionar outra ação',
+  'Insert new object': 'Inserir novo objeto',
+  'Instance variable': 'Variável de instância',
+  Effect: 'Efeito',
+  'Send to top of layer': 'Enviar para o topo da camada',
+  'Send to bottom of layer': 'Enviar para o fundo da camada',
+  Lock: 'Bloquear',
+  'Unlock all': 'Desbloquear tudo',
+  'Edit event sheet': 'Editar folha de eventos',
+  'Layout properties': 'Propriedades do layout',
   'Pick an object to create a new condition from:':
     'Escolha um objeto para criar uma condição a partir dele:',
   'Pick an object to create a new action from:':

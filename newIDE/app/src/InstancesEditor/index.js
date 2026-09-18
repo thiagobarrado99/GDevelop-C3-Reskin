@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import debounce from 'lodash/debounce';
 import panable, { type PanMoveEvent } from '../Utils/PixiSimpleGesture/pan';
+import { makeDoubleClickable } from './InstancesRenderer/PixiDoubleClickEvent'; // c3
 import KeyboardShortcuts, { MID_MOUSE_BUTTON } from '../UI/KeyboardShortcuts';
 import InstancesRenderer from './InstancesRenderer';
 import ViewPosition from './ViewPosition';
@@ -117,6 +118,7 @@ export type InstancesEditorPropsWithoutSizeAndScroll = {|
   onInstancesAdded: (instances: Array<gdInitialInstance>) => void,
   onInstancesSelected: (instances: Array<gdInitialInstance>) => void,
   onInstanceDoubleClicked: (instance: gdInitialInstance) => void,
+  onBackgroundDoubleClicked?: () => void, // c3: Construct's "Insert new object"
   onInstancesMoved: (instances: Array<gdInitialInstance>) => void,
   onInstancesResized: (instances: Array<gdInitialInstance>) => void,
   onInstancesRotated: (instances: Array<gdInitialInstance>) => void,
@@ -382,6 +384,11 @@ export default class InstancesEditor extends Component<Props, State> {
       this.props.height
     );
     panable(this.backgroundArea);
+    makeDoubleClickable(this.backgroundArea); // c3
+    this.backgroundArea.addEventListener('doubleclick', () => {
+      if (this.props.onBackgroundDoubleClicked)
+        this.props.onBackgroundDoubleClicked();
+    });
     this.backgroundArea.addEventListener('mousedown', event =>
       this._onDownBackground(event.data.global.x, event.data.global.y, event)
     );
@@ -641,6 +648,7 @@ export default class InstancesEditor extends Component<Props, State> {
       width: this.props.width,
       height: this.props.height,
       getLastCursorSceneCoordinates: this.getLastCursorSceneCoordinates,
+      getInstancesEditorSettings: () => this.props.instancesEditorSettings, // c3
     });
     this.profilerBar = new ProfilerBar();
 

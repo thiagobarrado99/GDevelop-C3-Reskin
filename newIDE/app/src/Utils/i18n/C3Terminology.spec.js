@@ -46,6 +46,8 @@ describe('applyC3Terminology', () => {
     expect(pt._('Link external events')).toBe('Incluir folha de eventos');
     expect(pt._('Done')).toBe('Pronto');
     expect(pt._('System')).toBe('Sistema');
+    expect(pt._('Insert new object')).toBe('Inserir novo objeto');
+    expect(pt._('Unlock all')).toBe('Desbloquear tudo');
   });
 
   it('rewrites English terms keeping capitalisation', () => {

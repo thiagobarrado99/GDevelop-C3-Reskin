@@ -144,6 +144,7 @@ export type SceneEditorsDisplayProps = {|
   onInstancesAdded: (Array<gdInitialInstance>) => void,
   onInstancesSelected: (Array<gdInitialInstance>) => void,
   onInstanceDoubleClicked: gdInitialInstance => void,
+  onBackgroundDoubleClicked?: () => void, // c3
   onInstancesMoved: (Array<gdInitialInstance>) => void,
   onInstancesResized: (Array<gdInitialInstance>) => void,
   onInstancesRotated: (Array<gdInitialInstance>) => void,

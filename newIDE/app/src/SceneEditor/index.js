@@ -28,7 +28,6 @@ import Window from '../Utils/Window';
 import { ResponsiveWindowMeasurer } from '../UI/Responsive/ResponsiveWindowMeasurer';
 import DismissableInfoBar from '../UI/Messages/DismissableInfoBar';
 import ContextMenu, { type ContextMenuInterface } from '../UI/Menu/ContextMenu';
-import { shortenString } from '../Utils/StringHelpers';
 import getObjectByName from '../Utils/GetObjectByName';
 import UseSceneEditorCommands from './UseSceneEditorCommands';
 import { type InstancesEditorSettings } from '../InstancesEditor/InstancesEditorSettings';
@@ -2423,14 +2422,58 @@ export default class SceneEditor extends React.Component<Props, State> {
 
     return [
       {
-        label: i18n._(t`Open scene events`),
+        label: i18n._(t`Edit event sheet`), // c3
         click: () => this.props.onOpenEvents(layout ? layout.getName() : ''),
       },
       {
-        label: i18n._(t`Open scene properties`),
+        label: i18n._(t`Layout properties`), // c3
         click: () => this.openSceneProperties(true),
       },
     ].filter(Boolean);
+  };
+
+  // c3: Construct's Lock submenu - locked instances can't be selected or
+  // moved until "Unlock all".
+  getContextMenuLockItems = (i18n: I18nType): any => {
+    const selectedInstances = this.instancesSelection.getSelectedInstances();
+    const setLocked = (
+      instances: Array<gdInitialInstance>,
+      locked: boolean
+    ) => {
+      instances.forEach(instance => {
+        instance.setLocked(locked);
+        instance.setSealed(locked);
+      });
+      if (locked) this.instancesSelection.clearSelection();
+      this._onInstancesModified(instances);
+      this.forceUpdateInstancesList();
+      this.forceUpdatePropertiesEditor();
+    };
+    return {
+      label: i18n._(t`Lock`),
+      submenu: [
+        {
+          label: i18n._(t`Lock`),
+          enabled: selectedInstances.length > 0,
+          click: () => setLocked(selectedInstances, true),
+        },
+        {
+          label: i18n._(t`Unlock all`),
+          click: () => {
+            const instances = [];
+            const functor = new gd.InitialInstanceJSFunctor();
+            // $FlowFixMe[cannot-write]
+            functor.invoke = instancePtr =>
+              // $FlowFixMe[incompatible-type]
+              instances.push(gd.wrapPointer(instancePtr, gd.InitialInstance));
+            // $FlowFixMe[incompatible-type]
+            this.props.initialInstances.iterateOverInstances(functor);
+            functor.delete();
+            setLocked(instances, false);
+          },
+        },
+      ],
+    };
   };
 
   getContextMenuInstancesWiseItems = (i18n: I18nType): any => {
@@ -2595,29 +2638,35 @@ export default class SceneEditor extends React.Component<Props, State> {
   };
 
   buildContextMenu = (i18n: I18nType, options: any): any => {
-    if (
-      options.ignoreSelectedObjectsForContextMenu ||
-      !this.instancesSelection.hasSelectedInstances()
-    ) {
+    // c3: Construct's layout context menus - empty space: Insert new object ·
+    // View ▸ · Edit event sheet · Paste; instance: Edit · Insert new object ·
+    // Add ▸ · Z Order ▸ · Lock ▸ · View ▸ · Cut · Copy · Paste · Delete.
+    const hasSelectedInstances = this.instancesSelection.hasSelectedInstances();
+    const insertItem = {
+      label: i18n._(t`Insert new object`),
+      click: () => this._createNewObjectAndInstanceUnderCursor(),
+    };
+    const viewItem = {
+      label: i18n._(t`View`),
+      submenu: this.getContextMenuZoomItems(i18n),
+    };
+    const pasteItem = {
+      label: i18n._(t`Paste`),
+      click: () => this.paste(),
+      enabled: Clipboard.has(INSTANCES_CLIPBOARD_KIND),
+      accelerator: 'CmdOrCtrl+V',
+    };
+    if (options.ignoreSelectedObjectsForContextMenu || !hasSelectedInstances) {
       return [
-        {
-          label: i18n._(t`Paste`),
-          click: () => this.paste(),
-          enabled: Clipboard.has(INSTANCES_CLIPBOARD_KIND),
-          accelerator: 'CmdOrCtrl+V',
-        },
-        { type: 'separator' },
-        {
-          label: i18n._(t`Insert new...`),
-          click: () => this._createNewObjectAndInstanceUnderCursor(),
-        },
-        { type: 'separator' },
-        ...this.getContextMenuZoomItems(i18n),
-        { type: 'separator' },
+        insertItem,
+        viewItem,
         ...this.getContextMenuLayoutItems(i18n),
+        pasteItem,
       ];
     }
     const instances = this.instancesSelection.getSelectedInstances();
+    const editItems: Array<any> = [];
+    const addItems: Array<any> = [];
     if (
       instances.length === 1 ||
       uniq(instances.map(instance => instance.getObjectName())).length === 1
@@ -2646,81 +2695,134 @@ export default class SceneEditor extends React.Component<Props, State> {
           ? project.getEventsFunctionsExtension(objectExtensionName)
           : null;
 
-      return [
-        ...this.getContextMenuInstancesWiseItems(i18n),
-        { type: 'separator' },
-        {
-          label: i18n._(t`Edit object ${shortenString(objectName, 14)}`),
-          click: () =>
-            this.editObjectByName({
-              objectName,
-              initialTab: 'properties',
-              shouldSelectTheObject: true,
-            }),
-        },
-        {
-          label: i18n._(t`Edit object variables`),
-          click: () =>
-            this.editObjectByName({
-              objectName,
-              initialTab: 'variables',
-              shouldSelectTheObject: true,
-            }),
-        },
-        {
-          label: i18n._(t`Edit behaviors`),
-          click: () =>
-            this.editObjectByName({
-              objectName,
-              initialTab: 'behaviors',
-              shouldSelectTheObject: true,
-            }),
-        },
-        objectMetadata
-          ? {
-              label: i18n._(t`Edit effects`),
-              click: () =>
-                this.editObjectByName({
-                  objectName,
-                  initialTab: 'effects',
-                  shouldSelectTheObject: true,
-                }),
-              enabled: objectMetadata.hasDefaultBehavior(
+      editItems.push({
+        label: i18n._(t`Edit`),
+        click: () =>
+          this.editObjectByName({
+            objectName,
+            initialTab: 'properties',
+            shouldSelectTheObject: true,
+          }),
+      });
+      if (object && project.hasEventsBasedObject(object.getType())) {
+        editItems.push({
+          label: i18n._(t`Edit children`),
+          enabled: isVariantEditable(
+            gd.asCustomObjectConfiguration(object.getConfiguration()),
+            project.getEventsBasedObject(object.getType()),
+            customObjectExtension
+          ),
+          click: () => {
+            const customObjectConfiguration = gd.asCustomObjectConfiguration(
+              object.getConfiguration()
+            );
+            this.props.onOpenEventBasedObjectVariantEditor(
+              gd.PlatformExtension.getExtensionFromFullObjectType(
+                object.getType()
+              ),
+              gd.PlatformExtension.getObjectNameFromFullObjectType(
+                object.getType()
+              ),
+              customObjectConfiguration.getVariantName()
+            );
+          },
+        });
+      }
+      addItems.push({
+        label: i18n._(t`Add`),
+        submenu: [
+          {
+            label: i18n._(t`Instance variable`),
+            click: () =>
+              this.editObjectByName({
+                objectName,
+                initialTab: 'variables',
+                shouldSelectTheObject: true,
+              }),
+          },
+          {
+            label: i18n._(t`Behavior`),
+            click: () =>
+              this.editObjectByName({
+                objectName,
+                initialTab: 'behaviors',
+                shouldSelectTheObject: true,
+              }),
+          },
+          {
+            label: i18n._(t`Effect`),
+            enabled:
+              !!objectMetadata &&
+              objectMetadata.hasDefaultBehavior(
                 'EffectCapability::EffectBehavior'
               ),
-            }
-          : null,
-        object && project.hasEventsBasedObject(object.getType())
-          ? {
-              label: i18n._(t`Edit children`),
-              enabled: isVariantEditable(
-                gd.asCustomObjectConfiguration(object.getConfiguration()),
-                project.getEventsBasedObject(object.getType()),
-                customObjectExtension
-              ),
-              click: () => {
-                const customObjectConfiguration = gd.asCustomObjectConfiguration(
-                  object.getConfiguration()
-                );
-                this.props.onOpenEventBasedObjectVariantEditor(
-                  gd.PlatformExtension.getExtensionFromFullObjectType(
-                    object.getType()
-                  ),
-                  gd.PlatformExtension.getObjectNameFromFullObjectType(
-                    object.getType()
-                  ),
-                  customObjectConfiguration.getVariantName()
-                );
-              },
-            }
-          : null,
-        { type: 'separator' },
-        ...this.getContextMenuLayoutItems(i18n),
-      ].filter(Boolean);
+            click: () =>
+              this.editObjectByName({
+                objectName,
+                initialTab: 'effects',
+                shouldSelectTheObject: true,
+              }),
+          },
+        ],
+      });
     }
     return [
-      ...this.getContextMenuInstancesWiseItems(i18n),
+      ...editItems,
+      insertItem,
+      ...addItems,
+      {
+        label: i18n._(t`Z Order`),
+        submenu: [
+          {
+            label: i18n._(t`Send to top of layer`),
+            click: () => this._onMoveInstancesZOrder('front'),
+          },
+          {
+            label: i18n._(t`Send to bottom of layer`),
+            click: () => this._onMoveInstancesZOrder('back'),
+          },
+        ],
+      },
+      this.getContextMenuLockItems(i18n),
+      viewItem,
       { type: 'separator' },
+      {
+        label: i18n._(t`Cut`),
+        click: () => this.cutSelection(),
+        accelerator: 'CmdOrCtrl+X',
+      },
+      {
+        label: i18n._(t`Copy`),
+        click: () => this.copySelection(),
+        accelerator: 'CmdOrCtrl+C',
+      },
+      pasteItem,
+      {
+        label: i18n._(t`Duplicate`),
+        click: () => this.duplicateSelection(),
+        accelerator: 'CmdOrCtrl+D',
+      },
+      {
+        label: i18n._(t`Delete`),
+        click: () => this.deleteSelection(),
+        accelerator: 'Delete',
+      },
+      { type: 'separator' },
+      {
+        label: i18n._(t`Extract`),
+        submenu: [
+          {
+            label: i18n._(t`Extract as a custom object`),
+            click: () =>
+              this.setState({ extractAsCustomObjectDialogOpen: true }),
+          },
+          this.props.layout && {
+            label: i18n._(t`Extract as an external layout`),
+            click: () =>
+              this.setState({ extractAsExternalLayoutDialogOpen: true }),
+          },
+        ].filter(Boolean),
+      },
       ...this.getContextMenuLayoutItems(i18n),
     ];
   };
@@ -3256,6 +3358,9 @@ export default class SceneEditor extends React.Component<Props, State> {
                     onInstancesAdded={this._onInstancesAddedAndSendToEditor3D}
                     onInstancesSelected={this._onInstancesSelected}
                     onInstanceDoubleClicked={this._onInstanceDoubleClicked}
+                    onBackgroundDoubleClicked={
+                      this._createNewObjectAndInstanceUnderCursor // c3
+                    }
                     onInstancesMoved={this._onInstancesMovedAndSendToEditor3D}
                     onInstancesResized={this._onInstancesResized}
                     onInstancesRotated={this._onInstancesRotated}

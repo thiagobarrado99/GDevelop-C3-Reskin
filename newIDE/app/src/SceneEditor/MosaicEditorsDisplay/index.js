@@ -455,6 +455,7 @@ const MosaicEditorsDisplay: React.ComponentType<{
                   onInstancesAdded={props.onInstancesAdded}
                   onInstancesSelected={props.onInstancesSelected}
                   onInstanceDoubleClicked={props.onInstanceDoubleClicked}
+                  onBackgroundDoubleClicked={props.onBackgroundDoubleClicked} // c3
                   onInstancesMoved={props.onInstancesMoved}
                   onInstancesResized={props.onInstancesResized}
                   onInstancesRotated={props.onInstancesRotated}
