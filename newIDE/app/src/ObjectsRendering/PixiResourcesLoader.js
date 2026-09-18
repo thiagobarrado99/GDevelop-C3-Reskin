@@ -109,6 +109,8 @@ const loadedOrLoadingPixiTextures = (() => {
 })();
 
 const invalidTexture = PIXI.Texture.from('res/invalid_texture.png');
+// c3: a sprite with no animation yet is a blank 250x250 image, as in Construct.
+const emptySpriteTexture = PIXI.Texture.from('res/empty_sprite.png');
 const loadingTexture = PIXI.Texture.from(
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAAA1BMVEXX19f5cgrAAAAAAXRSTlMz/za5cAAAAApJREFUCNdjQAMAABAAAbSqgB8AAAAASUVORK5CYII='
 );
@@ -1388,6 +1390,11 @@ export default class PixiResourcesLoader {
 
   static getInvalidPIXITexture(): any {
     return invalidTexture;
+  }
+
+  // c3: placeholder for a sprite without animations (transparent).
+  static getEmptySpritePIXITexture(): any {
+    return emptySpriteTexture;
   }
 
   static getLoadingPIXITexture(): any {

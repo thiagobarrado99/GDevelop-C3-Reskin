@@ -44,7 +44,7 @@ export default class RenderedSpriteInstance extends RenderedInstance {
 
     //Setup the PIXI object:
     this._pixiObject = new PIXI.Sprite(
-      this._pixiResourcesLoader.getInvalidPIXITexture()
+      this._pixiResourcesLoader.getEmptySpritePIXITexture() // c3: blank, not the "G" placeholder
     );
     this._pixiContainer.addChild(this._pixiObject);
     this.updatePIXITextureAndSprite();
@@ -187,7 +187,7 @@ export default class RenderedSpriteInstance extends RenderedInstance {
         !this._pixiObject.texture.orig ||
         !this._pixiObject.texture.baseTexture
       ) {
-        this._pixiObject.texture = this._pixiResourcesLoader.getInvalidPIXITexture();
+        this._pixiObject.texture = this._pixiResourcesLoader.getEmptySpritePIXITexture(); // c3
       }
       return;
     }
