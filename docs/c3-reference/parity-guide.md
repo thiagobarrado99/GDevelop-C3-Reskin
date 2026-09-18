@@ -52,7 +52,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 
 ## Phase B — "Reads differently" (Medium)
 
-### B1. `Adicionar evento` opens the condition picker
+### B1. `Adicionar evento` opens the condition picker — done 2026-09-18 (`EventsSheet/index.js` `_c3PendingEvent`: every new standard event selects itself and opens the condition picker; cancel with no condition/action undoes the add)
 - `EventsSheet/index.js` `addNewEvent` / the `EmptyPlaceholder` `add-event-button` (`EventsTree/index.js` line ~1125) and `Add…▸ Evento` (`EventsTree/BottomButtons.js` `makeMenuTemplateBuilderForEvents`): after inserting the standard event, select it and open the instruction editor for a new condition (the same call the `C` shortcut makes — `ADD_CONDITION` in `KeyboardShortcuts/DefaultShortcuts.js`). Cancelling the picker keeps the empty event (Construct deletes it — match that: remove the event on cancel when it has no conditions/actions).
 - Check: click `Adicionar evento` → picker opens; `Pronto` → event with the condition; cancel → no event left.
 

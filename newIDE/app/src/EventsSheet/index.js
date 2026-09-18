@@ -317,6 +317,9 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
 > {
   _eventsTree: ?EventsTreeInterface;
   _eventSearcher: ?EventsSearcher;
+  // c3: the standard event just added, removed again if its condition picker
+  // is cancelled (Construct leaves no empty event behind).
+  _c3PendingEvent: ?gdBaseEvent = null;
   _searchPanel: ?SearchPanelInterface;
   // $FlowFixMe[missing-local-annot]
   _containerDiv = (React.createRef<HTMLDivElement>(): React$RefObject<HTMLDivElement | null>);
@@ -835,6 +838,21 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
         );
 
         const screenType = this.props.screenType;
+        // c3: a new standard event opens the condition picker at once.
+        if (
+          screenType !== 'touch' &&
+          type === 'BuiltinCommonInstructions::Standard'
+        ) {
+          const [eventContext] = eventsTree.getEventContextAtRowIndexes([
+            eventsTree.getEventRow(newEvent),
+          ]);
+          if (eventContext) {
+            this._c3PendingEvent = newEvent;
+            this.setState({ selection: selectEvents([eventContext]) }, () =>
+              this._addInstructionToSelectedEvent(true)
+            );
+          }
+        }
         if (
           screenType !== 'touch' &&
           (type === 'BuiltinCommonInstructions::Comment' ||
@@ -2605,8 +2623,27 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
             }
             anchorEl={this.state.inlineInstructionEditorAnchorEl}
             open={true}
-            onCancel={() => this.closeInstructionEditor()}
+            onCancel={() => {
+              // c3: cancelling the picker of a just-added event removes it.
+              const { eventContext } = this.state.editedInstruction;
+              const pendingEvent = this._c3PendingEvent;
+              this._c3PendingEvent = null;
+              this.closeInstructionEditor();
+              const lists =
+                eventContext && getEventInstructionsLists(eventContext.event);
+              if (
+                pendingEvent &&
+                eventContext &&
+                eventContext.event === pendingEvent &&
+                lists &&
+                lists.conditions.size() === 0 &&
+                lists.actions.size() === 0
+              ) {
+                this.undo();
+              }
+            }}
             onSubmit={() => {
+              this._c3PendingEvent = null; // c3
               const {
                 instrsList,
                 instruction,
