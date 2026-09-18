@@ -167,6 +167,7 @@ const rulesByLanguage: { [string]: Array<Rule> } = {
     // Whole-string labels, as named in Construct 3 (pt-BR).
     [/^Cena sem título$/, 'Layout 1'],
     [/^Mostrar grade$/, 'Exibir grid'],
+    [/^Configurações do jogo$/, 'Propriedades do projeto'],
     // Objects and families are project-wide by default (parity guide A6).
     [/^Objetos Globais$/, 'Tipos de objeto'],
     [/^Objetos da Cena$/, 'Tipos de objeto deste layout'],

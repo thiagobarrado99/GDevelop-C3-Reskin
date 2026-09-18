@@ -3287,8 +3287,20 @@ const MainFrame = (props: Props): React.MixedElement => {
           }
         ),
       }));
+      // c3: a layout row click shows the layout's properties, like Construct.
+      if (options.focusWhenOpened === 'scene') {
+        const opened = getEditorTabOpenedWithKey(
+          editorTabs || state.editorTabs,
+          `layout ${name}`
+        );
+        const editorRef = opened && opened.editorTab.editorRef;
+        // $FlowFixMe[prop-missing] - only the scene editor container has it.
+        const sceneEditor = editorRef && editorRef.editor;
+        // $FlowFixMe[not-a-function]
+        if (sceneEditor && sceneEditor.deselectAll) sceneEditor.deselectAll();
+      }
     },
-    [setState, getEditorsTabStateWithScene]
+    [setState, getEditorsTabStateWithScene, state.editorTabs]
   );
 
   const openExternalEvents = React.useCallback(
@@ -6182,7 +6194,7 @@ const MainFrame = (props: Props): React.MixedElement => {
             {c3ProjectBarDocked ? (
               <div className="c3-project-bar">
                 <div className="c3-project-bar-title">
-                  <span>{currentProject ? currentProject.getName() : ''}</span>
+                  <span>{i18n._(t`Project`)}</span>
                   <IconButton
                     size="small"
                     onClick={() => setC3ProjectBarShown(false)}

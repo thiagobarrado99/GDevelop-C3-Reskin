@@ -99,6 +99,7 @@ export const getProjectManagerItemId = (identifier: string): string =>
   `project-manager-tab-${identifier}`;
 
 const gameSettingsRootFolderId = getProjectManagerItemId('game-settings');
+const c3ProjectRootId = getProjectManagerItemId('c3-project'); // c3
 const gamePropertiesItemId = getProjectManagerItemId('game-properties');
 const gameDashboardItemId = 'manage';
 const globalVariablesItemId = getProjectManagerItemId('global-variables');
@@ -310,13 +311,15 @@ class ActionTreeViewItemContent implements TreeViewItemContent {
     id: string,
     label: string | React.Node,
     onClickCallback: () => void,
-    thumbnail?: string
+    thumbnail?: string,
+    menuTemplate?: Array<MenuItemTemplate> // c3
   ) {
     this.id = id;
     this.label = label;
     this.onClickCallback = onClickCallback;
     this.thumbnail = thumbnail;
-    this.buildMenuTemplateFunction = (i18n: I18nType, index: number) => [];
+    this.buildMenuTemplateFunction = (i18n: I18nType, index: number) =>
+      menuTemplate || [];
   }
 
   getName(): string | React.Node {
@@ -1126,7 +1129,11 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
     const getTreeViewData = React.useCallback(
       (i18n: I18nType): Array<TreeViewItem> => {
         // c3: docked bar halves.
-        const c3TopRootIds = [scenesRootFolderId, externalEventsRootFolderId];
+        const c3TopRootIds = [
+          c3ProjectRootId,
+          scenesRootFolderId,
+          externalEventsRootFolderId,
+        ];
         const c3Filter = (items: Array<TreeViewItem>) =>
           !c3Section
             ? items
@@ -1144,7 +1151,27 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
             !gameplayTestTreeViewItemProps
             ? []
             : [
-                // c3: Construct order - layouts, event sheets, then the rest.
+                // c3: Construct order - the project row, layouts, event
+                // sheets, then the rest.
+                new LeafTreeViewItem(
+                  new ActionTreeViewItemContent(
+                    c3ProjectRootId,
+                    project.getName(),
+                    openProjectProperties,
+                    'res/icons_default/properties_black.svg',
+                    [
+                      {
+                        label: i18n._(t`Properties`),
+                        click: openProjectProperties,
+                      },
+                      {
+                        label: i18n._(t`Global variables`),
+                        click: openProjectVariables,
+                      },
+                      { label: i18n._(t`Resources`), click: onOpenResources },
+                    ]
+                  )
+                ),
                 {
                   isRoot: true,
                   content: new LabelTreeViewItemContent(
