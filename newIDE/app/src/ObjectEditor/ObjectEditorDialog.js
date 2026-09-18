@@ -2,7 +2,7 @@
 import { Trans } from '@lingui/macro';
 import { t } from '@lingui/macro';
 import * as React from 'react';
-import FlatButton from '../UI/FlatButton';
+// c3: FlatButton (Cancel) no longer used.
 import ObjectsEditorService from './ObjectsEditorService';
 import Dialog, { DialogPrimaryButton } from '../UI/Dialog';
 import HelpButton from '../UI/HelpButton';
@@ -254,15 +254,12 @@ const InnerDialog = (props: InnerDialogProps) => {
     <Dialog
       title={<Trans>Edit {objectName}</Trans>}
       key={object && object.ptr}
+      // c3: a window like Construct's - closing (✕, Esc, Fechar) keeps the
+      // changes, no cancel prompt.
       actions={[
-        <FlatButton
-          key="cancel"
-          label={<Trans>Cancel</Trans>}
-          onClick={onCancelChanges}
-        />,
         <DialogPrimaryButton
           key="apply"
-          label={<Trans>Apply</Trans>}
+          label={<Trans>Close</Trans>}
           id="apply-button"
           primary
           onClick={onApply}
@@ -275,9 +272,10 @@ const InnerDialog = (props: InnerDialogProps) => {
           {...props.hotReloadPreviewButtonProps}
         />,
       ]}
-      onRequestClose={onCancelChanges}
+      onRequestClose={onApply} // c3
       onApply={onApply}
       open={props.open}
+      maxWidth="md" // c3
       fullHeight
       flexBody
       fixedContent={

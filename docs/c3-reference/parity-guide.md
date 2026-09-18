@@ -76,7 +76,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `InstancesEditor/CompactInstancePropertiesEditor/index.js`: replace the icon-only X/Y/Z/W/H fields with label rows `Posição X,Y · Tamanho W,H · Ângulo · Opacidade · Camada · Índice Z`; behaviours unfolded (B3); `Editar objeto` becomes `Animações → Editar` for sprites (opens the object editor on the animations tab — already wired) plus a `Global ☐` toggle row that calls the existing "Definir como objeto global" action (`ObjectsList` `setAsGlobalObject`). `UID` = instance `getPersistentUuid()` read-only.
 - Check: screenshot vs `cmp/c3-*-instance*.png`.
 
-### B7. Object editor as a window, no cancel confirmation
+### B7. Object editor as a window, no cancel confirmation — done 2026-09-18 (`ObjectEditorDialog.js`: `maxWidth="md"`, ✕/Esc/`Fechar` all apply, no Cancel button)
 - `ObjectEditor/ObjectEditorDialog.js`: not `fullScreen`; `maxWidth="md"`; Esc/✕ = apply (drop the "Cancelar as alterações?" prompt under `// c3:` — the changes are already in the undo stack); keep `Aplicar` as the primary button labelled `Fechar`. Behaviour properties stay in the dialog (Construct puts them in the bar; the instance panel already edits through).
 - Check: open `Editar objeto`, press Esc → closes, no prompt, changes kept.
 
