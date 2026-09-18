@@ -66,6 +66,7 @@ import type { MessageDescriptor } from '../Utils/i18n/MessageDescriptor.flow';
 import type { EventsScope } from '../InstructionOrExpression/EventsScope';
 import { type InstallAssetOutput } from '../AssetStore/InstallAsset';
 import { exceptionallyGuardAgainstDeadObject } from '../Utils/IsNullPtr';
+import { getC3ObjectDefaultName } from '../Utils/C3Objects'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -638,12 +639,15 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
 
     const addObject = React.useCallback(
       (objectType: string) => {
-        const defaultName = project.hasEventsBasedObject(objectType)
-          ? 'New' +
-            (project.getEventsBasedObject(objectType).getDefaultName() ||
-              project.getEventsBasedObject(objectType).getName())
-          : // $FlowFixMe[invalid-computed-prop]
-            objectTypeToDefaultName[objectType] || 'NewObject';
+        const defaultName =
+          // c3: Construct names new objects after their type.
+          getC3ObjectDefaultName(objectType) ||
+          (project.hasEventsBasedObject(objectType)
+            ? 'New' +
+              (project.getEventsBasedObject(objectType).getDefaultName() ||
+                project.getEventsBasedObject(objectType).getName())
+            : // $FlowFixMe[invalid-computed-prop]
+              objectTypeToDefaultName[objectType] || 'NewObject');
         const name = newNameGenerator(
           defaultName,
           name =>

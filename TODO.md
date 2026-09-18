@@ -117,6 +117,7 @@ Every object type and behaviour shown in the add dialogs has a flat C3-style ico
 - 2026-09-18 (late night): Phase 3 started — Construct's add-condition/action steps (object tiles with System first, two-column list, parameters with Back/Pronto), margin numbers, cream selection, green sheet links, instruction context menu and Add… menu in Construct's order.
 - 2026-09-19: Phase 4 layout view — Construct context menus, double-click inserts an object, status bar, properties panel section order. `C3-Icons/` stays local (user decision, `.git/info/exclude`).
 - 2026-09-19 (later): docked project bar (Phase 2 leftover closed), Construct event sheet keys + new add-condition/action commands, hovered-item description in the picker, event context menu order, tutorial banners hidden, README banner.
+- 2026-09-20 (later): behaviour and new-object default names follow the UI language (`Plataforma`, `Texto`…, `Utils/C3Language.js`); any add path gets the tile name; tiles fit two-line names.
 - 2026-09-20 (evening): the 122 GDevelop-only icons drawn by the user are in too — every tile has a flat icon now.
 - 2026-09-20 (later): C3 icons applied (committed under `public/res/c3-icons`), bar sections fixed (readable title, collapsible with chevrons); missing-icon list above.
 - 2026-09-20: project bar rework shipped (layout event sheet rows, Objects/Families/Layers docked in the bar with a scrollable column, GDevelop extras as tiles).

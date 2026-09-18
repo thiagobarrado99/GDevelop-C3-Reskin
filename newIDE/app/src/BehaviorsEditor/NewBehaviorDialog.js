@@ -26,7 +26,7 @@ import {
   TRIVIAL_FIRST_EXTENSION,
 } from '../Utils/GDevelopServices/Badge';
 import { mapVector } from '../Utils/MapFor';
-import { getC3Behavior } from '../Utils/C3Behaviors'; // c3
+import { getC3Behavior, c3DefaultName } from '../Utils/C3Behaviors'; // c3
 import { C3_EXTENSIONS } from '../Utils/C3Extensions'; // c3
 import Add from '../UI/CustomSvgIcons/Add';
 import { useResponsiveWindowSize } from '../UI/Responsive/ResponsiveWindowMeasurer';
@@ -211,7 +211,7 @@ export default function NewBehaviorDialog({
     const tile = getC3Behavior(c3TileId); // c3: Construct tile → name + presets
     return onChoose(
       behaviorType,
-      tile ? tile.defaultName : behaviorMetadata.getDefaultName(),
+      tile ? c3DefaultName(tile) : behaviorMetadata.getDefaultName(),
       tile ? tile.presets : undefined
     );
   };

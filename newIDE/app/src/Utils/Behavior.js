@@ -1,7 +1,7 @@
 // @flow
 import newNameGenerator from './NewNameGenerator';
 import Window from './Window';
-import { C3_BEHAVIORS } from './C3Behaviors'; // c3
+import { C3_BEHAVIORS, c3DefaultName } from './C3Behaviors'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -40,7 +40,7 @@ export const addBehaviorToObject = (
     type
   ).getDefaultName();
   if (c3Tile && defaultName === gdDefaultName) {
-    defaultName = c3Tile.defaultName;
+    defaultName = c3DefaultName(c3Tile);
     if (!presets) presets = c3Tile.presets;
   }
   const behaviorNamesBefore = object.getAllBehaviorNames().toJSArray();
@@ -75,8 +75,8 @@ export const addBehaviorToObject = (
       const tile = C3_BEHAVIORS.find(
         tile => tile.type === object.getBehavior(behaviorName).getTypeName()
       );
-      if (!tile || tile.defaultName === behaviorName) return;
-      const newName = newNameGenerator(tile.defaultName, name =>
+      if (!tile || c3DefaultName(tile) === behaviorName) return;
+      const newName = newNameGenerator(c3DefaultName(tile), name =>
         object.hasBehaviorNamed(name)
       );
       object.renameBehavior(behaviorName, newName);

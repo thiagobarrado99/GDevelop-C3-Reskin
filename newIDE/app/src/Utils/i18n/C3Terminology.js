@@ -1,6 +1,7 @@
 // @flow
 import { type I18n } from '@lingui/core';
 import { APP_NAME } from '../C3Brand';
+import { setC3Language } from '../C3Language';
 
 // c3: make the editor speak Construct 3 vocabulary (see the terminology map
 // in CLAUDE.md) by rewriting translated strings at runtime, so the
@@ -261,6 +262,7 @@ const SHIELDED = new RegExp(SHIELD + '(\\d+)' + SHIELD, 'g');
  * user content is never rewritten.
  */
 export const applyC3Terminology = (i18n: I18n) => {
+  setC3Language(i18n.language);
   const rules = [
     ...(rulesByLanguage[i18n.language.replace('-', '_')] || []),
     ...brandRules,
