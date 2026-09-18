@@ -481,6 +481,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
       onRenameEventsFunctionsExtension,
       onRenameGameplayTest,
       onOpenLayout,
+      onPreviewLayout, // c3
       onOpenExternalEvents,
       onOpenExternalLayout,
       onOpenEventsFunctionsExtension,
@@ -939,6 +940,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
               onDeleteLayout,
               onRenameLayout,
               onOpenLayout,
+              onPreviewLayout, // c3
               onOpenLayoutProperties,
               openSceneVariables,
             }
@@ -957,6 +959,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
         onDeleteLayout,
         onRenameLayout,
         onOpenLayout,
+        onPreviewLayout,
         onOpenLayoutProperties,
         openSceneVariables,
       ]

@@ -2815,6 +2815,7 @@ const MainFrame = (props: Props): React.MixedElement => {
       forceDiagnosticReport,
       launchCaptureOptions,
       isForInGameEdition,
+      c3LayoutName, // c3
     }: LaunchPreviewOptions) => {
       if (!currentProject) return;
       if (currentProject.getLayoutsCount() === 0) return;
@@ -2894,12 +2895,17 @@ const MainFrame = (props: Props): React.MixedElement => {
 
       notifyPreviewOrExportWillStart(state.editorTabs);
 
-      const sceneName = isForInGameEdition
+      // c3: "Preview layout" from the project bar previews that layout.
+      const sceneName = c3LayoutName
+        ? c3LayoutName
+        : isForInGameEdition
         ? isForInGameEdition.forcedSceneName
         : previewState.isPreviewOverriden
         ? previewState.overridenPreviewLayoutName
         : previewState.previewLayoutName;
-      const externalLayoutName = isForInGameEdition
+      const externalLayoutName = c3LayoutName
+        ? null
+        : isForInGameEdition
         ? isForInGameEdition.forcedExternalLayoutName
         : previewState.isPreviewOverriden
         ? previewState.overridenPreviewExternalLayoutName
@@ -6011,6 +6017,9 @@ const MainFrame = (props: Props): React.MixedElement => {
       onSaveProjectProperties={onSaveProjectProperties}
       onOpenExternalEvents={openExternalEvents}
       onOpenLayout={(name, options) => openLayout(name, options)}
+      onPreviewLayout={name => {
+        launchPreview({ networkPreview: false, c3LayoutName: name });
+      }} // c3
       onOpenExternalLayout={openExternalLayout}
       onOpenEventsFunctionsExtension={openEventsFunctionsExtension}
       onDeleteLayout={deleteLayout}

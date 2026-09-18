@@ -30,6 +30,7 @@ export type LaunchPreviewOptions = {
     editorCameraState3D: EditorCameraState | null,
   |},
   launchCaptureOptions?: LaunchCaptureOptions,
+  c3LayoutName?: string, // c3: preview this layout, whatever the current tab
 };
 export type CaptureOptions = {|
   screenshots: Array<{|

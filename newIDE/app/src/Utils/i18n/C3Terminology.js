@@ -37,6 +37,9 @@ const reskinPtBr: { [string]: string } = {
   'Grid size': 'Tamanho do grid',
   'Grid offset': 'Deslocamento do grid',
   'Z index': 'Índice Z',
+  'Preview layout': 'Visualizar layout',
+  'Layout variables': 'Variáveis do layout',
+  Clone: 'Clonar',
   'Already in the events: pick this tile in Add condition / Add action.':
     'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',

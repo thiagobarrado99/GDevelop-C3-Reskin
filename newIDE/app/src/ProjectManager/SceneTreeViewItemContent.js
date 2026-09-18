@@ -18,6 +18,8 @@ import {
 import Tooltip from '@material-ui/core/Tooltip';
 import Flag from '@material-ui/icons/Flag';
 import { type HTMLDataset } from '../Utils/HTMLDataset';
+import { getHelpLink } from '../Utils/HelpLink'; // c3
+import Window from '../Utils/Window'; // c3
 
 const SCENE_CLIPBOARD_KIND = 'Layout';
 
@@ -41,6 +43,7 @@ export type SceneTreeViewItemCallbacks = {|
         | 'none',
     |}
   ) => void,
+  onPreviewLayout: (name: string) => void, // c3: Construct's "Preview layout"
 |};
 
 export type SceneTreeViewItemCommonProps = {|
@@ -121,47 +124,16 @@ export class SceneTreeViewItemContent implements TreeViewItemContent {
   }
 
   buildMenuTemplate(i18n: I18nType, index: number): any {
+    // c3: Construct's layout row menu, in its order.
     return [
       {
-        label: i18n._(t`Open scene editor`),
-        enabled: true,
+        label: i18n._(t`Open`),
         click: () =>
           this.props.onOpenLayout(this.scene.getName(), {
             openSceneEditor: true,
             openEventsEditor: false,
             focusWhenOpened: 'scene',
           }),
-      },
-      {
-        label: i18n._(t`Open events sheet`),
-        enabled: true,
-        click: () =>
-          this.props.onOpenLayout(this.scene.getName(), {
-            openSceneEditor: false,
-            openEventsEditor: true,
-            focusWhenOpened: 'events',
-          }),
-      },
-      {
-        type: 'separator',
-      },
-      {
-        label: i18n._(t`Edit scene properties`),
-        enabled: true,
-        click: () => this.props.onOpenLayoutProperties(this.scene),
-      },
-      {
-        label: i18n._(t`Edit scene variables`),
-        enabled: true,
-        click: () => this.props.openSceneVariables(this.scene),
-      },
-      {
-        label: i18n._(t`Set as start scene`),
-        enabled: !this._isFirstScene(),
-        click: () => this._setProjectFirstScene(this.scene.getName()),
-      },
-      {
-        type: 'separator',
       },
       {
         label: i18n._(t`Rename`),
@@ -174,7 +146,27 @@ export class SceneTreeViewItemContent implements TreeViewItemContent {
         accelerator: 'Backspace',
       },
       {
-        type: 'separator',
+        label: i18n._(t`Duplicate`),
+        click: () => this._duplicate(),
+      },
+      {
+        label: i18n._(t`Edit event sheet`),
+        click: () =>
+          this.props.onOpenLayout(this.scene.getName(), {
+            openSceneEditor: false,
+            openEventsEditor: true,
+            focusWhenOpened: 'events',
+          }),
+      },
+      {
+        label: i18n._(t`Preview layout`),
+        click: () => this.props.onPreviewLayout(this.scene.getName()),
+      },
+      { type: 'separator' },
+      {
+        label: i18n._(t`Cut`),
+        click: () => this.cut(),
+        accelerator: 'CmdOrCtrl+X',
       },
       {
         label: i18n._(t`Copy`),
@@ -182,19 +174,30 @@ export class SceneTreeViewItemContent implements TreeViewItemContent {
         accelerator: 'CmdOrCtrl+C',
       },
       {
-        label: i18n._(t`Cut`),
-        click: () => this.cut(),
-        accelerator: 'CmdOrCtrl+X',
-      },
-      {
         label: i18n._(t`Paste`),
         enabled: Clipboard.has(SCENE_CLIPBOARD_KIND),
         click: () => this.paste(),
         accelerator: 'CmdOrCtrl+V',
       },
+      { type: 'separator' },
       {
-        label: i18n._(t`Duplicate`),
-        click: () => this._duplicate(),
+        label: i18n._(t`Layout properties`),
+        click: () => this.props.onOpenLayoutProperties(this.scene),
+      },
+      {
+        label: i18n._(t`Layout variables`),
+        click: () => this.props.openSceneVariables(this.scene),
+      },
+      {
+        label: i18n._(t`Set as start scene`),
+        enabled: !this._isFirstScene(),
+        click: () => this._setProjectFirstScene(this.scene.getName()),
+      },
+      { type: 'separator' },
+      {
+        label: i18n._(t`Help`),
+        click: () =>
+          Window.openExternalURL(getHelpLink('/interface/scene-editor/')),
       },
     ];
   }

@@ -58,6 +58,7 @@ export const NoProjectOpen = (): React.Node => {
                   onChangeProjectName={action('onChangeProjectName')}
                   onOpenExternalEvents={action('onOpenExternalEvents')}
                   onOpenLayout={action('onOpenLayout')}
+                  onPreviewLayout={action('onPreviewLayout')} // c3
                   onOpenExternalLayout={action('onOpenExternalLayout')}
                   onOpenEventsFunctionsExtension={action(
                     'onOpenEventsFunctionsExtension'
@@ -138,6 +139,7 @@ export const ProjectOpen = (): React.Node => {
                   onChangeProjectName={action('onChangeProjectName')}
                   onOpenExternalEvents={action('onOpenExternalEvents')}
                   onOpenLayout={action('onOpenLayout')}
+                  onPreviewLayout={action('onPreviewLayout')} // c3
                   onOpenExternalLayout={action('onOpenExternalLayout')}
                   onOpenEventsFunctionsExtension={action(
                     'onOpenEventsFunctionsExtension'

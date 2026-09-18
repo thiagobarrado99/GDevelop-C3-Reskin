@@ -100,7 +100,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `SceneEditor/Toolbar.js`: hide the five panel toggles under the theme (they duplicate the docked bar); keep grid, zoom, delete, settings until B11.
 - Check: toolbar = grid · zoom · undo · redo · delete · settings (then fewer after B11).
 
-### B13. Row context menus in Construct's order
+### B13. Row context menus in Construct's order — done 2026-09-18 (layout row: Abrir · Renomear · Excluir · Duplicar · Editar folha de eventos · Visualizar layout (`c3LayoutName` on `launchPreview`) · Recortar · Copiar · Colar · Propriedades · Variáveis · Definir como layout inicial · Ajuda; object row: Editar animações/objeto · variáveis · comportamentos · efeitos · Clonar · Renomear · Excluir · clipboard · global · pasta · instâncias · Ajuda — `Adicionar à família` skipped, no hook)
 - Layout row (`ProjectManager/SceneTreeViewItemContent.js`): `Abrir · Renomear · Excluir · Duplicar · Editar folha de eventos · Visualizar layout · Recortar · Copiar · Colar · Propriedades do layout · Variáveis do layout · Definir como layout inicial · Ajuda`. `Visualizar layout` = launch preview on that scene (`MainFrame` `launchPreview` with `layoutName`). Object row (`ObjectsList/index.js` `buildContextMenu`): `Editar animações · Editar variáveis · Editar comportamentos · Editar efeitos · Adicionar à família · Clonar · Renomear · Excluir · Recortar · Copiar · Colar · Definir como objeto global · Mover para pasta · Adicionar instância ao layout · Ajuda`.
 - Check: text dumps of both menus.
 

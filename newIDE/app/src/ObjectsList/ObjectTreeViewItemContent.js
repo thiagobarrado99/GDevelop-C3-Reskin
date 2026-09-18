@@ -31,6 +31,8 @@ import type { ObjectWithContext } from '../ObjectsList/EnumerateObjects';
 import { type HTMLDataset } from '../Utils/HTMLDataset';
 import { isVariantEditable } from '../ObjectEditor/Editors/CustomObjectPropertiesEditor';
 import { exceptionallyGuardAgainstDeadObject } from '../Utils/IsNullPtr';
+import { getHelpLink } from '../Utils/HelpLink'; // c3
+import Window from '../Utils/Window'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -396,25 +398,59 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
     )
       ? project.getEventsFunctionsExtension(objectExtensionName)
       : null;
+    // c3: Construct's object row menu, in its order - edit first, then
+    // clone / rename / delete, clipboard, global / folder, instances, help.
+    const editChildren = project.hasEventsBasedObject(object.getType())
+      ? {
+          label: i18n._(t`Edit children`),
+          enabled: isVariantEditable(
+            gd.asCustomObjectConfiguration(object.getConfiguration()),
+            project.getEventsBasedObject(object.getType()),
+            customObjectExtension
+          ),
+          click: () => {
+            const customObjectConfiguration = gd.asCustomObjectConfiguration(
+              object.getConfiguration()
+            );
+            onOpenEventBasedObjectVariantEditor(
+              gd.PlatformExtension.getExtensionFromFullObjectType(
+                object.getType()
+              ),
+              gd.PlatformExtension.getObjectNameFromFullObjectType(
+                object.getType()
+              ),
+              customObjectConfiguration.getVariantName()
+            );
+          },
+        }
+      : null;
     return [
       {
-        label: i18n._(t`Copy`),
-        click: () => this.copy(),
+        label:
+          object.getType() === 'Sprite'
+            ? i18n._(t`Edit animations`)
+            : i18n._(t`Edit object`),
+        click: () => onEditObject(object),
       },
       {
-        label: i18n._(t`Cut`),
-        click: () => this.cut(),
-        enabled: !isListLocked,
+        label: i18n._(t`Edit object variables`),
+        click: () => onEditObject(object, 'variables'),
       },
       {
-        label: this._getPasteLabel(i18n, {
-          isGlobalObject: this._isGlobal,
-        }),
-        enabled: hasObjectFolderOrObjectsInClipboard() && !isListLocked,
-        click: () => this.paste(),
+        label: i18n._(t`Edit behaviors`),
+        click: () => onEditObject(object, 'behaviors'),
       },
       {
-        label: i18n._(t`Duplicate`),
+        label: i18n._(t`Edit effects`),
+        click: () => onEditObject(object, 'effects'),
+        enabled: objectMetadata.hasDefaultBehavior(
+          'EffectCapability::EffectBehavior'
+        ),
+      },
+      editChildren,
+      { type: 'separator' },
+      {
+        label: i18n._(t`Clone`),
         click: () => this.duplicate(),
         accelerator: 'CmdOrCtrl+D',
         enabled: !isListLocked,
@@ -433,57 +469,20 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
       },
       { type: 'separator' },
       {
-        label: i18n._(t`Edit object`),
-        click: () => onEditObject(object),
+        label: i18n._(t`Cut`),
+        click: () => this.cut(),
+        enabled: !isListLocked,
       },
       {
-        label: i18n._(t`Edit object variables`),
-        click: () => onEditObject(object, 'variables'),
+        label: i18n._(t`Copy`),
+        click: () => this.copy(),
       },
       {
-        label: i18n._(t`Edit behaviors`),
-        click: () => onEditObject(object, 'behaviors'),
-      },
-      {
-        label: i18n._(t`Edit effects`),
-        click: () => onEditObject(object, 'effects'),
-        enabled: objectMetadata.hasDefaultBehavior(
-          'EffectCapability::EffectBehavior'
-        ),
-      },
-      project.hasEventsBasedObject(object.getType())
-        ? {
-            label: i18n._(t`Edit children`),
-            enabled: isVariantEditable(
-              gd.asCustomObjectConfiguration(object.getConfiguration()),
-              project.getEventsBasedObject(object.getType()),
-              customObjectExtension
-            ),
-            click: () => {
-              const customObjectConfiguration = gd.asCustomObjectConfiguration(
-                object.getConfiguration()
-              );
-              onOpenEventBasedObjectVariantEditor(
-                gd.PlatformExtension.getExtensionFromFullObjectType(
-                  object.getType()
-                ),
-                gd.PlatformExtension.getObjectNameFromFullObjectType(
-                  object.getType()
-                ),
-                customObjectConfiguration.getVariantName()
-              );
-            },
-          }
-        : null,
-      { type: 'separator' },
-      {
-        label: i18n._(t`Swap assets`),
-        click: () =>
-          swapObjectAsset({
-            object,
-            global: this._isGlobal,
-          }),
-        enabled: canSwapAssetOfObject(object),
+        label: this._getPasteLabel(i18n, {
+          isGlobalObject: this._isGlobal,
+        }),
+        enabled: hasObjectFolderOrObjectsInClipboard() && !isListLocked,
+        click: () => this.paste(),
       },
       { type: 'separator' },
       globalObjectsContainer && {
@@ -549,6 +548,15 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
               },
             ],
           },
+      {
+        label: i18n._(t`Swap assets`),
+        click: () =>
+          swapObjectAsset({
+            object,
+            global: this._isGlobal,
+          }),
+        enabled: canSwapAssetOfObject(object),
+      },
       { type: 'separator' },
       {
         label: i18n._(t`Add instance to the scene`),
@@ -584,6 +592,12 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
             },
           }))
         : []),
+      { type: 'separator' },
+      {
+        label: i18n._(t`Help`),
+        click: () =>
+          Window.openExternalURL(getHelpLink(objectMetadata.getHelpPath())),
+      },
     ].filter(Boolean);
   }
 
