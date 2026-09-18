@@ -92,11 +92,11 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - Tab title `Layout 1 (Eventos)` → `Folha de eventos — Layout 1` (`MainFrame/EditorTabs/*` `getTabLabel` for kind `'layout events'`), bar row under `Folhas de eventos` → same label (`ProjectManager/LayoutEventsTreeViewItemContent.js`).
 - Check: tab + row text.
 
-### B11. Undo/redo + toolbar merge
+### B11. Undo/redo + toolbar merge — part 1 done 2026-09-18 (Undo · Redo in the top bar after Save, `EditorTabsPane` `c3UndoOrRedo` on the pane's current editor; both editor toolbars lost theirs). Part 2 (tab strip into the same row) still open.
 - One top bar: `MainFrame/Toolbar/index.js` gains Undo · Redo after Save (wired to the active editor's `undo`/`redo` via the editor ref `MainFrame` already keeps for the toolbar), tab strip moves into the same row (`MainFrame/EditorTabs` inside the toolbar's flex row, tabs after the buttons); editor toolbars (`SceneEditor/Toolbar.js`, `EventsSheet/Toolbar.js`) drop their undo/redo and the panel toggles (Objetos · Famílias · Propriedades · Instâncias · Camadas — B12). Do it in two commits: (1) undo/redo in the top bar, (2) tab strip merge.
 - Check: layout + event sheet both undo from the top bar; only one row above the canvas.
 
-### B12. Layout toolbar toggles
+### B12. Layout toolbar toggles — done 2026-09-18 (Objects / Families / Layers toggles gone; Properties and Instances kept since they have no other opener)
 - `SceneEditor/Toolbar.js`: hide the five panel toggles under the theme (they duplicate the docked bar); keep grid, zoom, delete, settings until B11.
 - Check: toolbar = grid · zoom · undo · redo · delete · settings (then fewer after B11).
 

@@ -12,6 +12,8 @@ import type { OpenedVersionStatus } from '../../VersionHistory';
 import GDevelopThemeContext from '../../UI/Theme/GDevelopThemeContext';
 import { getStatusColor } from '../../VersionHistory/Utils';
 import SaveProjectIcon from '../SaveProjectIcon';
+import UndoIcon from '../../UI/CustomSvgIcons/Undo'; // c3
+import RedoIcon from '../../UI/CustomSvgIcons/Redo'; // c3
 import CustomToolbarButton, {
   type ToolbarButtonConfig,
 } from '../CustomToolbarButton';
@@ -28,6 +30,8 @@ export type MainFrameToolbarProps = {|
   canSave: boolean,
   onOpenVersionHistory: () => void,
   onOpenProjectManager: () => void, // c3
+  onUndo: () => void, // c3: Construct's Save · Undo · Redo
+  onRedo: () => void, // c3
   checkedOutVersionStatus?: ?OpenedVersionStatus,
   onQuitVersionHistory: () => Promise<void>,
   canQuitVersionHistory: boolean,
@@ -49,6 +53,8 @@ type LeftButtonsToolbarGroupProps = {|
   |}) => Promise<?FileMetadata>,
   onOpenVersionHistory: () => void,
   onOpenProjectManager: () => void, // c3
+  onUndo: () => void, // c3
+  onRedo: () => void, // c3
   checkedOutVersionStatus?: ?OpenedVersionStatus,
   onQuitVersionHistory: () => Promise<void>,
   canQuitVersionHistory: boolean,
@@ -84,6 +90,24 @@ const LeftButtonsToolbarGroup = React.memo<LeftButtonsToolbarGroupProps>(
             onSave={props.onSave}
             canSave={props.canSave}
           />
+          <IconButton
+            size="small"
+            id="toolbar-undo-button"
+            onClick={props.onUndo}
+            tooltip={t`Undo`}
+            color="default"
+          >
+            <UndoIcon />
+          </IconButton>
+          <IconButton
+            size="small"
+            id="toolbar-redo-button"
+            onClick={props.onRedo}
+            tooltip={t`Redo`}
+            color="default"
+          >
+            <RedoIcon />
+          </IconButton>
           {props.children}
           {toolbarButtons.map((button, index) => (
             <CustomToolbarButton
@@ -150,6 +174,8 @@ export default (React.forwardRef<MainFrameToolbarProps, ToolbarInterface>(
               canSave={props.canSave}
               onOpenVersionHistory={props.onOpenVersionHistory}
               onOpenProjectManager={props.onOpenProjectManager}
+              onUndo={props.onUndo}
+              onRedo={props.onRedo}
               checkedOutVersionStatus={props.checkedOutVersionStatus}
               onQuitVersionHistory={props.onQuitVersionHistory}
               canQuitVersionHistory={props.canQuitVersionHistory}

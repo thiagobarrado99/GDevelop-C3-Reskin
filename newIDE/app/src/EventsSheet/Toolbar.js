@@ -12,8 +12,6 @@ import AddSubEventIcon from '../UI/CustomSvgIcons/AddSubEvent';
 import AddCommentIcon from '../UI/CustomSvgIcons/AddComment';
 import CircledAddIcon from '../UI/CustomSvgIcons/CircledAdd';
 import TrashIcon from '../UI/CustomSvgIcons/Trash';
-import UndoIcon from '../UI/CustomSvgIcons/Undo';
-import RedoIcon from '../UI/CustomSvgIcons/Redo';
 import ToolbarSearchIcon from '../UI/CustomSvgIcons/ToolbarSearch';
 import EditSceneIcon from '../UI/CustomSvgIcons/EditScene';
 import { getShortcutDisplayName, useShortcutMap } from '../KeyboardShortcuts';
@@ -198,27 +196,7 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar({
           <TrashIcon />
         </IconButton>
 
-        <IconButton
-          size="small"
-          color="default"
-          onClick={undo}
-          disabled={!canUndo}
-          tooltip={t`Undo the last changes`}
-          acceleratorString={'CmdOrCtrl+Z'}
-        >
-          <UndoIcon />
-        </IconButton>
-
-        <IconButton
-          size="small"
-          color="default"
-          onClick={redo}
-          disabled={!canRedo}
-          tooltip={t`Redo the last changes`}
-          acceleratorString={'CmdOrCtrl+Shift+Z'}
-        >
-          <RedoIcon />
-        </IconButton>
+        {/* c3: undo / redo are in the top bar. */}
         <ToolbarSeparator />
 
         <IconButton

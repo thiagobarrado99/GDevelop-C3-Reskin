@@ -8,22 +8,15 @@ import IconButton from '../../UI/IconButton';
 import ElementWithMenu from '../../UI/Menu/ElementWithMenu';
 import ToolbarCommands from '../ToolbarCommands';
 import { type MenuItemTemplate } from '../../UI/Menu/Menu.flow';
-import ObjectIcon from '../../UI/CustomSvgIcons/Object';
-import ObjectGroupIcon from '../../UI/CustomSvgIcons/ObjectGroup';
+// c3: Object / ObjectGroup / Layers / Undo / Redo icons no longer used here.
 import EditIcon from '../../UI/CustomSvgIcons/Edit';
 import InstancesListIcon from '../../UI/CustomSvgIcons/InstancesList';
-import LayersIcon from '../../UI/CustomSvgIcons/Layers';
-import UndoIcon from '../../UI/CustomSvgIcons/Undo';
-import RedoIcon from '../../UI/CustomSvgIcons/Redo';
 import TrashIcon from '../../UI/CustomSvgIcons/Trash';
 import GridIcon from '../../UI/CustomSvgIcons/Grid';
 import ZoomInIcon from '../../UI/CustomSvgIcons/ZoomIn';
 import EditSceneIcon from '../../UI/CustomSvgIcons/EditScene';
 import {
   OPEN_INSTANCES_PANEL_BUTTON_ID,
-  OPEN_LAYERS_PANEL_BUTTON_ID,
-  OPEN_OBJECT_GROUPS_PANEL_BUTTON_ID,
-  OPEN_OBJECTS_PANEL_BUTTON_ID,
   OPEN_PROPERTIES_PANEL_BUTTON_ID,
 } from '../utils';
 import CompactToggleButtons from '../../UI/CompactToggleButtons';
@@ -111,34 +104,7 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar(
           ]}
         />
         <ToolbarSeparator />
-        <IconButton
-          size="small"
-          color="default"
-          id={OPEN_OBJECTS_PANEL_BUTTON_ID}
-          onClick={props.toggleObjectsList}
-          selected={props.isObjectsListShown}
-          tooltip={
-            props.isObjectsListShown
-              ? t`Close Objects Panel`
-              : t`Open Objects Panel`
-          }
-        >
-          <ObjectIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="default"
-          id={OPEN_OBJECT_GROUPS_PANEL_BUTTON_ID}
-          onClick={props.toggleObjectGroupsList}
-          selected={props.isObjectGroupsListShown}
-          tooltip={
-            props.isObjectGroupsListShown
-              ? t`Close Object Groups Panel`
-              : t`Open Object Groups Panel`
-          }
-        >
-          <ObjectGroupIcon />
-        </IconButton>
+        {/* c3: Objects / Families / Layers live in the docked project bar - no toggles. */}
         <IconButton
           size="small"
           color="default"
@@ -166,20 +132,6 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar(
           }
         >
           <InstancesListIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="default"
-          id={OPEN_LAYERS_PANEL_BUTTON_ID}
-          onClick={props.toggleLayersList}
-          selected={props.isLayersListShown}
-          tooltip={
-            props.isLayersListShown
-              ? t`Close Layers Panel`
-              : t`Open Layers Panel`
-          }
-        >
-          <LayersIcon />
         </IconButton>
         <ElementWithMenu
           element={
@@ -212,24 +164,7 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar(
           ]}
         />
         <ToolbarSeparator />
-        <IconButton
-          size="small"
-          color="default"
-          onClick={props.undo}
-          disabled={!props.canUndo}
-          tooltip={t`Undo the last changes`}
-        >
-          <UndoIcon />
-        </IconButton>
-        <IconButton
-          size="small"
-          color="default"
-          onClick={props.redo}
-          disabled={!props.canRedo}
-          tooltip={t`Redo the last changes`}
-        >
-          <RedoIcon />
-        </IconButton>
+        {/* c3: undo / redo are in the top bar. */}
         <ElementWithMenu
           element={
             <IconButton

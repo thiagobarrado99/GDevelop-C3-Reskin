@@ -160,6 +160,8 @@ const PoppedOutEditorContainerWindow = (props: Props): React.Node => {
                     previewState={props.previewState}
                     onOpenVersionHistory={props.openVersionHistoryPanel}
                     onOpenProjectManager={() => props.openProjectManager(true)} // c3
+                    onUndo={() => {}} // c3: no undo from a popped-out window's bar
+                    onRedo={() => {}} // c3
                     checkedOutVersionStatus={props.checkedOutVersionStatus}
                     onQuitVersionHistory={props.onQuitVersionHistory}
                     canQuitVersionHistory={!props.isSavingProject}

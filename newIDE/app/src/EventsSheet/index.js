@@ -3302,6 +3302,8 @@ export type EventsSheetInterface = {|
   ) => void,
   clearGlobalSearchResults: () => void,
   selectAllEvents: () => void,
+  undo: () => void, // c3: top bar undo/redo
+  redo: () => void, // c3
 |};
 
 // EventsSheet is a wrapper so that the component can use multiple
@@ -3316,6 +3318,8 @@ const EventsSheet = (props, ref) => {
     setGlobalSearchResults,
     clearGlobalSearchResults,
     selectAllEvents,
+    undo, // c3
+    redo, // c3
   }));
 
   const {
@@ -3357,6 +3361,13 @@ const EventsSheet = (props, ref) => {
   };
   const selectAllEvents = () => {
     if (component.current) component.current.selectAllEvents();
+  };
+  // c3
+  const undo = () => {
+    if (component.current) component.current.undo();
+  };
+  const redo = () => {
+    if (component.current) component.current.redo();
   };
 
   const authenticatedUser = React.useContext(AuthenticatedUserContext);

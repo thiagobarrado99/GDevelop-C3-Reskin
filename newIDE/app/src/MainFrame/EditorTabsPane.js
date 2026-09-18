@@ -508,6 +508,18 @@ const EditorTabsPane: React.ComponentType<{
     [editorTabs, setEditorToolbar, paneIdentifier]
   );
 
+  // c3: the top bar's Undo / Redo act on the pane's current editor (layout,
+  // external layout, event sheet, external events).
+  const c3UndoOrRedo = React.useCallback(
+    (action: 'undo' | 'redo') => {
+      const editorTab = getCurrentTabForPane(editorTabs, paneIdentifier);
+      const editorRef: any = editorTab && editorTab.editorRef;
+      const editor = editorRef && editorRef.editor;
+      if (editor && typeof editor[action] === 'function') editor[action]();
+    },
+    [editorTabs, paneIdentifier]
+  );
+
   React.useEffect(
     () => {
       updateToolbar();
@@ -762,6 +774,8 @@ const EditorTabsPane: React.ComponentType<{
         previewState={previewState}
         onOpenVersionHistory={openVersionHistoryPanel}
         onOpenProjectManager={() => openProjectManager(true)} // c3
+        onUndo={() => c3UndoOrRedo('undo')} // c3
+        onRedo={() => c3UndoOrRedo('redo')} // c3
         checkedOutVersionStatus={checkedOutVersionStatus}
         onQuitVersionHistory={onQuitVersionHistory}
         canQuitVersionHistory={!isSavingProject}
