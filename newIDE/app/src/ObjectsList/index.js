@@ -67,6 +67,7 @@ import type { EventsScope } from '../InstructionOrExpression/EventsScope';
 import { type InstallAssetOutput } from '../AssetStore/InstallAsset';
 import { exceptionallyGuardAgainstDeadObject } from '../Utils/IsNullPtr';
 import { getC3ObjectDefaultName } from '../Utils/C3Objects'; // c3
+import { addBlankAnimation } from '../Utils/C3Sprite'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -706,6 +707,9 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
             global: false,
           };
         }
+
+        // c3: a Sprite starts with a blank frame, like Construct.
+        if (objectType === 'Sprite') addBlankAnimation(project, object);
 
         if (treeViewRef.current)
           treeViewRef.current.openItems([sceneObjectsRootFolderId]);

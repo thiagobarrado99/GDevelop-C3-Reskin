@@ -49,6 +49,7 @@ import { type ScrollViewInterface } from '../../../UI/ScrollView';
 import ThreeDotsMenu from '../../../UI/CustomSvgIcons/ThreeDotsMenu';
 import ElementWithMenu from '../../../UI/Menu/ElementWithMenu';
 import MountOnFirstVisible from '../../../UI/MountOnFirstVisible';
+import { takeFirstEdit } from '../../../Utils/C3Sprite'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -349,6 +350,24 @@ type AnimationListProps = {|
   scrollView: { current: ?ScrollViewInterface },
   onCreateMatchingSpriteCollisionMask: () => Promise<void>,
 |};
+
+// c3: calls `run` once, with the i18n of the render prop it sits in.
+const RunOnce = ({
+  i18n,
+  run,
+}: {|
+  i18n: I18nType,
+  run: I18nType => mixed,
+|}) => {
+  React.useEffect(
+    () => {
+      run(i18n);
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+  return null;
+};
 
 const AnimationList: React.ComponentType<{
   ...AnimationListProps,
@@ -941,11 +960,27 @@ const AnimationList: React.ComponentType<{
     const imageResourceExternalEditors = resourceManagementProps.resourceExternalEditors.filter(
       ({ kind }) => kind === 'image'
     );
+    // c3: a just-inserted Sprite opens the image editor on its blank frame.
+    const firstEditRef = React.useRef(takeFirstEdit(object));
 
     return (
       <I18n>
         {({ i18n }) => (
           <>
+            {firstEditRef.current &&
+              imageResourceExternalEditors.length > 0 && (
+                <RunOnce
+                  i18n={i18n}
+                  run={i18n =>
+                    editDirectionWith(
+                      i18n,
+                      imageResourceExternalEditors[0],
+                      0,
+                      0
+                    )
+                  }
+                />
+              )}
             {animationsCount === 0 &&
             // The event-based object editor gives an empty list.
             imageResourceExternalEditors.length > 0 ? (

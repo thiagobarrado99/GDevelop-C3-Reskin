@@ -19,7 +19,6 @@ import {
   downloadUrlsToBlobs,
   type ItemResult,
 } from '../Utils/BlobDownloader';
-import { showWarningBox } from '../UI/Messages/MessageBox';
 import { displayBlackLoadingScreenOrThrow } from '../Utils/BrowserExternalWindowUtils';
 import { UserCancellationError } from '../LoginProvider/Utils';
 import { triggerOnResourceExternallyChanged } from '../MainFrame/ResourcesWatcher';
@@ -290,6 +289,15 @@ const editWithBrowserExternalEditor = async ({
     }
   );
 
+  // c3: local-file projects keep the edited files inline, like the ones
+  // picked from the device.
+  if (options.getStorageProvider().internalName !== 'Cloud') {
+    for (const { resource, blobUrl } of modifiedResources) {
+      const blob = await (await fetch(blobUrl)).blob();
+      resource.setFile(await convertBlobToDataURL(blob));
+    }
+  }
+
   // Ask the project to persist the resources ("blob urls" will be either uploaded
   // or saved locally).
   try {
@@ -355,7 +363,8 @@ const editWithBrowserExternalEditor = async ({
   };
 };
 
-const cloudProjectWarning = t`You need to save this project as a cloud project to install this asset. Please save your project and try again.`;
+// c3: every storage provider can use the editors: non-Cloud projects keep
+// the edited files inline as data URLs (see editWithBrowserExternalEditor).
 
 /**
  * Open a window showing a black "loading..." screen. It's important this is done
@@ -396,14 +405,6 @@ const editors: Array<ResourceExternalEditor> = [
     editDisplayName: t`Edit with Piskel`,
     kind: 'image',
     edit: async options => {
-      if (options.getStorageProvider().internalName !== 'Cloud') {
-        const { i18n } = options;
-        showWarningBox(i18n._(cloudProjectWarning), {
-          delayToNextTick: true,
-        });
-        return null;
-      }
-
       const externalEditorWindow = immediatelyOpenLoadingWindowForExternalEditor();
       // $FlowFixMe[incompatible-type]
       return await editWithBrowserExternalEditor({
@@ -422,14 +423,6 @@ const editors: Array<ResourceExternalEditor> = [
     editDisplayName: t`Edit with Jfxr`,
     kind: 'audio',
     edit: async options => {
-      if (options.getStorageProvider().internalName !== 'Cloud') {
-        const { i18n } = options;
-        showWarningBox(i18n._(cloudProjectWarning), {
-          delayToNextTick: true,
-        });
-        return null;
-      }
-
       const externalEditorWindow = immediatelyOpenLoadingWindowForExternalEditor();
       return await editWithBrowserExternalEditor({
         options,
@@ -447,14 +440,6 @@ const editors: Array<ResourceExternalEditor> = [
     editDisplayName: t`Edit with Yarn`,
     kind: 'json',
     edit: async options => {
-      if (options.getStorageProvider().internalName !== 'Cloud') {
-        const { i18n } = options;
-        showWarningBox(i18n._(cloudProjectWarning), {
-          delayToNextTick: true,
-        });
-        return null;
-      }
-
       const externalEditorWindow = immediatelyOpenLoadingWindowForExternalEditor();
       return await editWithBrowserExternalEditor({
         options,
