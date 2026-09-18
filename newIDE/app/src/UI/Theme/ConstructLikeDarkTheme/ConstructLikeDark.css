@@ -119,6 +119,11 @@
 .ConstructLikeDarkTheme [id^='project-manager'] [data-layout-events] {
   color: var(--c3-event-sheet-color);
 }
+/* c3: a selected row (objects, families, layers, project bar) reads dark on
+   Construct's light selection colour. */
+.ConstructLikeDarkTheme [class*='TreeView_rowContainer'][aria-selected='true'] {
+  color: var(--theme-selection-color);
+}
 .ConstructLikeDarkTheme
   [id^='project-manager']
   [data-scene][aria-selected='true'],
