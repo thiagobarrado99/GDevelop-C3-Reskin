@@ -84,7 +84,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - Translate default names at creation: `Variable` (`VariablesList/VariablesList.js` line ~1533, `VariablesEditorDialog.js`, `ObjectGroupVariablesDialog.js`), `Effect` (`EffectsList/index.js`), `Group` (`ObjectGroupsList`) → `Variavel` / `Efeito` / `Grupo` via `Utils/C3Language.js` (identifiers: no accents). `Boleano` typo → `Booleano` (`reskinPtBr` rule). Optional: a small `Adicionar variável` dialog (Nome · Tipo · Valor inicial) — only if the inline row confuses students in practice.
 - Check: `+` on Variáveis → row `Variavel`; type menu says `Booleano`.
 
-### B9. Untranslated strings
+### B9. Untranslated strings — done 2026-09-18 (canvas tooltip + status bar through `C3_CANVAS_LABELS` in `Utils/C3Language.js`; recommended examples get pt-BR names by slug and no English description in `C3StartPage.js`)
 - Canvas tooltip `Sprite X: … Layer: Layer 0 Z order: 1` (`InstancesEditor/index.js` / `InstancesRenderer` hover label), status bar `Layer: Layer 0` (`InstancesEditor/StatusBar.js`), `Effect` section header, start-page example titles/descriptions (`HomePage/C3StartPage.js` — the API returns English; map the shown examples to pt-BR titles in `C3StartPage.js` or hide the description). Strings that come from lingui: add `reskinPtBr` rules; hardcoded ones: `<Trans>` + rule.
 - Check: grep the text dumps `a3-*.txt` for `Layer:`, `Z order`, `Effect`, `Platformer`.
 

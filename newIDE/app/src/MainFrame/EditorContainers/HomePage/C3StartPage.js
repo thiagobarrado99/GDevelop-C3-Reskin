@@ -27,6 +27,18 @@ import Star from '../../../UI/CustomSvgIcons/Star';
 import Web from '../../../UI/CustomSvgIcons/Web';
 import './C3StartPage.css';
 import { APP_NAME } from '../../../Utils/C3Brand';
+import { getC3Language } from '../../../Utils/C3Language';
+
+// Construct-style pt-BR names for GDevelop's starting-point examples (by slug).
+const C3_EXAMPLE_NAMES: { [string]: string } = {
+  'starting-platformer': 'Plataforma',
+  'starting-top-down': 'Visão de cima',
+  'starting-physics': 'Física',
+  'starting-3D-platformer': 'Plataforma 3D',
+  'starting-first-person': 'Primeira pessoa 3D',
+  'starting-3d-driving': 'Direção 3D',
+  'starting-point-and-click': 'Apontar e clicar',
+};
 
 // c3: start page laid out like Construct 3 - logo + NEW/OPEN on top, RECENT
 // PROJECTS on the left, LEARN / PARTICIPATE / EXPLORE card columns on the
@@ -209,6 +221,11 @@ const C3StartPage = ({
     .slice(0, 3);
 
   const open = (url: string) => () => Window.openExternalURL(url);
+  // c3: the examples API is English-only - pt-BR names for the starting
+  // points, no description (it is long and English).
+  const isPtBr = getC3Language() === 'pt_BR';
+  const exampleName = (header: ExampleShortHeader) =>
+    isPtBr ? C3_EXAMPLE_NAMES[header.slug] || header.name : header.name;
   const icon = (Icon: any) => <Icon style={{ color: iconColor }} />;
 
   return (
@@ -390,13 +407,15 @@ const C3StartPage = ({
                     />
                     <div style={{ padding: 12 }}>
                       <div style={styles.sectionTitle}>
-                        <Text noMargin>{header.name}</Text>
+                        <Text noMargin>{exampleName(header)}</Text>
                       </div>
-                      <div style={styles.clamp}>
-                        <Text noMargin color="secondary" size="body-small">
-                          {header.shortDescription}
-                        </Text>
-                      </div>
+                      {!isPtBr && (
+                        <div style={styles.clamp}>
+                          <Text noMargin color="secondary" size="body-small">
+                            {header.shortDescription}
+                          </Text>
+                        </div>
+                      )}
                     </div>
                   </ButtonBase>
                 ))}

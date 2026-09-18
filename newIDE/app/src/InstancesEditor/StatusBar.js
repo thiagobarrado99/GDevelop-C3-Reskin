@@ -1,6 +1,7 @@
 // @flow
 import * as PIXI from 'pixi.js-legacy';
 import { type InstancesEditorSettings } from './InstancesEditorSettings'; // c3
+import { c3Label, C3_CANVAS_LABELS } from '../Utils/C3Language'; // c3
 
 type Props = {
   getLastCursorSceneCoordinates: () => [number, number] | null,
@@ -72,10 +73,12 @@ export default class StatusBar {
       ? this._getInstancesEditorSettings()
       : null;
     this._statusBarText.text = settings
-      ? `Mouse: (${x.toFixed(0)}, ${y.toFixed(
-          0
-        )})   Layer: ${settings.selectedLayer ||
-          'Layer 0'}   Zoom: ${Math.round(settings.zoomFactor * 100)}%`
+      ? `Mouse: (${x.toFixed(0)}, ${y.toFixed(0)})   ${c3Label(
+          C3_CANVAS_LABELS.layer
+        )}: ${settings.selectedLayer ||
+          c3Label(C3_CANVAS_LABELS.baseLayer)}   Zoom: ${Math.round(
+          settings.zoomFactor * 100
+        )}%`
       : `${x.toFixed(0)};${y.toFixed(0)}`;
     this._statusBarText.position.x = textXPosition;
     this._statusBarText.position.y = textYPosition;

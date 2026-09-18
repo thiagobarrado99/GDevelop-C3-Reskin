@@ -22,3 +22,10 @@ export const C3_DEFAULT_NAMES = {
   effect: { en: 'Effect', pt_BR: 'Efeito' },
   group: { en: 'Group', pt_BR: 'Familia' },
 };
+
+// Canvas labels (PIXI text, outside lingui).
+export const C3_CANVAS_LABELS = {
+  layer: { en: 'Layer', pt_BR: 'Camada' },
+  baseLayer: { en: 'Layer 0', pt_BR: 'Camada 0' },
+  zOrder: { en: 'Z order', pt_BR: 'Índice Z' },
+};

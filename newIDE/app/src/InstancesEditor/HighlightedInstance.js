@@ -3,6 +3,7 @@ import transformRect from '../Utils/TransformRect';
 import * as PIXI from 'pixi.js-legacy';
 import { type InstanceMeasurer } from './InstancesRenderer';
 import Rectangle from '../Utils/Rectangle';
+import { c3Label, C3_CANVAS_LABELS } from '../Utils/C3Language'; // c3
 
 export default class HighlightedInstance {
   instanceMeasurer: InstanceMeasurer;
@@ -103,11 +104,15 @@ export default class HighlightedInstance {
           Math.round(highlightedInstance.getZ() * 100) / 100
         : '') +
       '\n' +
-      'Layer: ' +
-      (highlightedInstance.getLayer() || 'Layer 0') + // c3: Construct's default layer name
+      c3Label(C3_CANVAS_LABELS.layer) + // c3: in the UI language
+      ': ' +
+      (highlightedInstance.getLayer() || c3Label(C3_CANVAS_LABELS.baseLayer)) +
       (this.isHighlightedInstanceOf3DObject
         ? ''
-        : '\nZ order: ' + highlightedInstance.getZOrder()) +
+        : '\n' +
+          c3Label(C3_CANVAS_LABELS.zOrder) +
+          ': ' +
+          highlightedInstance.getZOrder()) +
       '\n';
 
     this.tooltipText.text = tooltipInfo;
