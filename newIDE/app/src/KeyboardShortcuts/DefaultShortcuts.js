@@ -52,12 +52,19 @@ const defaultShortcuts: ShortcutMap = {
   EDIT_OBJECT_VARIABLES: 'Shift+KeyV',
   EDIT_OBJECT_GROUP: 'Shift+KeyG',
 
-  ADD_STANDARD_EVENT: 'Shift+KeyA',
-  ADD_SUBEVENT: 'Shift+KeyD',
-  ADD_LOCAL_VARIABLE: 'Shift+KeyL',
-  ADD_COMMENT_EVENT: 'Shift+KeyC',
+  // c3: Construct's event sheet keys (E, B, L, Q, D, I, C, A, X, G). Keys
+  // shared with the layout editor are fine: only the active tab's commands
+  // are registered (see useKeyboardShortcuts).
+  ADD_STANDARD_EVENT: 'KeyE',
+  ADD_SUBEVENT: 'KeyB',
+  ADD_LOCAL_VARIABLE: 'KeyL',
+  ADD_COMMENT_EVENT: 'KeyQ',
   TOGGLE_EVENT_DISABLED: 'KeyD',
-  TOGGLE_CONDITION_INVERTED: 'KeyJ',
+  TOGGLE_CONDITION_INVERTED: 'KeyI',
+  ADD_CONDITION: 'KeyC',
+  ADD_ACTION: 'KeyA',
+  ADD_ELSE_EVENT: 'KeyX',
+  ADD_GROUP_EVENT: 'KeyG',
   CHOOSE_AND_ADD_EVENT: 'Shift+KeyW',
   MOVE_EVENTS_IN_NEW_GROUP: 'CmdOrCtrl+KeyG',
   OPEN_EXTENSION_SETTINGS: '',

@@ -44,6 +44,8 @@ type Props = {|
   moveEventsIntoNewGroup: () => void,
   canMoveEventsIntoNewGroup: boolean,
   onOpenSceneVariables: () => void,
+  onAddInstruction: (isCondition: boolean) => void, // c3
+  canAddInstruction: boolean, // c3
 |};
 
 const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar({
@@ -71,6 +73,8 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar({
   moveEventsIntoNewGroup,
   canMoveEventsIntoNewGroup,
   onOpenSceneVariables,
+  onAddInstruction,
+  canAddInstruction,
 }: Props) {
   const shortcutMap = useShortcutMap();
 
@@ -100,6 +104,8 @@ const Toolbar: React.ComponentType<Props> = React.memo<Props>(function Toolbar({
         moveEventsIntoNewGroup={moveEventsIntoNewGroup}
         canMoveEventsIntoNewGroup={canMoveEventsIntoNewGroup}
         onOpenSceneVariables={onOpenSceneVariables}
+        onAddInstruction={onAddInstruction}
+        canAddInstruction={canAddInstruction}
       />
       <ToolbarGroup lastChild>
         <IconButton

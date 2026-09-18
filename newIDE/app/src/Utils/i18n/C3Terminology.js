@@ -41,6 +41,12 @@ const reskinPtBr: { [string]: string } = {
   'Unlock all': 'Desbloquear tudo',
   'Edit event sheet': 'Editar folha de eventos',
   'Layout properties': 'Propriedades do layout',
+  'Add a condition to the selected event':
+    'Adicionar uma condição ao evento selecionado',
+  'Add an action to the selected event':
+    'Adicionar uma ação ao evento selecionado',
+  'Add an else event': 'Adicionar um evento else',
+  'Add a group': 'Adicionar um grupo',
   'Pick an object to create a new condition from:':
     'Escolha um objeto para criar uma condição a partir dele:',
   'Pick an object to create a new action from:':

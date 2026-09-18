@@ -138,6 +138,31 @@ import { type VariableDialogOpeningProps } from '../VariablesList/VariablesEdito
 
 const gd: libGDevelop = global.gd;
 
+// c3: the conditions/actions lists of the events that have them.
+const getEventInstructionsLists = (
+  event: gdBaseEvent
+): ?{| conditions: gdInstructionsList, actions: gdInstructionsList |} => {
+  const type = event.getType();
+  const typedEvent =
+    type === 'BuiltinCommonInstructions::Standard'
+      ? gd.asStandardEvent(event)
+      : type === 'BuiltinCommonInstructions::Repeat'
+      ? gd.asRepeatEvent(event)
+      : type === 'BuiltinCommonInstructions::While'
+      ? gd.asWhileEvent(event)
+      : type === 'BuiltinCommonInstructions::ForEach'
+      ? gd.asForEachEvent(event)
+      : type === 'BuiltinCommonInstructions::ForEachChildVariable'
+      ? gd.asForEachChildVariableEvent(event)
+      : null;
+  return typedEvent
+    ? {
+        conditions: typedEvent.getConditions(),
+        actions: typedEvent.getActions(),
+      }
+    : null;
+};
+
 // Derives the stable list label stored in history for a given live instruction
 // list reference. 'whileConditions' identifies the loop-guard list of a WhileEvent,
 // which shares isCondition=true with the body conditions but is a distinct list.
@@ -590,9 +615,36 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
         canMoveEventsIntoNewGroup={hasSomethingSelected(this.state.selection)}
         moveEventsIntoNewGroup={this.moveEventsIntoNewGroup}
         onOpenSceneVariables={this.openSceneVariables}
+        onAddInstruction={this._addInstructionToSelectedEvent}
+        canAddInstruction={!!this._getSelectedEventContextWithInstructions()}
       />
     );
   }
+
+  // c3: Construct's C / A keys - add a condition or action to the selected
+  // event (or to the event of the selected condition/action).
+  _getSelectedEventContextWithInstructions = (): ?EventContext => {
+    const instructionContext = getLastSelectedInstructionContext(
+      this.state.selection
+    );
+    const eventContext =
+      getLastSelectedEventContext(this.state.selection) ||
+      (instructionContext ? instructionContext.eventContext : null);
+    return eventContext && getEventInstructionsLists(eventContext.event)
+      ? eventContext
+      : null;
+  };
+
+  _addInstructionToSelectedEvent = (isCondition: boolean) => {
+    const eventContext = this._getSelectedEventContextWithInstructions();
+    if (!eventContext) return;
+    const lists = getEventInstructionsLists(eventContext.event);
+    if (!lists) return;
+    this.openInstructionEditor(eventContext, {
+      instrsList: isCondition ? lists.conditions : lists.actions,
+      isCondition,
+    });
+  };
 
   _addStandardEvent = () => {
     this.addNewEvent('BuiltinCommonInstructions::Standard');

@@ -30,6 +30,8 @@ type Props = {|
   moveEventsIntoNewGroup: () => void,
   canMoveEventsIntoNewGroup: boolean,
   onOpenSceneVariables: () => void,
+  onAddInstruction: (isCondition: boolean) => void, // c3
+  canAddInstruction: boolean, // c3
 |};
 
 const ToolbarCommands = (props: Props): null => {
@@ -69,6 +71,35 @@ const ToolbarCommands = (props: Props): null => {
           },
         })),
       [props.allEventsMetadata, onAddEvent]
+    ),
+  });
+
+  // c3: Construct's C / A / X / G keys.
+  const { onAddInstruction } = props;
+  useCommand('ADD_CONDITION', props.canAddInstruction, {
+    handler: React.useCallback(() => onAddInstruction(true), [
+      onAddInstruction,
+    ]),
+  });
+  useCommand('ADD_ACTION', props.canAddInstruction, {
+    handler: React.useCallback(() => onAddInstruction(false), [
+      onAddInstruction,
+    ]),
+  });
+  useCommand('ADD_ELSE_EVENT', true, {
+    handler: React.useCallback(
+      () => {
+        onAddEvent('BuiltinCommonInstructions::Else');
+      },
+      [onAddEvent]
+    ),
+  });
+  useCommand('ADD_GROUP_EVENT', true, {
+    handler: React.useCallback(
+      () => {
+        onAddEvent('BuiltinCommonInstructions::Group');
+      },
+      [onAddEvent]
     ),
   });
 

@@ -68,6 +68,10 @@ export type CommandName =
   | 'TOGGLE_CONDITION_INVERTED'
   | 'CHOOSE_AND_ADD_EVENT'
   | 'MOVE_EVENTS_IN_NEW_GROUP'
+  | 'ADD_CONDITION' // c3
+  | 'ADD_ACTION' // c3
+  | 'ADD_ELSE_EVENT' // c3
+  | 'ADD_GROUP_EVENT' // c3
   | 'EVENTS_EDITOR_UNDO'
   | 'EVENTS_EDITOR_REDO'
   | 'DELETE_SELECTION'
@@ -363,6 +367,17 @@ const commandsList: { [CommandName]: CommandMetadata } = {
     area: 'EVENTS',
     displayText: t`Move events into a new group`,
   },
+  // c3: Construct's C / A / X / G keys.
+  ADD_CONDITION: {
+    area: 'EVENTS',
+    displayText: t`Add a condition to the selected event`,
+  },
+  ADD_ACTION: {
+    area: 'EVENTS',
+    displayText: t`Add an action to the selected event`,
+  },
+  ADD_ELSE_EVENT: { area: 'EVENTS', displayText: t`Add an else event` },
+  ADD_GROUP_EVENT: { area: 'EVENTS', displayText: t`Add a group` },
   EVENTS_EDITOR_UNDO: {
     area: 'EVENTS',
     displayText: t`Undo the last changes`,

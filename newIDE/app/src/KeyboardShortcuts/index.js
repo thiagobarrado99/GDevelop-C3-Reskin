@@ -244,7 +244,7 @@ export const useShortcutMap = (): ShortcutMap => {
 };
 
 type UseKeyboardShortcutsProps = {|
-  onRunCommand: (commandName: CommandName) => void,
+  onRunCommand: (commandName: CommandName) => boolean | void, // c3: true when run
   previewDebuggerServer: ?PreviewDebuggerServer,
   targetDocument?: Document, // For external windows — defaults to window.document
   ignoreHandledByElectron?: boolean, // For external windows where Electron menu IPC doesn't reach
@@ -270,15 +270,19 @@ export const useKeyboardShortcuts = ({
         const shortcutData = getShortcutMetadataFromEvent(e);
         if (!shortcutData.isValid) return;
 
-        // Get corresponding command, if it exists
-        const commandName =
-          Object.keys(shortcutMap).find(
+        // Get corresponding commands, if they exist.
+        // c3: several commands may share a key (one per editor) - the first
+        // one currently registered runs.
+        const commandNames = [
+          ...Object.keys(shortcutMap).filter(
             name => shortcutMap[name] === shortcutData.shortcutString
-          ) ||
-          Object.keys(defaultSecondaryShortcuts).find(
+          ),
+          ...Object.keys(defaultSecondaryShortcuts).filter(
             name =>
               defaultSecondaryShortcuts[name] === shortcutData.shortcutString
-          );
+          ),
+        ];
+        const commandName = commandNames[0];
         if (!commandName) return;
 
         // On desktop app, ignore shortcuts that are handled by Electron,
@@ -298,7 +302,7 @@ export const useKeyboardShortcuts = ({
         if (isDialogOpen(doc)) return;
 
         // console.info(`Command ${commandName} triggered from KeyboardEvent.`);
-        onRunCommand(commandName);
+        commandNames.some(name => !!onRunCommand(name)); // c3
       };
 
       const listenerDoc = targetDocument || document;

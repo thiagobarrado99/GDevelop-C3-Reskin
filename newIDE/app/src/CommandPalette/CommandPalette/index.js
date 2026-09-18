@@ -31,7 +31,7 @@ const useStylesForPaper = makeStyles({
 
 export type CommandPaletteInterface = {|
   open: (open?: boolean) => void,
-  launchCommand: (commandName: CommandName) => void,
+  launchCommand: (commandName: CommandName) => boolean, // c3
 |};
 
 type PaletteMode = 'closed' | 'command' | 'option';
@@ -90,10 +90,11 @@ const CommandPalette: React.ComponentType<any> = React.forwardRef<
    * manager and launches command accordingly
    */
   const launchCommand = React.useCallback(
-    (commandName: CommandName) => {
+    (commandName: CommandName): boolean => {
       const command = commandManager.getNamedCommand(commandName);
-      if (!command) return;
+      if (!command) return false;
       handleCommandChoose(command);
+      return true; // c3: lets a shared shortcut fall through to the next command
     },
     [handleCommandChoose, commandManager]
   );

@@ -15,12 +15,16 @@ type Props = {|
   tutorial: Tutorial,
 |};
 
+// c3: GDevelop's video tutorials don't match this editor - never shown.
+const hideTutorials = true;
+
 /**
  * Show a link to a tutorial that can be permanently hidden. Hidden tutorials
  * will be stored in preferences.
  */
 const TutorialMessage = ({ tutorial }: Props): React.Node => {
   const { showTutorialHint } = React.useContext(PreferencesContext);
+  if (hideTutorials) return null;
   return (
     <I18n>
       {({ i18n }) => (
