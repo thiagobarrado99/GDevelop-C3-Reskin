@@ -17,6 +17,7 @@ import { loadScript } from './Utils/LoadScript';
 import { showErrorBox } from './UI/Messages/MessageBox';
 import VersionMetadata from './Version/VersionMetadata';
 import { getThemeWindowBackgroundColor } from './UI/Theme';
+import { applyC3Icons } from './Utils/C3Icons'; // c3
 
 const GD_STARTUP_TIMES = global.GD_STARTUP_TIMES || [];
 
@@ -32,8 +33,9 @@ global.process = global.process || {
 };
 
 // Use the user preferred theme to define the loading screen color.
-document.getElementsByTagName('body')[0].style.backgroundColor =
-  getThemeWindowBackgroundColor();
+document.getElementsByTagName(
+  'body'
+)[0].style.backgroundColor = getThemeWindowBackgroundColor();
 
 const styles = {
   loadingMessage: {
@@ -94,6 +96,7 @@ class Bootstrapper extends Component<{}, State> {
         },
       }).then(gd => {
         global.gd = gd;
+        applyC3Icons(gd); // c3
         GD_STARTUP_TIMES.push([
           'libGD.js initialization done',
           performance.now(),

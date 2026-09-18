@@ -15,6 +15,7 @@ import { BehaviorListItem, isBehaviorUsable } from './BehaviorListItem';
 import C3TileGrid from '../../UI/C3TileGrid'; // c3
 import { translateExtensionCategory } from '../../Utils/Extension/ExtensionCategories'; // c3
 import { C3_EXTENSIONS } from '../../Utils/C3Extensions'; // c3
+import { c3BehaviorIcon } from '../../Utils/C3Icons'; // c3
 import {
   C3_BEHAVIORS,
   c3Label,
@@ -383,7 +384,7 @@ export const BehaviorStore = ({
                 id: tile ? tile.id : item.type,
                 name: tile ? c3Label(tile.name, language) : item.fullName,
                 description: item.description,
-                iconUrl: item.previewIconUrl,
+                iconUrl: tile ? c3BehaviorIcon(tile.icon) : item.previewIconUrl,
                 category: tile
                   ? c3Label(tile.category, language)
                   : translateExtensionCategory(item.category, i18n),

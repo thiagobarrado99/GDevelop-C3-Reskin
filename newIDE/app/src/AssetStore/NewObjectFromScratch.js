@@ -23,6 +23,7 @@ import { ObjectStoreContext, type ObjectCategory } from './ObjectStoreContext';
 import { ListSearchResults } from '../UI/Search/ListSearchResults';
 import { ObjectListItem } from './ObjectListItem';
 import C3TileGrid from '../UI/C3TileGrid'; // c3
+import { c3ObjectIcon } from '../Utils/C3Icons'; // c3
 import { translateExtensionCategory } from '../Utils/Extension/ExtensionCategories'; // c3
 import { C3_OBJECTS, type C3Object } from '../Utils/C3Objects'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
@@ -371,7 +372,7 @@ export default function NewObjectFromScratch({
                 ? c3Label(tile.name, preferences.values.language)
                 : header.fullName,
               description: header.description,
-              iconUrl: header.previewIconUrl,
+              iconUrl: tile ? c3ObjectIcon(tile.icon) : header.previewIconUrl,
               category: tile
                 ? c3Label(tile.category, preferences.values.language)
                 : translateExtensionCategory(header.category, i18n),

@@ -2,6 +2,8 @@
 
 import * as React from 'react';
 import ReactDOM from 'react-dom'; // c3
+import ChevronArrowBottom from '../../UI/CustomSvgIcons/ChevronArrowBottom'; // c3
+import ChevronArrowRight from '../../UI/CustomSvgIcons/ChevronArrowRight'; // c3
 import { t, Trans } from '@lingui/macro';
 import { I18n } from '@lingui/react';
 
@@ -70,8 +72,12 @@ const C3BarSection = ({
   const [open, setOpen] = React.useState(true);
   return (
     <div className="c3-bar-section">
-      <div className="c3-bar-section-title" onClick={() => setOpen(!open)}>
-        <span>{open ? '▾' : '▸'}</span>
+      <div
+        className="c3-bar-section-title"
+        role="button"
+        onClick={() => setOpen(!open)}
+      >
+        {open ? <ChevronArrowBottom /> : <ChevronArrowRight />}
         {title}
       </div>
       {open ? (

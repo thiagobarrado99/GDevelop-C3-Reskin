@@ -22,6 +22,7 @@ import {
   rgbOrHexToHexNumber,
   hexNumberToRGBArray,
 } from '../Utils/ColorTransformer';
+import { getC3ObjectIconFilename } from '../Utils/C3Icons'; // c3
 
 const path = optionalRequire('path');
 const electron = optionalRequire('electron');
@@ -60,6 +61,10 @@ const ObjectsRenderingService = {
     objectConfiguration: gdObjectConfiguration
   ): any {
     const objectType = objectConfiguration.getType();
+    // c3: flat icons for every type but sprites (they show their first frame).
+    const c3Icon =
+      objectType !== 'Sprite' && getC3ObjectIconFilename(objectType);
+    if (c3Icon) return c3Icon;
     if (this.renderers.hasOwnProperty(objectType))
       return this.renderers[objectType].getThumbnail(
         project,
