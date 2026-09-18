@@ -74,6 +74,7 @@ Hide
 - [x] Layout colours: new layouts default to rgb(50, 50, 50) (project data, `MainFrame/index.js` + `ProjectManager/index.js`); dark `#1f1f1f` surround outside the layout frame, layout colour inside (`InstancesEditor/Background.js`)
 - [x] Canvas hover tooltip says "Layer 0" for the base layer (`HighlightedInstance.js`)
 - [x] Align ▸ submenu (Left · Horizontal center · Right · Top · Vertical center · Bottom on the selection's bounding box, `SceneEditor/index.js` `_alignSelection`); Z-order bar = GDevelop's Instances list (toolbar button, sorted by Z by default)
+- [ ] Clicking an object row in the Objects panel (project bar) makes its instances glow an outline on the canvas for ~1 s, so students find where the object is (user request 2026-09-18; `ObjectsList` `onSelectObject` → `SceneEditor` → `InstancesEditor` `HighlightedInstance`-style PIXI outline with a timeout)
 
 ## Phase 6 — Colour coding & behaviour parity (see CLAUDE.md "Colour coding, behaviours and icons")
 - [x] Colour tokens as theme-scoped CSS variables `--c3-layout-color` / `--c3-event-sheet-color` / `--c3-behavior-color` (`#f75651`, from the C3 behaviour icons) / `--c3-effect-color` / `--c3-object-color` (`#00768e`, from the C3 object icons) (`ConstructLikeDark.css`; components use `var(--c3-…-color, inherit)` so other themes are untouched)
