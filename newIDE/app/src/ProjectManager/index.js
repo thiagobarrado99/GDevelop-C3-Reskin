@@ -23,7 +23,7 @@ import { type HotReloadPreviewButtonProps } from '../HotReload/HotReloadPreviewB
 import { type GamesList } from '../GameDashboard/UseGamesList';
 import { type ResourceManagementProps } from '../ResourcesList/ResourceSource';
 import InstalledExtensionDetails from './InstalledExtensionDetails';
-import { addDefaultLightToAllLayers } from '../ProjectCreation/CreateProject';
+import { addC3DefaultLightsToAllLayers } from '../Utils/C3Layers'; // c3
 import ErrorBoundary from '../UI/ErrorBoundary';
 import useForceUpdate from '../Utils/UseForceUpdate';
 import AuthenticatedUserContext from '../Profile/AuthenticatedUserContext';
@@ -677,7 +677,7 @@ const ProjectManager = React.forwardRef<Props, ProjectManagerInterface>(
         const newScene = project.insertNewLayout(newName, index + 1);
         newScene.setName(newName);
         newScene.updateBehaviorsSharedData(project);
-        addDefaultLightToAllLayers(newScene);
+        addC3DefaultLightsToAllLayers(project, newScene); // c3
         newScene.setBackgroundColor(50, 50, 50); // c3: dark default, like Construct
 
         onSceneAdded();

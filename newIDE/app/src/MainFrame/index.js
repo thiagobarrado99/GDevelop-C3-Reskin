@@ -241,7 +241,7 @@ import useCreateProject, {
 } from '../Utils/UseCreateProject';
 import newNameGenerator from '../Utils/NewNameGenerator';
 import { renameLayoutInProject } from '../Utils/Layout';
-import { addDefaultLightToAllLayers } from '../ProjectCreation/CreateProject';
+import { addC3DefaultLightsToAllLayers } from '../Utils/C3Layers'; // c3
 import { type NewProjectSetup } from '../ProjectCreation/NewProjectSetupDialog';
 import useEditorTabsStateSaving from './EditorTabs/UseEditorTabsStateSaving';
 import PixiResourcesLoader from '../ObjectsRendering/PixiResourcesLoader';
@@ -4247,7 +4247,7 @@ const MainFrame = (props: Props): React.MixedElement => {
         const layoutName = i18n._(t`Untitled scene`);
         currentProject.insertNewLayout(layoutName, 0);
         const layout = currentProject.getLayout(layoutName);
-        addDefaultLightToAllLayers(layout);
+        addC3DefaultLightsToAllLayers(currentProject, layout); // c3
         layout.setBackgroundColor(50, 50, 50); // c3: dark default, like Construct
       }
       openLayout(

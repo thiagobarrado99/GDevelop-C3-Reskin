@@ -44,7 +44,7 @@ import { type HTMLDataset } from '../Utils/HTMLDataset';
 import LightbulbIconOn from '../UI/CustomSvgIcons/LightbulbOn';
 import LightbulbIconOff from '../UI/CustomSvgIcons/LightbulbOff';
 import { mapReverseFor } from '../Utils/MapFor';
-import { addDefaultLightToLayer } from '../ProjectCreation/CreateProject';
+import { addC3DefaultLightsToLayer } from '../Utils/C3Layers'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -491,7 +491,7 @@ const LayersList = React.forwardRef<Props, LayersListInterface>(
         );
         layersContainer.insertNewLayer(name, layersContainer.getLayersCount());
         const newLayer = layersContainer.getLayer(name);
-        addDefaultLightToLayer(newLayer);
+        addC3DefaultLightsToLayer(project, newLayer); // c3
         onCreateLayer();
         onLayerModified();
 
@@ -512,6 +512,7 @@ const LayersList = React.forwardRef<Props, LayersListInterface>(
         onCreateLayer,
         onLayerModified,
         onSelectLayer,
+        project,
       ]
     );
 

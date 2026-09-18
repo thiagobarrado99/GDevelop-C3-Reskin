@@ -15,7 +15,7 @@ import VisibilityOffIcon from '../UI/CustomSvgIcons/VisibilityOff';
 import LockIcon from '../UI/CustomSvgIcons/Lock';
 import LockOpenIcon from '../UI/CustomSvgIcons/LockOpen';
 import Radio from '@material-ui/core/Radio';
-import { addDefaultLightToLayer } from '../ProjectCreation/CreateProject'; // c3
+import { addC3DefaultLightsToLayer } from '../Utils/C3Layers'; // c3
 
 const styles = {
   tooltip: { marginRight: 5, verticalAlign: 'bottom' },
@@ -136,7 +136,10 @@ export class LayerTreeViewItemContent implements TreeViewItemContent {
       name,
       layersContainer.getLayerPosition(this.layer.getName()) + offset
     );
-    addDefaultLightToLayer(layersContainer.getLayer(name));
+    addC3DefaultLightsToLayer(
+      this.props.project,
+      layersContainer.getLayer(name)
+    );
     this.props.triggerOnLayersModified();
     this.props.forceUpdateList();
   }
