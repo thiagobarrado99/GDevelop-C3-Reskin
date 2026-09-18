@@ -12,7 +12,11 @@ import { Column } from '../../UI/Grid';
 import { enumerateObjectsAndGroups } from '../../ObjectsList/EnumerateObjects';
 import ObjectsRenderingService from '../../ObjectsRendering/ObjectsRenderingService';
 import { ProjectScopedContainersAccessor } from '../../InstructionOrExpression/EventsScope';
-import { C3_PSEUDO_OBJECTS } from '../../Utils/C3PseudoObjects';
+import {
+  C3_PSEUDO_OBJECTS,
+  C3_SYSTEM_EXTENSION_FILTER,
+  type C3ExtensionFilter,
+} from '../../Utils/C3PseudoObjects';
 import { c3Label, getC3Language } from '../../Utils/C3Language';
 import { c3ObjectIcon } from '../../Utils/C3Icons';
 
@@ -28,7 +32,7 @@ type Props = {|
   project: gdProject,
   projectScopedContainersAccessor: ProjectScopedContainersAccessor,
   isCondition: boolean,
-  onChoose: (objectName: ?string, extensionNames?: Array<string>) => void,
+  onChoose: (objectName: ?string, extensionFilter?: C3ExtensionFilter) => void,
 |};
 
 const PSEUDO_TILE_PREFIX = 'c3-pseudo-';
@@ -65,11 +69,13 @@ const C3ObjectPicker = ({
             instant
             colorVariable="--c3-object-label-color"
             onChoose={id => {
-              if (id === SYSTEM_TILE_ID) return onChoose(null);
+              if (id === SYSTEM_TILE_ID)
+                return onChoose(null, C3_SYSTEM_EXTENSION_FILTER);
               const pseudo = C3_PSEUDO_OBJECTS.find(
                 pseudo => PSEUDO_TILE_PREFIX + pseudo.id === id
               );
-              if (pseudo) return onChoose(null, pseudo.extensionNames);
+              if (pseudo)
+                return onChoose(null, { include: pseudo.extensionNames });
               onChoose(id);
             }}
             tiles={[

@@ -3,6 +3,13 @@
 // Mouse, Audio…). Step 1 of the add-condition/action picker shows them as
 // tiles after "System"; choosing one lists only that extension's
 // instructions. `icon` is the slug in C3-Icons/object_icons.
+// Step 2 filter: a pseudo-object tile keeps only its extensions' instructions,
+// the "System" tile drops every pseudo-object's (they moved out of System).
+export type C3ExtensionFilter = {|
+  include?: Array<string>,
+  exclude?: Array<string>,
+|};
+
 export type C3PseudoObject = {|
   id: string,
   name: {| en: string, pt_BR: string |},
@@ -84,3 +91,7 @@ export const C3_PSEUDO_OBJECTS: Array<C3PseudoObject> = [
     extensionNames: ['BuiltinTime'],
   },
 ];
+
+export const C3_SYSTEM_EXTENSION_FILTER: C3ExtensionFilter = {
+  exclude: [].concat(...C3_PSEUDO_OBJECTS.map(pseudo => pseudo.extensionNames)),
+};

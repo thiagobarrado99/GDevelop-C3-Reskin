@@ -41,6 +41,7 @@ import { fillBehaviorProperty } from '../../EventsFunctionsExtensionEditor/Event
 import { type VariableDialogOpeningProps } from '../../VariablesList/VariablesEditorDialog';
 import { ExtensionStoreContext } from '../../AssetStore/ExtensionStore/ExtensionStoreContext';
 import C3ObjectPicker from './C3ObjectPicker'; // c3
+import { type C3ExtensionFilter } from '../../Utils/C3PseudoObjects'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -179,9 +180,9 @@ const InstructionEditorDialog = ({
   const [systemChosen, setSystemChosen] = React.useState(!isNewInstruction);
   // c3: pseudo-object tile (Keyboard, Mouse…) chosen - only its extensions.
   const [
-    systemExtensionNames,
-    setSystemExtensionNames,
-  ] = React.useState<?Array<string>>(null);
+    systemExtensionFilter,
+    setSystemExtensionFilter,
+  ] = React.useState<?C3ExtensionFilter>(null);
   const instructionType: string = instruction.getType();
   const [
     newBehaviorDialogOpen,
@@ -369,13 +370,13 @@ const InstructionEditorDialog = ({
         project={project}
         projectScopedContainersAccessor={projectScopedContainersAccessor}
         isCondition={isCondition}
-        onChoose={(objectName, extensionNames) => {
+        onChoose={(objectName, extensionFilter) => {
           if (objectName) {
             chooseObject(objectName);
             setStep('object-instructions');
           } else {
             setCurrentInstructionOrObjectSelectorTab('free-instructions');
-            setSystemExtensionNames(extensionNames || null);
+            setSystemExtensionFilter(extensionFilter || null);
             setSystemChosen(true);
           }
         }}
@@ -393,7 +394,7 @@ const InstructionEditorDialog = ({
             currentTab={currentInstructionOrObjectSelectorTab}
             onChangeTab={setCurrentInstructionOrObjectSelectorTab}
             hideTabs={useC3Steps} // c3
-            filterExtensionNames={systemExtensionNames} // c3
+            extensionFilter={systemExtensionFilter} // c3
             isCondition={isCondition}
             chosenInstructionType={
               !chosenObjectName ? instructionType : undefined

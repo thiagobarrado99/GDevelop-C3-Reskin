@@ -67,6 +67,7 @@ import {
 import InAppTutorialContext from '../../InAppTutorial/InAppTutorialContext';
 import { exceptionallyGuardAgainstDeadObject } from '../../Utils/IsNullPtr';
 import OpenIcon from '../../UI/CustomSvgIcons/ShareExternal';
+import { type C3ExtensionFilter } from '../../Utils/C3PseudoObjects'; // c3
 
 const gd: libGDevelop = global.gd;
 
@@ -201,7 +202,7 @@ type Props = {|
   currentTab: TabName,
   onChangeTab: TabName => void,
   hideTabs?: boolean, // c3: the dialog picks the tab (Construct's "System" tile)
-  filterExtensionNames?: ?Array<string>, // c3: only these extensions' free instructions
+  extensionFilter?: ?C3ExtensionFilter, // c3: free instructions kept in step 2
   isCondition: boolean,
   focusOnMount?: boolean,
   chosenInstructionType: ?string,
@@ -230,7 +231,7 @@ const InstructionOrObjectSelector: React.ComponentType<{
       currentTab,
       onChangeTab,
       hideTabs,
-      filterExtensionNames,
+      extensionFilter,
       isCondition,
       focusOnMount,
       chosenInstructionType,
@@ -251,15 +252,19 @@ const InstructionOrObjectSelector: React.ComponentType<{
     const freeInstructionTreeViewRef = React.useRef<?ReadOnlyTreeViewInterface<TreeViewItem>>(
       null
     );
-    // c3: a pseudo-object tile keeps only its extensions' instructions.
+    // c3: a pseudo-object tile keeps only its extensions' instructions, the
+    // System tile drops theirs.
     const filterByExtension = React.useCallback(
-      (instructions: Array<EnumeratedInstructionMetadata>) =>
-        filterExtensionNames
-          ? instructions.filter(({ scope }) =>
-              filterExtensionNames.includes(scope.extension.name)
-            )
-          : instructions,
-      [filterExtensionNames]
+      (instructions: Array<EnumeratedInstructionMetadata>) => {
+        if (!extensionFilter) return instructions;
+        const { include, exclude } = extensionFilter;
+        return instructions.filter(
+          ({ scope }) =>
+            (!include || include.includes(scope.extension.name)) &&
+            (!exclude || !exclude.includes(scope.extension.name))
+        );
+      },
+      [extensionFilter]
     );
     const freeInstructionsInfoTreeRef = React.useRef<InstructionOrExpressionTreeNode>(
       createTree(
