@@ -90,6 +90,7 @@ import { type EventsScope } from '../InstructionOrExpression/EventsScope';
 import type { EventPath } from '../Utils/EventPath';
 import {
   pasteEventsFromClipboardInSelection,
+  pasteEventsFromClipboardAtEnd, // c3
   copySelectionToClipboard,
   pasteInstructionsFromClipboardInSelection,
   hasClipboardEvents,
@@ -290,6 +291,7 @@ type State = {|
   navigationHighlightEvent: ?gdBaseEvent,
 
   layoutVariablesDialogOpen: boolean,
+  c3VariablesGlobalTab: boolean, // c3: the dialog opens on the global tab
 
   allEventsMetadata: Array<EventMetadata>,
 
@@ -396,6 +398,7 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
     navigationHighlightEvent: null,
 
     layoutVariablesDialogOpen: false,
+    c3VariablesGlobalTab: false,
 
     allEventsMetadata: ([]: Array<empty>),
 
@@ -1025,7 +1028,41 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
   };
 
   openSceneVariables = (open: boolean = true) => {
-    this.setState({ layoutVariablesDialogOpen: open });
+    this.setState({
+      layoutVariablesDialogOpen: open,
+      c3VariablesGlobalTab: false,
+    });
+  };
+
+  // c3: "Add… ▸ Add global variable".
+  openGlobalVariables = () => {
+    this.setState({
+      layoutVariablesDialogOpen: true,
+      c3VariablesGlobalTab: true,
+    });
+  };
+
+  // c3: "Add… ▸ Paste" - next to the selection, else at the end of the sheet.
+  pasteEventsAtEnd = (): void => {
+    if (hasEventSelected(this.state.selection)) {
+      this.pasteEvents();
+      return;
+    }
+    const { project, events } = this.props;
+    const count = events.getEventsCount();
+    if (!pasteEventsFromClipboardAtEnd(project, events)) return;
+    const pastedEvents = [];
+    for (let i = count; i < events.getEventsCount(); i++)
+      pastedEvents.push(events.getEventAt(i));
+    if (this._eventsTree) {
+      this._eventsTree.forceEventsUpdate(() => {
+        const positions = this._getChangedEventRows(pastedEvents);
+        this._saveChangesToHistory('ADD', {
+          positionsBeforeAction: positions,
+          positionAfterAction: positions,
+        });
+      });
+    }
   };
 
   openVariablesEditor = (
@@ -2941,6 +2978,8 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
                     }
                     selection={this.state.selection}
                     onInstructionClick={this.selectInstruction}
+                    onPasteEventsAtEnd={this.pasteEventsAtEnd} // c3
+                    onOpenGlobalVariables={this.openGlobalVariables} // c3
                     onInstructionDoubleClick={this.openInstructionEditor}
                     onInstructionContextMenu={this.openInstructionContextMenu}
                     onAddInstructionContextMenu={
@@ -3227,6 +3266,7 @@ export class EventsSheetComponentWithoutHandle extends React.Component<
             onCancel={() => this.openSceneVariables(false)}
             onApply={() => this.openSceneVariables(false)}
             hotReloadPreviewButtonProps={hotReloadPreviewButtonProps}
+            isGlobalTabInitiallyOpen={this.state.c3VariablesGlobalTab} // c3
             isListLocked={false}
             initiallySelectedVariable={null}
           />

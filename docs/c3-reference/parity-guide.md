@@ -56,7 +56,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 - `EventsSheet/index.js` `addNewEvent` / the `EmptyPlaceholder` `add-event-button` (`EventsTree/index.js` line ~1125) and `Add…▸ Evento` (`EventsTree/BottomButtons.js` `makeMenuTemplateBuilderForEvents`): after inserting the standard event, select it and open the instruction editor for a new condition (the same call the `C` shortcut makes — `ADD_CONDITION` in `KeyboardShortcuts/DefaultShortcuts.js`). Cancelling the picker keeps the empty event (Construct deletes it — match that: remove the event on cancel when it has no conditions/actions).
 - Check: click `Adicionar evento` → picker opens; `Pronto` → event with the condition; cancel → no event left.
 
-### B2. Add… menu = Construct's
+### B2. Add… menu = Construct's — done 2026-09-18 (`EventsTree/BottomButtons.js`; `Colar` pastes at the end when nothing is selected, `Adicionar variável global` opens the variables dialog on the global tab)
 - `EventsTree/BottomButtons.js` + `EventsSheet/index.js` context menu builder: top level `Adicionar evento · Adicionar comentário · Adicionar grupo · Adicionar variável global · Incluir folha de eventos · Colar · Loops ▸ (Senão · Para cada objeto · Para cada variável filha · Repetir · Enquanto)`. `Adicionar variável global` opens the global variables dialog (`MainFrame` `openGlobalVariablesDialog` — pass the callback down through `EventsSheet` props). `Adicionar função` / `ação personalizada` are omitted (extensions are hidden). pt-BR in `reskinPtBr`.
 - Check: text dump of the menu equals the list above.
 

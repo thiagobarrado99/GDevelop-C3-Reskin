@@ -440,6 +440,8 @@ type EventsTreeProps = {|
     eventContext: EventContext
   ) => void,
   onAddNewEvent: (eventType: string, eventsList: gdEventsList) => void,
+  onPasteEventsAtEnd?: () => void, // c3
+  onOpenGlobalVariables?: () => void, // c3
   onOpenExternalEvents: string => void,
   onOpenLayout: string => void,
   showObjectThumbnails: boolean,
@@ -1067,6 +1069,10 @@ const EventsTree: React.ComponentType<{
               <BottomButtons
                 onAddEvent={(eventType: string) =>
                   props.onAddNewEvent(eventType, props.events)
+                }
+                onPaste={props.onPasteEventsAtEnd || (() => {})}
+                onOpenGlobalVariables={
+                  props.onOpenGlobalVariables || (() => {})
                 }
                 DnDComponent={EventDropTarget}
                 draggedNode={draggedNode}

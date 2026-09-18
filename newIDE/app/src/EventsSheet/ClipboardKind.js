@@ -130,12 +130,13 @@ export const copySelectionToClipboard = (
   conditionsList.delete();
 };
 
-export const pasteEventsFromClipboardInSelection = (
+// c3: shared by the paste-in-selection and paste-at-end paths.
+const pasteEventsFromClipboardAt = (
   project: gdProject,
-  selection: SelectionState
+  eventsList: gdEventsList,
+  indexInList: number
 ): boolean => {
-  const lastSelectEventContext = getLastSelectedEventContext(selection);
-  if (!lastSelectEventContext || !hasClipboardEvents()) return false;
+  if (!hasClipboardEvents()) return false;
 
   const clipboardContent = Clipboard.get(CLIPBOARD_KIND);
   const eventsListContent = SafeExtractor.extractArrayProperty(
@@ -144,24 +145,44 @@ export const pasteEventsFromClipboardInSelection = (
   );
   if (!eventsListContent) return false;
 
-  const eventsList = new gd.EventsList();
+  const pastedEventsList = new gd.EventsList();
   unserializeFromJSObject(
-    eventsList,
+    pastedEventsList,
     eventsListContent,
     'unserializeFrom',
     project
   );
 
-  lastSelectEventContext.eventsList.insertEvents(
-    eventsList,
+  eventsList.insertEvents(
+    pastedEventsList,
     0,
-    eventsList.getEventsCount(),
-    lastSelectEventContext.indexInList
+    pastedEventsList.getEventsCount(),
+    indexInList
   );
-  eventsList.delete();
+  pastedEventsList.delete();
 
   return true;
 };
+
+export const pasteEventsFromClipboardInSelection = (
+  project: gdProject,
+  selection: SelectionState
+): boolean => {
+  const lastSelectEventContext = getLastSelectedEventContext(selection);
+  if (!lastSelectEventContext) return false;
+  return pasteEventsFromClipboardAt(
+    project,
+    lastSelectEventContext.eventsList,
+    lastSelectEventContext.indexInList
+  );
+};
+
+// c3: "Add… ▸ Paste" with nothing selected pastes at the end of the sheet.
+export const pasteEventsFromClipboardAtEnd = (
+  project: gdProject,
+  eventsList: gdEventsList
+): boolean =>
+  pasteEventsFromClipboardAt(project, eventsList, eventsList.getEventsCount());
 
 export const pasteInstructionsFromClipboardInSelection = (
   project: gdProject,

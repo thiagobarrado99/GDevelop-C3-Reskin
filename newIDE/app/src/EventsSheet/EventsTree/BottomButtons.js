@@ -5,12 +5,17 @@ import { I18n } from '@lingui/react';
 import * as React from 'react';
 import { Line, Column } from '../../UI/Grid';
 import ElementWithMenu from '../../UI/Menu/ElementWithMenu';
-import { enumerateEventsMetadata } from '../EnumerateEventsMetadata';
+import {
+  enumerateEventsMetadata,
+  type EventMetadata,
+} from '../EnumerateEventsMetadata';
 import { type DropTargetComponent } from '../../UI/DragAndDrop/DropTarget';
 import { type SortableTreeNode } from './SortableEventsTree';
 import { moveEventToEventsList } from './helpers';
 import GDevelopThemeContext from '../../UI/Theme/GDevelopThemeContext';
 import { useScreenType } from '../../UI/Responsive/ScreenTypeMeasurer';
+import { hasClipboardEvents } from '../ClipboardKind'; // c3
+import { type I18n as I18nType } from '@lingui/core';
 
 const styles = {
   addButton: {
@@ -24,6 +29,8 @@ const styles = {
 
 type Props = {|
   onAddEvent: (eventType: string) => void,
+  onPaste: () => void, // c3
+  onOpenGlobalVariables: () => void, // c3
 
   // Connect a drop target to be able to drop an event at the end of the sheet.
   DnDComponent: DropTargetComponent<SortableTreeNode>,
@@ -31,21 +38,59 @@ type Props = {|
   rootEventsList: gdEventsList,
 |};
 
+// c3: Construct's "Add…" menu; GDevelop's loop events sit in a submenu.
+const c3TopLevel = [
+  ['BuiltinCommonInstructions::Standard', t`Add event`],
+  ['BuiltinCommonInstructions::Comment', t`Add comment`],
+  ['BuiltinCommonInstructions::Group', t`Add group`],
+];
+const c3Loops = [
+  'BuiltinCommonInstructions::Else',
+  'BuiltinCommonInstructions::ForEach',
+  'BuiltinCommonInstructions::ForEachChildVariable',
+  'BuiltinCommonInstructions::Repeat',
+  'BuiltinCommonInstructions::While',
+];
 const makeMenuTemplateBuilderForEvents = (
-  onAddEvent: (eventType: string) => void
-) => () =>
-  enumerateEventsMetadata().map(metadata => {
-    return {
-      label: metadata.fullName,
-      click: () => onAddEvent(metadata.type),
-    };
+  i18n: I18nType,
+  onAddEvent: (eventType: string) => void,
+  onPaste: () => void,
+  onOpenGlobalVariables: () => void
+) => () => {
+  const metadataByType: { [string]: EventMetadata } = {};
+  enumerateEventsMetadata().forEach(metadata => {
+    metadataByType[metadata.type] = metadata;
   });
+  return [
+    ...c3TopLevel.map(([type, label]) => ({
+      label: i18n._(label),
+      click: () => onAddEvent(type),
+    })),
+    { label: i18n._(t`Add global variable`), click: onOpenGlobalVariables },
+    {
+      label: i18n._(t`Include event sheet`),
+      click: () => onAddEvent('BuiltinCommonInstructions::Link'),
+    },
+    { label: i18n._(t`Paste`), click: onPaste, enabled: hasClipboardEvents() },
+    {
+      label: i18n._(t`Loops`),
+      submenu: c3Loops
+        .filter(type => metadataByType[type])
+        .map(type => ({
+          label: metadataByType[type].fullName,
+          click: () => onAddEvent(type),
+        })),
+    },
+  ];
+};
 
 const addButtonTooltipLabelMouse = t`Right-click for more events`;
 const addButtonTooltipLabelTouch = t`Long press for more events`;
 
 export default function BottomButtons({
   onAddEvent,
+  onPaste,
+  onOpenGlobalVariables,
   DnDComponent,
   draggedNode,
   rootEventsList,
@@ -101,7 +146,10 @@ export default function BottomButtons({
                       }
                       // $FlowFixMe[incompatible-type]
                       buildMenuTemplate={makeMenuTemplateBuilderForEvents(
-                        onAddEvent
+                        i18n,
+                        onAddEvent,
+                        onPaste,
+                        onOpenGlobalVariables
                       )}
                     />
                     <ElementWithMenu
@@ -112,7 +160,10 @@ export default function BottomButtons({
                       }
                       // $FlowFixMe[incompatible-type]
                       buildMenuTemplate={makeMenuTemplateBuilderForEvents(
-                        onAddEvent
+                        i18n,
+                        onAddEvent,
+                        onPaste,
+                        onOpenGlobalVariables
                       )}
                     />
                   </Line>

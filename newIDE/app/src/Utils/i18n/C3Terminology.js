@@ -28,6 +28,11 @@ const reskinPtBr: { [string]: string } = {
   'Click an item to see its description.':
     'Clique em um item para ver sua descrição.',
   'Also available': 'Também disponíveis',
+  'Add event': 'Adicionar evento',
+  'Add comment': 'Adicionar comentário',
+  'Add group': 'Adicionar grupo',
+  'Add global variable': 'Adicionar variável global',
+  'Include event sheet': 'Incluir folha de eventos',
   'Already in the events: pick this tile in Add condition / Add action.':
     'Já disponível nos eventos: escolha esta peça em Adicionar condição / Adicionar ação.',
   'Add layer below': 'Adicionar camada abaixo',
