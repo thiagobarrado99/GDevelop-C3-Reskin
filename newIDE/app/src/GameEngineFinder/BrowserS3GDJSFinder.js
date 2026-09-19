@@ -10,6 +10,8 @@ type FileSet =
   | 'cocos2d-js'
   | 'facebook-instant-games';
 
+const C3_SELF_HOSTED_GDJS: boolean = true; // c3
+
 const filesToDownload: { [FileSet]: Array<string> } = {
   preview: ['/Runtime/index.html'],
   web: ['/Runtime/index.html', '/Runtime/Electron/LICENSE.GDevelop.txt'],
@@ -48,6 +50,13 @@ export const findGDJS = (
   // Get GDJS for this version. If you updated the version,
   // run `newIDE/web-app/scripts/deploy-GDJS-Runtime` script.
   let gdjsRoot = `https://resources.gdevelop-app.com/GDJS-${getIDEVersionWithHash()}`;
+
+  // c3: Assemble3 is self-hosted - the runtime is bundled with the web build
+  // (`npm run build:editor` copies it to build/GDJS; our fork's version is not
+  // on GDevelop's CDN and the platformer runtime is patched).
+  if (C3_SELF_HOSTED_GDJS && !Window.isDev()) {
+    gdjsRoot = `${process.env.PUBLIC_URL || ''}/GDJS`;
+  }
 
   if (Window.isDev()) {
     gdjsRoot =

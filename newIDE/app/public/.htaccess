@@ -1,0 +1,21 @@
+# c3: Assemble3 editor served by Apache under /editor/ (copied into the build
+# by CRA). The entry points are never cached; the hashed assets and the game
+# runtime are cached for long.
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|service-worker\.js|asset-manifest\.json|manifest\.json)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType application/wasm "access plus 1 year"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+# libGD.js / libGD.wasm are large: let Apache compress what is not already.
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE application/javascript text/css text/html application/json application/wasm
+</IfModule>
