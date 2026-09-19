@@ -657,6 +657,52 @@ const EditorTabsPane: React.ComponentType<{
     [askAiPaneIdentifier, onOpenAskAi, onSetPaneDrawerState]
   );
 
+  // c3: one top row - buttons · tabs · editor tools (parity guide B11).
+  const renderC3Toolbar = (c3Tabs?: React.Node) => (
+    <Toolbar
+      ref={toolbarRef}
+      hidden={tabsTitleBarAndEditorToolbarHidden}
+      showProjectButtons={
+        !['start page', 'debugger', 'ask-ai', 'global-search', null].includes(
+          currentTab ? currentTab.key : null
+        )
+      }
+      showPreviewAndShareButtons={
+        // A gameplay test is run with its own button: no preview or share.
+        !currentTab || currentTab.kind !== 'gameplay-test'
+      }
+      canSave={canSave}
+      onSave={saveProject}
+      openShareDialog={() =>
+        openShareDialog(/* leave the dialog decide which tab to open */)
+      }
+      isSharingEnabled={isSharingEnabled}
+      onOpenDebugger={launchDebuggerAndPreview}
+      hasPreviewsRunning={hasPreviewsRunning}
+      onPreviewWithoutHotReload={launchNewPreview}
+      onNetworkPreview={launchNetworkPreview}
+      onHotReloadPreview={launchHotReloadPreview}
+      onLaunchPreviewWithDiagnosticReport={launchPreviewWithDiagnosticReport}
+      canDoNetworkPreview={canDoNetworkPreview}
+      setPreviewOverride={setPreviewOverride}
+      isPreviewEnabled={
+        !!currentProject && currentProject.getLayoutsCount() > 0
+      }
+      previewState={previewState}
+      onOpenVersionHistory={openVersionHistoryPanel}
+      onOpenProjectManager={() => openProjectManager(true)} // c3
+      onUndo={() => c3UndoOrRedo('undo')} // c3
+      onRedo={() => c3UndoOrRedo('redo')} // c3
+      checkedOutVersionStatus={checkedOutVersionStatus}
+      onQuitVersionHistory={onQuitVersionHistory}
+      canQuitVersionHistory={!isSavingProject}
+      toolbarButtons={toolbarButtons}
+      projectPath={projectPath}
+      triggerNpmScript={triggerNpmScript}
+      c3Tabs={c3Tabs}
+    />
+  );
+
   return (
     <div style={styles.container} ref={containerRef}>
       {isDrawer ? (
@@ -747,49 +793,11 @@ const EditorTabsPane: React.ComponentType<{
                 !rightPaneDrawerOpen
           }
           onAskAiClicked={onOpenAskAiFromTitlebar}
+          c3RenderRow={renderC3Toolbar} // c3
         />
       )}
-      <Toolbar
-        ref={toolbarRef}
-        hidden={tabsTitleBarAndEditorToolbarHidden}
-        showProjectButtons={
-          !['start page', 'debugger', 'ask-ai', 'global-search', null].includes(
-            currentTab ? currentTab.key : null
-          )
-        }
-        showPreviewAndShareButtons={
-          // A gameplay test is run with its own button: no preview or share.
-          !currentTab || currentTab.kind !== 'gameplay-test'
-        }
-        canSave={canSave}
-        onSave={saveProject}
-        openShareDialog={() =>
-          openShareDialog(/* leave the dialog decide which tab to open */)
-        }
-        isSharingEnabled={isSharingEnabled}
-        onOpenDebugger={launchDebuggerAndPreview}
-        hasPreviewsRunning={hasPreviewsRunning}
-        onPreviewWithoutHotReload={launchNewPreview}
-        onNetworkPreview={launchNetworkPreview}
-        onHotReloadPreview={launchHotReloadPreview}
-        onLaunchPreviewWithDiagnosticReport={launchPreviewWithDiagnosticReport}
-        canDoNetworkPreview={canDoNetworkPreview}
-        setPreviewOverride={setPreviewOverride}
-        isPreviewEnabled={
-          !!currentProject && currentProject.getLayoutsCount() > 0
-        }
-        previewState={previewState}
-        onOpenVersionHistory={openVersionHistoryPanel}
-        onOpenProjectManager={() => openProjectManager(true)} // c3
-        onUndo={() => c3UndoOrRedo('undo')} // c3
-        onRedo={() => c3UndoOrRedo('redo')} // c3
-        checkedOutVersionStatus={checkedOutVersionStatus}
-        onQuitVersionHistory={onQuitVersionHistory}
-        canQuitVersionHistory={!isSavingProject}
-        toolbarButtons={toolbarButtons}
-        projectPath={projectPath}
-        triggerNpmScript={triggerNpmScript}
-      />
+      {/* c3: on a normal pane the toolbar lives in the titlebar row (c3RenderRow). */}
+      {isDrawer ? renderC3Toolbar() : null}
       <SpecificDimensionsWindowSizeProvider
         innerWidth={paneWidth}
         innerHeight={paneHeight}

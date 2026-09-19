@@ -39,6 +39,7 @@ export type MainFrameToolbarProps = {|
   toolbarButtons: Array<ToolbarButtonConfig>,
   projectPath: ?string,
   triggerNpmScript: TriggerNpmScript,
+  c3Tabs?: React.Node, // c3: the document tabs, after the buttons
 
   ...PreviewAndShareButtonsProps,
 |};
@@ -165,46 +166,71 @@ export default (React.forwardRef<MainFrameToolbarProps, ToolbarInterface>(
       [props.checkedOutVersionStatus, gdevelopTheme]
     );
 
+    // c3: Construct's single top row - buttons, then the tabs, then the
+    // editor's own tools at the right. The groups must not grow.
+    const c3Tabs = props.c3Tabs;
+    const c3Group = (node: React.Node) =>
+      c3Tabs ? (
+        <div style={{ display: 'flex', flexShrink: 0, height: '100%' }}>
+          {node}
+        </div>
+      ) : (
+        node
+      );
+
     return (
       <Toolbar borderBottomColor={borderBottomColor} hidden={props.hidden}>
-        {props.showProjectButtons ? (
-          <>
-            <LeftButtonsToolbarGroup
-              onSave={props.onSave}
-              canSave={props.canSave}
-              onOpenVersionHistory={props.onOpenVersionHistory}
-              onOpenProjectManager={props.onOpenProjectManager}
-              onUndo={props.onUndo}
-              onRedo={props.onRedo}
-              checkedOutVersionStatus={props.checkedOutVersionStatus}
-              onQuitVersionHistory={props.onQuitVersionHistory}
-              canQuitVersionHistory={props.canQuitVersionHistory}
-              toolbarButtons={props.toolbarButtons}
-              projectPath={props.projectPath}
-              triggerNpmScript={props.triggerNpmScript}
-            >
-              {props.showPreviewAndShareButtons && (
-                <PreviewAndShareButtons
-                  onPreviewWithoutHotReload={props.onPreviewWithoutHotReload}
-                  onOpenDebugger={props.onOpenDebugger}
-                  onNetworkPreview={props.onNetworkPreview}
-                  onHotReloadPreview={props.onHotReloadPreview}
-                  onLaunchPreviewWithDiagnosticReport={
-                    props.onLaunchPreviewWithDiagnosticReport
-                  }
-                  setPreviewOverride={props.setPreviewOverride}
-                  canDoNetworkPreview={props.canDoNetworkPreview}
-                  isPreviewEnabled={props.isPreviewEnabled}
-                  previewState={props.previewState}
-                  hasPreviewsRunning={props.hasPreviewsRunning}
-                  openShareDialog={props.openShareDialog}
-                  isSharingEnabled={props.isSharingEnabled}
-                />
-              )}
-            </LeftButtonsToolbarGroup>
-          </>
+        {props.showProjectButtons
+          ? c3Group(
+              <LeftButtonsToolbarGroup
+                onSave={props.onSave}
+                canSave={props.canSave}
+                onOpenVersionHistory={props.onOpenVersionHistory}
+                onOpenProjectManager={props.onOpenProjectManager}
+                onUndo={props.onUndo}
+                onRedo={props.onRedo}
+                checkedOutVersionStatus={props.checkedOutVersionStatus}
+                onQuitVersionHistory={props.onQuitVersionHistory}
+                canQuitVersionHistory={props.canQuitVersionHistory}
+                toolbarButtons={props.toolbarButtons}
+                projectPath={props.projectPath}
+                triggerNpmScript={props.triggerNpmScript}
+              >
+                {props.showPreviewAndShareButtons && (
+                  <PreviewAndShareButtons
+                    onPreviewWithoutHotReload={props.onPreviewWithoutHotReload}
+                    onOpenDebugger={props.onOpenDebugger}
+                    onNetworkPreview={props.onNetworkPreview}
+                    onHotReloadPreview={props.onHotReloadPreview}
+                    onLaunchPreviewWithDiagnosticReport={
+                      props.onLaunchPreviewWithDiagnosticReport
+                    }
+                    setPreviewOverride={props.setPreviewOverride}
+                    canDoNetworkPreview={props.canDoNetworkPreview}
+                    isPreviewEnabled={props.isPreviewEnabled}
+                    previewState={props.previewState}
+                    hasPreviewsRunning={props.hasPreviewsRunning}
+                    openShareDialog={props.openShareDialog}
+                    isSharingEnabled={props.isSharingEnabled}
+                  />
+                )}
+              </LeftButtonsToolbarGroup>
+            )
+          : null}
+        {c3Tabs ? (
+          <div
+            style={{
+              flex: 1,
+              minWidth: 0,
+              display: 'flex',
+              alignSelf: 'flex-end',
+              marginLeft: 8,
+            }}
+          >
+            {c3Tabs}
+          </div>
         ) : null}
-        {editorToolbar || <ToolbarGroup />}
+        {c3Group(editorToolbar || <ToolbarGroup />)}
       </Toolbar>
     );
   }

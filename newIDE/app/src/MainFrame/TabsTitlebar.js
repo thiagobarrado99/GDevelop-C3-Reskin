@@ -20,6 +20,7 @@ import { useIsMounted } from '../Utils/UseIsMounted';
 import Window from '../Utils/Window';
 import { isMacLike } from '../Utils/Platform';
 import { AiRequestContext } from '../AiGeneration/AiRequestContext';
+import GDevelopThemeContext from '../UI/Theme/GDevelopThemeContext'; // c3
 
 const WINDOW_DRAGGABLE_PART_CLASS_NAME = 'title-bar-draggable-part';
 const WINDOW_NON_DRAGGABLE_PART_CLASS_NAME = 'title-bar-non-draggable-part';
@@ -60,6 +61,9 @@ type TabsTitlebarProps = {|
 
   displayAskAi: boolean,
   onAskAiClicked: () => void,
+  // c3: Construct's single top row - the toolbar renders the tabs after its
+  // buttons, so the titlebar hands them over instead of placing them itself.
+  c3RenderRow?: (tabs: React.Node) => React.Node,
 |};
 
 const useIsAskAiIconAnimated = (shouldDisplayAskAi: boolean) => {
@@ -114,8 +118,10 @@ export default function TabsTitlebar({
   displayMenuIcon,
   displayAskAi,
   onAskAiClicked,
+  c3RenderRow,
 }: TabsTitlebarProps): React.MixedElement {
   const isTouchscreen = useScreenType() === 'touch';
+  const gdevelopTheme = React.useContext(GDevelopThemeContext); // c3
   const preferences = React.useContext(PreferencesContext);
   const { getWorkingAiRequest } = React.useContext(AiRequestContext);
   // True when an AI request is still working — even if its tab/panel is closed,
@@ -239,7 +245,10 @@ export default function TabsTitlebar({
     <div
       style={{
         ...styles.container,
-        backgroundColor: 'transparent',
+        // c3: the merged row carries the toolbar colour.
+        backgroundColor: c3RenderRow
+          ? gdevelopTheme.toolbar.backgroundColor
+          : 'transparent',
         // Hiding the titlebar should still keep its position in the layout to avoid layout shifts:
         visibility: hidden ? 'hidden' : 'visible',
         pointerEvents: hidden ? undefined : 'all',
@@ -264,7 +273,14 @@ export default function TabsTitlebar({
           <MenuIcon />
         </IconButton>
       )}
-      {renderTabs(onEditorTabHovered, onEditorTabClosing)}
+      {c3RenderRow ? (
+        // A block, so the toolbar row takes the whole remaining width.
+        <div style={{ flex: 1, minWidth: 0 }}>
+          {c3RenderRow(renderTabs(onEditorTabHovered, onEditorTabClosing))}
+        </div>
+      ) : (
+        renderTabs(onEditorTabHovered, onEditorTabClosing)
+      )}
       {shouldDisplayAskAi ? (
         <div
           style={styles.askAiContainer}
