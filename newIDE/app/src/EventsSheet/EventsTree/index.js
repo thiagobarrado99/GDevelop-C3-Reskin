@@ -1131,9 +1131,12 @@ const EventsTree: React.ComponentType<{
               <EmptyPlaceholder
                 title={<Trans>This event sheet is empty</Trans>}
                 description={
-                  <Trans>
-                    Click "Add event": pick a condition, then add its actions.
-                  </Trans>
+                  // Wraps instead of the placeholder's ellipsis.
+                  <span style={{ whiteSpace: 'normal' }}>
+                    <Trans>
+                      Click "Add event": pick a condition, then add its actions.
+                    </Trans>
+                  </span>
                 }
                 actionLabel={<Trans>Add event</Trans>}
                 helpPagePath="/events"
