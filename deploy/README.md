@@ -1,8 +1,9 @@
 # Deploying Assemble3 to EC2 (Ubuntu + Apache)
 
-Layout on the server: `/var/www/assemble` = this Laravel repo; the editor build
-lives in `/var/www/assemble/public/editor` (not in git — built locally and
-uploaded). URLs: `https://assemble.theiagod.com/` (Laravel) and
+Layout on the server: `/var/www/assemble` = this repo (Laravel at the root, the
+editor's sources in `editor/`, which the server does not need to build); the
+editor build lives in `/var/www/assemble/public/editor` (not in git — built
+locally and uploaded). URLs: `https://assemble.theiagod.com/` (Laravel) and
 `https://assemble.theiagod.com/editor/` (editor).
 
 ## 1. Server packages (once)
@@ -29,7 +30,8 @@ FLUSH PRIVILEGES;"
 
 ```sh
 sudo mkdir -p /var/www/assemble && sudo chown $USER:www-data /var/www/assemble
-git clone <this repo> /var/www/assemble && cd /var/www/assemble
+git clone -b c3-reskin --filter=blob:none https://github.com/thiagobarrado99/GDevelop-C3-Reskin.git /var/www/assemble
+cd /var/www/assemble
 composer install --no-dev --optimize-autoloader
 cp .env.example .env         # then set DB_PASSWORD=temp, APP_ENV=production, APP_DEBUG=false
 php artisan key:generate

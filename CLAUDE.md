@@ -2,12 +2,14 @@
 
 Two projects in one folder (since 2026-09-19):
 
-- **`/` (this repo)** — Laravel 13 app for `https://assemble.theiagod.com`: landing page, and later the login/register API and per-user limits. Its own git repo. MySQL `assemble` on localhost, user `root` (password in `.env`, not committed).
-- **`editor/`** — the Assemble3 editor, a GDevelop fork with its **own git repo** (`origin` = thiagobarrado99/GDevelop-C3-Reskin, `upstream` = 4ian/GDevelop). Ignored by this repo. **Read `editor/CLAUDE.md` before touching anything under `editor/`** — all its rules (only `newIDE/`, `// c3:` comments, `c3:` commits, pt-BR strings, LF, headless Playwright checks) still apply there; its dev server is `cd editor/newIDE/app && npm start` (localhost:3000).
+One git repo (`origin` = thiagobarrado99/GDevelop-C3-Reskin, branch `c3-reskin`; `upstream` = 4ian/GDevelop, `master` = upstream):
+
+- **`/`** — Laravel 13 app for `https://assemble.theiagod.com`: landing page, and later the login/register API and per-user limits. MySQL `assemble` on localhost, user `root` (password `temp` on the server; local `.env` is not committed).
+- **`editor/`** — the Assemble3 editor, the GDevelop fork, moved here on 2026-09-19 with its history. **Read `editor/CLAUDE.md` before touching anything under `editor/`** — all its rules (only `newIDE/`, `// c3:` comments, `c3:` commits, pt-BR strings, LF, headless Playwright checks) still apply; its dev server is `cd editor/newIDE/app && npm start` (localhost:3000). Upstream merges: `git merge -X subtree=editor master` (details in `editor/CLAUDE.md`, "Git workflow"). The pre-commit hook runs lint-staged in `editor/newIDE/app`.
 
 The editor's web build is served by this app as static files at `/editor/`: `bash deploy/build-editor.sh` builds `editor/newIDE/app` with `PUBLIC_URL=/editor` (+ the fork's GDJS runtime, `npm run build:editor`) and copies it to `public/editor/` (ignored). Apache serves that folder directly; `routes/web.php` has a `/editor` fallback for `php artisan serve`. Deploy steps (Ubuntu + Apache + certbot): `deploy/README.md`, vhost in `deploy/apache/`.
 
-Local check: `php artisan serve` → `http://localhost:8000/` (welcome page) and `http://localhost:8000/editor/`.
+Local check: `php artisan serve` → `http://localhost:8000/` (welcome page) and `http://localhost:8000/editor/` (with the trailing slash — artisan's server does not redirect `/editor`; Apache does). Local MySQL is XAMPP's (root, no password): set `DB_PASSWORD=` in the local `.env`.
 
 Laravel is still the default skeleton (welcome page). Laravel Boost is not installed; the framework's generated agent guidelines are kept below in case it is.
 
