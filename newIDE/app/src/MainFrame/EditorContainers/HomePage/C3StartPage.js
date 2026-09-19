@@ -128,7 +128,7 @@ const styles = {
   },
 };
 
-const baseName = (path: string) => path.split(/[/\\]/).pop();
+const baseName = (path: string): string => path.split(/[/\\]/).pop() || path;
 
 const SectionTitle = ({ children }: {| children: React.Node |}) => (
   <div style={styles.sectionTitle}>
@@ -443,16 +443,21 @@ const C3StartPage = ({
             ref={openMenu}
             buildMenuTemplate={i18n => [
               { label: i18n._(t`File…`), click: onChooseProject },
-              {
-                label: i18n._(t`Recent projects`),
-                enabled: recentFiles.length > 0,
-                submenu: recentFiles.map(file => ({
-                  label:
-                    file.fileMetadata.name ||
-                    baseName(file.fileMetadata.fileIdentifier),
-                  click: () => onOpenRecentFile(file),
-                })),
-              },
+              ...(recentFiles.length > 0
+                ? [
+                    {
+                      label: i18n._(t`Recent projects`),
+                      submenu: recentFiles.map(file => ({
+                        label:
+                          file.fileMetadata.name ||
+                          baseName(file.fileMetadata.fileIdentifier),
+                        click: () => {
+                          onOpenRecentFile(file);
+                        },
+                      })),
+                    },
+                  ]
+                : []),
             ]}
           />
           <ContextMenu

@@ -569,7 +569,9 @@ function NewObjectDialog({
                     label={<Trans>Insert</Trans>}
                     primary
                     disabled={!c3Insert}
-                    onClick={() => c3Insert && c3Insert()}
+                    onClick={() => {
+                      if (c3Insert) c3Insert();
+                    }}
                     id="c3-insert-button"
                   />
                 ) : null),

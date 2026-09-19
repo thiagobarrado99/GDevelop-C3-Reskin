@@ -506,7 +506,9 @@ const InstructionEditorDialog = ({
               label={<Trans>Next</Trans>}
               primary
               disabled={!c3Next}
-              onClick={() => c3Next && c3Next()}
+              onClick={() => {
+                if (c3Next) c3Next();
+              }}
               key="next"
               id="c3-next-button"
             />
