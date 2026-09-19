@@ -8,6 +8,7 @@ import {
   type ObjectsOutsideEditorChanges,
   type ObjectGroupsOutsideEditorChanges,
   type WillDeleteObjectChanges,
+  type ExtensionsOutsideEditorChanges,
 } from '../../../EditorFunctions/OutsideEditorChanges';
 import {
   type FileMetadataAndStorageProviderName,
@@ -224,6 +225,9 @@ export type HomePageEditorInterface = {|
   onWillDeleteObject: (changes: WillDeleteObjectChanges) => void,
   onObjectGroupsModifiedOutsideEditor: (
     changes: ObjectGroupsOutsideEditorChanges
+  ) => void,
+  onExtensionsModifiedOutsideEditor: (
+    changes: ExtensionsOutsideEditorChanges
   ) => void,
   selectAllInsideEditor: () => void,
 |};
@@ -557,6 +561,7 @@ export const HomePage: React.ComponentType<Props> = React.memo<Props>(
         onObjectsModifiedOutsideEditor: noop,
         onWillDeleteObject: noop,
         onObjectGroupsModifiedOutsideEditor: noop,
+        onExtensionsModifiedOutsideEditor: noop,
         selectAllInsideEditor: noop,
       }));
 
