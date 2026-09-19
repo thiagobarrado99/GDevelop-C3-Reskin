@@ -318,3 +318,16 @@
 .ConstructLikeDarkTheme img[src*='res/c3-icons/'] {
   background: none !important;
 }
+
+/* c3: Construct has no per-row "⋮" nor per-section "+" - right-click instead
+   (the labelled "Add object" button of an empty list stays). */
+.ConstructLikeDarkTheme .c3-tree-row-menu,
+.ConstructLikeDarkTheme .c3-tree-root-button,
+.ConstructLikeDarkTheme #add-layer-button {
+  display: none;
+}
+.ConstructLikeDarkTheme .c3-layer-index {
+  font-size: 12px;
+  opacity: 0.7;
+  padding: 0 8px;
+}

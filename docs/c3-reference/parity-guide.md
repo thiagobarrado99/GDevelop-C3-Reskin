@@ -123,10 +123,10 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C5. Instance context menu — done 2026-09-18 (`Clonar tipo de objeto`, `Localizar todas as referências…` → global search, `Ajuda`; Extract ▸ lives in the empty-space menu)
 - `SceneEditor/index.js` instance menu: add `Clonar tipo de objeto` (duplicate object + swap the instance), `Localizar todas as referências…` (opens the events search with the object name), `Ajuda` last; drop `Extrair`, `Editar folha de eventos`, `Propriedades do layout` from the *instance* menu (they stay in the canvas menu).
 
-### C6. Layers section rows
+### C6. Layers section rows — done 2026-09-18 (name · index · eye · lock; selected row = active layer; no `Cor de Fundo` row; title `Camadas — Layout 1`)
 - `LayersList/index.js` + `LayerTreeViewItemContent.js` + `BackgroundColorTreeViewItemContent.js`: one visibility checkbox + lock + name + index; `Cor de Fundo` row moves to the layout properties (B3 `Layout` section); section title `Camadas — Layout 1`; the `+` becomes a context-menu item (C7).
 
-### C7. `+` / `⋮` icons
+### C7. `+` / `⋮` icons — done 2026-09-18 (theme hides `.c3-tree-row-menu`, root `+` buttons and `#add-layer-button`; the labelled `Adicionar objeto` of an empty list stays)
 - `ProjectManager/*TreeViewItemContent.js`, `ObjectsList`, `ObjectGroupsList`, `LayersList`: hide the per-row `⋮` and per-section `+` under the theme (context menu and the `Add…` items cover them). Keep keyboard/right-click paths working.
 
 ### C8. Properties bar on the event sheet + bar-title menu

@@ -466,6 +466,10 @@ const TreeViewRow = <Item: ItemBaseAttributes>(
                           id={rightButton.id}
                           key={rightButton.id}
                           size="small"
+                          // c3: the theme hides section "+" buttons.
+                          className={
+                            node.item.isRoot ? 'c3-tree-root-button' : undefined
+                          }
                           onClick={e => {
                             e.stopPropagation();
                             if (rightButton.click) {
@@ -486,6 +490,7 @@ const TreeViewRow = <Item: ItemBaseAttributes>(
                     {shouldDisplayMenu && (
                       <IconButton
                         size="small"
+                        className="c3-tree-row-menu" // c3: hidden by the theme
                         onClick={e => {
                           e.stopPropagation();
                           onContextMenu({

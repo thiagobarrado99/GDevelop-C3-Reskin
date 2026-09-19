@@ -1899,6 +1899,11 @@ export default class SceneEditor extends React.Component<Props, State> {
   _onChooseLayer = (layerName: string) => {
     this.setState({
       chosenLayer: layerName,
+      // c3: the status bar reads the active layer from the settings.
+      instancesEditorSettings: {
+        ...this.state.instancesEditorSettings,
+        selectedLayer: layerName,
+      },
     });
 
     const { previewDebuggerServer } = this.props;

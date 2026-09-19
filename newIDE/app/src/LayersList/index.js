@@ -46,6 +46,9 @@ import LightbulbIconOff from '../UI/CustomSvgIcons/LightbulbOff';
 import { mapReverseFor } from '../Utils/MapFor';
 import { addC3DefaultLightsToLayer } from '../Utils/C3Layers'; // c3
 
+// c3: Construct's Layers bar has no background colour row.
+const C3_LAYERS_WITHOUT_BACKGROUND_ROW: boolean = true;
+
 const gd: libGDevelop = global.gd;
 
 export const layersRootFolderId = 'layers';
@@ -667,7 +670,8 @@ const LayersList = React.forwardRef<Props, LayersListInterface>(
                 )
               )
           ),
-          layout
+          // c3: the background colour is a layout property (properties bar).
+          layout && !C3_LAYERS_WITHOUT_BACKGROUND_ROW
             ? {
                 isRoot: false,
                 content: new BackgroundColorTreeViewItemContent(

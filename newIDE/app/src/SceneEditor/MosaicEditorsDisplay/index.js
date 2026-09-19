@@ -656,7 +656,15 @@ const MosaicEditorsDisplay: React.ComponentType<{
                 <C3BarSection title={<Trans>Object Groups</Trans>} height={160}>
                   {editors['object-groups-list'].renderEditor()}
                 </C3BarSection>
-                <C3BarSection title={<Trans>Layers</Trans>} height={220}>
+                <C3BarSection
+                  title={
+                    <>
+                      <Trans>Layers</Trans>
+                      {layout ? ` — ${layout.getName()}` : ''}
+                    </>
+                  }
+                  height={220}
+                >
                   {editors['layers-list'].renderEditor()}
                 </C3BarSection>
               </>,

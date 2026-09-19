@@ -1,6 +1,6 @@
 // @flow
 import { type I18n as I18nType } from '@lingui/core';
-import { t, Trans } from '@lingui/macro';
+import { t } from '@lingui/macro';
 
 import * as React from 'react';
 import {
@@ -8,18 +8,13 @@ import {
   type TreeItemProps,
   layersRootFolderId,
 } from '.';
-import Tooltip from '@material-ui/core/Tooltip';
+// c3: Tooltip and Radio no longer used (the row shows the layer index).
 import { type HTMLDataset } from '../Utils/HTMLDataset';
 import VisibilityIcon from '../UI/CustomSvgIcons/Visibility';
 import VisibilityOffIcon from '../UI/CustomSvgIcons/VisibilityOff';
 import LockIcon from '../UI/CustomSvgIcons/Lock';
 import LockOpenIcon from '../UI/CustomSvgIcons/LockOpen';
-import Radio from '@material-ui/core/Radio';
 import { addC3DefaultLightsToLayer } from '../Utils/C3Layers'; // c3
-
-const styles = {
-  tooltip: { marginRight: 5, verticalAlign: 'bottom' },
-};
 
 export type LayerTreeViewItemProps = {|
   ...TreeItemProps,
@@ -90,6 +85,8 @@ export class LayerTreeViewItemContent implements TreeViewItemContent {
 
   onClick(): void {
     this.props.onSelectLayer(this.layer);
+    // c3: the selected row is the active layer, as in Construct.
+    this.props.onChooseLayer(this.layer.getName());
   }
 
   rename(newName: string): void {
@@ -224,20 +221,14 @@ export class LayerTreeViewItemContent implements TreeViewItemContent {
   }
 
   renderRightComponent(i18n: I18nType): ?React.Node {
+    // c3: Construct shows the layer index (0 = bottom) instead of a radio.
     return (
-      <Tooltip
-        style={styles.tooltip}
-        title={<Trans>Layer where instances are added by default</Trans>}
+      <span
+        className="c3-layer-index"
+        id={`layer-selected-${this._isChosenLayer() ? 'checked' : 'unchecked'}`}
       >
-        <Radio
-          checked={this._isChosenLayer()}
-          onChange={() => this.props.onChooseLayer(this.layer.getName())}
-          size="small"
-          id={`layer-selected-${
-            this._isChosenLayer() ? 'checked' : 'unchecked'
-          }`}
-        />
-      </Tooltip>
+        {this.props.layersContainer.getLayerPosition(this.layer.getName())}
+      </span>
     );
   }
 
