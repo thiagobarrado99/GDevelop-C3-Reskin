@@ -3090,6 +3090,14 @@ const MainFrame = (props: Props): React.MixedElement => {
         networkPreview: false,
         numberOfWindows,
         launchCaptureOptions,
+        // c3: "Preview project" starts from the project's first layout.
+        c3LayoutName:
+          options && options.c3FromProjectStart && currentProject
+            ? currentProject.getFirstLayout() ||
+              (currentProject.getLayoutsCount() > 0
+                ? currentProject.getLayoutAt(0).getName()
+                : undefined)
+            : undefined,
       });
     },
     [

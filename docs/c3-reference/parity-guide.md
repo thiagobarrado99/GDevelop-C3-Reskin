@@ -132,10 +132,10 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C8. Properties bar on the event sheet + bar-title menu — done 2026-09-18 (`EventsSheet/C3EmptyPropertiesBar.js`; right-click on any bar title → `Fechar`)
 - `MainFrame/index.js` / `MosaicEditorsDisplay`: keep the properties column mounted (empty, "Nenhuma seleção") when an event sheet tab is active. Bar titles (`.c3-project-bar-title`, properties header) get a context menu `Fechar` only (no docking system to undock into).
 
-### C9. Layout framing at 100 %
+### C9. Layout framing at 100 % — done 2026-09-18 (`getRecommendedInitialZoomFactor` → 1, view already centred on the game window; dashed layout-size rectangle not done)
 - `SceneEditor/index.js` initial zoom: open at 100 % centred on the game window instead of fit-to-view 82 %; `InstancesEditor/Background.js` dark surround already reads as margins. Optional dashed 1708×960 "layout size" rectangle = game size × 2.
 
-### C10. Preview ▾ wording, export tabs, settings
+### C10. Preview ▾ wording, export tabs, settings — done 2026-09-18 (Preview ▾ = Visualizar layout · Visualizar projeto · Depurar layout · Visualização remota (rede); no `Convidar` tab; `Idioma` stays in the menu)
 - `MainFrame/Toolbar/index.js` preview menu: `Visualizar layout · Visualizar projeto · Depurar layout · Visualização remota (rede)`; `ExportAndShare/*`: hide the `Convidar` tab; menu `Idioma` moves inside `Configurações` (or stays — low value).
 
 ### C11. Not planned (by decision)

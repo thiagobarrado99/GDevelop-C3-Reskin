@@ -14,7 +14,12 @@ import PreferencesContext from '../../MainFrame/Preferences/PreferencesContext';
 import { useIsGameplayTestRunInProgress } from '../../GameplayTests/GameplayTestRunner';
 
 export type PreviewAndShareButtonsProps = {|
-  onPreviewWithoutHotReload: (?{ numberOfWindows: number }) => Promise<void>,
+  onPreviewWithoutHotReload: (
+    ?{
+      numberOfWindows: number,
+      c3FromProjectStart?: boolean, // c3: "Preview project"
+    }
+  ) => Promise<void>,
   onOpenDebugger: () => void,
   onNetworkPreview: () => void,
   onHotReloadPreview: () => void,
@@ -33,6 +38,10 @@ export type PreviewAndShareButtonsProps = {|
   openShareDialog: () => void,
   isSharingEnabled: boolean,
 |};
+
+// c3: Construct's Preview ▾ - Preview layout · Preview project · Debug
+// layout · Remote preview (network).
+const useC3PreviewMenu: boolean = true;
 
 const PreviewAndShareButtons: React.ComponentType<PreviewAndShareButtonsProps> = React.memo<PreviewAndShareButtonsProps>(
   function PreviewAndShareButtons({
@@ -57,108 +66,139 @@ const PreviewAndShareButtons: React.ComponentType<PreviewAndShareButtonsProps> =
 
     const previewBuildMenuTemplate = React.useCallback(
       (i18n: I18nType) =>
-        [
-          {
-            label: i18n._(t`Start Network Preview (Preview over WiFi/LAN)`),
-            click: onNetworkPreview,
-            enabled: canDoNetworkPreview && !isGameplayTestRunInProgress,
-          },
-          {
-            label: i18n._(t`Start Preview and Debugger`),
-            click: onOpenDebugger,
-            enabled: !isGameplayTestRunInProgress,
-          },
-          preferences.values.openDiagnosticReportAutomatically
-            ? null
-            : {
-                label: i18n._(t`Start preview with diagnostic report`),
-                click: async () => {
-                  await onLaunchPreviewWithDiagnosticReport();
-                },
-                enabled: !hasPreviewsRunning && !isGameplayTestRunInProgress,
-              },
-          {
-            label: i18n._(t`Launch preview in...`),
-            submenu: [
+        useC3PreviewMenu
+          ? [
               {
-                label: i18n._(t`A new window`),
+                label: i18n._(t`Preview layout`),
                 click: async () => {
                   await onPreviewWithoutHotReload({ numberOfWindows: 1 });
                 },
                 enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
               },
               {
-                label: i18n._(t`2 previews in 2 windows`),
+                label: i18n._(t`Preview project`),
                 click: async () => {
-                  await onPreviewWithoutHotReload({ numberOfWindows: 2 });
+                  await onPreviewWithoutHotReload({
+                    numberOfWindows: 1,
+                    c3FromProjectStart: true,
+                  });
                 },
                 enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
               },
               {
-                label: i18n._(t`3 previews in 3 windows`),
-                click: async () => {
-                  onPreviewWithoutHotReload({ numberOfWindows: 3 });
-                },
-                enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                label: i18n._(t`Debug layout`),
+                click: onOpenDebugger,
+                enabled: !isGameplayTestRunInProgress,
               },
               {
-                label: i18n._(t`4 previews in 4 windows`),
-                click: async () => {
-                  onPreviewWithoutHotReload({ numberOfWindows: 4 });
-                },
-                enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                label: i18n._(t`Remote preview (network)`),
+                click: onNetworkPreview,
+                enabled: canDoNetworkPreview && !isGameplayTestRunInProgress,
               },
-            ],
-          },
-          { type: 'separator' },
-          ...(previewState.overridenPreviewLayoutName
-            ? [
-                {
-                  type: 'checkbox',
-                  label: previewState.overridenPreviewExternalLayoutName
-                    ? i18n._(
-                        t`Start all previews from external layout ${
-                          previewState.overridenPreviewExternalLayoutName
-                        }`
-                      )
-                    : i18n._(
-                        t`Start all previews from scene ${
-                          previewState.overridenPreviewLayoutName
-                        }`
-                      ),
-                  checked: previewState.isPreviewOverriden,
-                  click: () =>
-                    setPreviewOverride({
-                      isPreviewOverriden: !previewState.isPreviewOverriden,
-                      overridenPreviewLayoutName:
-                        previewState.overridenPreviewLayoutName,
-                      overridenPreviewExternalLayoutName:
-                        previewState.overridenPreviewExternalLayoutName,
-                    }),
-                },
-                { type: 'separator' },
-              ]
-            : []),
-          {
-            label: previewState.previewExternalLayoutName
-              ? i18n._(
-                  t`Use this external layout inside this scene to start all previews`
-                )
-              : i18n._(t`Use this scene to start all previews`),
-            click: () =>
-              setPreviewOverride({
-                isPreviewOverriden: true,
-                overridenPreviewLayoutName: previewState.previewLayoutName,
-                overridenPreviewExternalLayoutName:
-                  previewState.previewExternalLayoutName,
-              }),
-            enabled:
-              previewState.previewLayoutName !==
-                previewState.overridenPreviewLayoutName ||
-              previewState.previewExternalLayoutName !==
-                previewState.overridenPreviewExternalLayoutName,
-          },
-        ].filter(Boolean),
+            ]
+          : [
+              {
+                label: i18n._(t`Start Network Preview (Preview over WiFi/LAN)`),
+                click: onNetworkPreview,
+                enabled: canDoNetworkPreview && !isGameplayTestRunInProgress,
+              },
+              {
+                label: i18n._(t`Start Preview and Debugger`),
+                click: onOpenDebugger,
+                enabled: !isGameplayTestRunInProgress,
+              },
+              preferences.values.openDiagnosticReportAutomatically
+                ? null
+                : {
+                    label: i18n._(t`Start preview with diagnostic report`),
+                    click: async () => {
+                      await onLaunchPreviewWithDiagnosticReport();
+                    },
+                    enabled:
+                      !hasPreviewsRunning && !isGameplayTestRunInProgress,
+                  },
+              {
+                label: i18n._(t`Launch preview in...`),
+                submenu: [
+                  {
+                    label: i18n._(t`A new window`),
+                    click: async () => {
+                      await onPreviewWithoutHotReload({ numberOfWindows: 1 });
+                    },
+                    enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                  },
+                  {
+                    label: i18n._(t`2 previews in 2 windows`),
+                    click: async () => {
+                      await onPreviewWithoutHotReload({ numberOfWindows: 2 });
+                    },
+                    enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                  },
+                  {
+                    label: i18n._(t`3 previews in 3 windows`),
+                    click: async () => {
+                      onPreviewWithoutHotReload({ numberOfWindows: 3 });
+                    },
+                    enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                  },
+                  {
+                    label: i18n._(t`4 previews in 4 windows`),
+                    click: async () => {
+                      onPreviewWithoutHotReload({ numberOfWindows: 4 });
+                    },
+                    enabled: isPreviewEnabled && !isGameplayTestRunInProgress,
+                  },
+                ],
+              },
+              { type: 'separator' },
+              ...(previewState.overridenPreviewLayoutName
+                ? [
+                    {
+                      type: 'checkbox',
+                      label: previewState.overridenPreviewExternalLayoutName
+                        ? i18n._(
+                            t`Start all previews from external layout ${
+                              previewState.overridenPreviewExternalLayoutName
+                            }`
+                          )
+                        : i18n._(
+                            t`Start all previews from scene ${
+                              previewState.overridenPreviewLayoutName
+                            }`
+                          ),
+                      checked: previewState.isPreviewOverriden,
+                      click: () =>
+                        setPreviewOverride({
+                          isPreviewOverriden: !previewState.isPreviewOverriden,
+                          overridenPreviewLayoutName:
+                            previewState.overridenPreviewLayoutName,
+                          overridenPreviewExternalLayoutName:
+                            previewState.overridenPreviewExternalLayoutName,
+                        }),
+                    },
+                    { type: 'separator' },
+                  ]
+                : []),
+              {
+                label: previewState.previewExternalLayoutName
+                  ? i18n._(
+                      t`Use this external layout inside this scene to start all previews`
+                    )
+                  : i18n._(t`Use this scene to start all previews`),
+                click: () =>
+                  setPreviewOverride({
+                    isPreviewOverriden: true,
+                    overridenPreviewLayoutName: previewState.previewLayoutName,
+                    overridenPreviewExternalLayoutName:
+                      previewState.previewExternalLayoutName,
+                  }),
+                enabled:
+                  previewState.previewLayoutName !==
+                    previewState.overridenPreviewLayoutName ||
+                  previewState.previewExternalLayoutName !==
+                    previewState.overridenPreviewExternalLayoutName,
+              },
+            ].filter(Boolean),
       [
         onNetworkPreview,
         canDoNetworkPreview,

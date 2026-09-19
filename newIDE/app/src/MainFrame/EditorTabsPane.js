@@ -132,7 +132,12 @@ export type EditorTabsPaneCommonProps = {|
   ) => Promise<?ExpandedCloudProjectVersion>,
   openShareDialog: (tab?: ShareTab) => void,
   launchDebuggerAndPreview: () => void,
-  launchNewPreview: (?{ numberOfWindows: number }) => Promise<void>,
+  launchNewPreview: (
+    ?{
+      numberOfWindows: number,
+      c3FromProjectStart?: boolean, // c3
+    }
+  ) => Promise<void>,
   launchNetworkPreview: () => Promise<void>,
   launchHotReloadPreview: () => Promise<void>,
   launchPreviewWithDiagnosticReport: () => Promise<void>,

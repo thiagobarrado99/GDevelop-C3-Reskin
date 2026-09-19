@@ -20,6 +20,9 @@ import ErrorBoundary from '../../UI/ErrorBoundary';
 import type { GamesList } from '../../GameDashboard/UseGamesList';
 import { useGameAndBuildsManager } from '../../Utils/UseGameAndBuildsManager';
 
+// c3: Construct's export dialog has no Invite tab.
+const C3_HIDE_INVITE_TAB: boolean = true;
+
 export type ShareTab = 'invite' | 'publish';
 export type ExporterSection = 'browser' | 'desktop' | 'android' | 'ios';
 export type ExporterSubSection = 'online' | 'offline' | 'facebook';
@@ -261,12 +264,17 @@ const ShareDialog = ({
               id: 'publish-tab',
               disabled: isNavigationDisabled,
             },
-            {
-              value: 'invite',
-              label: <Trans>Invite</Trans>,
-              id: 'invite-tab',
-              disabled: isNavigationDisabled,
-            },
+            // c3: Construct's export has no "Invite".
+            ...(C3_HIDE_INVITE_TAB
+              ? []
+              : [
+                  {
+                    value: 'invite',
+                    label: <Trans>Invite</Trans>,
+                    id: 'invite-tab',
+                    disabled: isNavigationDisabled,
+                  },
+                ]),
           ]}
         />
       }

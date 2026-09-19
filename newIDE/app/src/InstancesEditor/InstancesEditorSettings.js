@@ -29,9 +29,13 @@ export type InstancesEditorSettings = {|
   gameEditorMode: 'embedded-game' | 'instances-editor',
 |};
 
+const C3_INITIAL_ZOOM_100: boolean = true; // c3
+
 export const getRecommendedInitialZoomFactor = (
   largestSizeInPixels: number
 ): number => {
+  // c3: Construct opens a layout at 100 %, centred on the viewport.
+  if (C3_INITIAL_ZOOM_100) return 1;
   // 700 is an empirical value obtained multiplying the largest size (1920) with
   // the zoom factor (0.36) so that the screen black rectangle fits nicely on the canvas
   // with only the left and right side panels opened on a Macbook screen.
