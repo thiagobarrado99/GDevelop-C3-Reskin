@@ -28,8 +28,11 @@ import { translateExtensionCategory } from '../Utils/Extension/ExtensionCategori
 import {
   C3_OBJECTS,
   C3_OBJECT_CATEGORIES,
+  getC3ObjectDefaultName,
   type C3Object,
 } from '../Utils/C3Objects'; // c3
+import TextField from '../UI/TextField'; // c3
+import Text from '../UI/Text'; // c3
 import { c3Label } from '../Utils/C3Behaviors'; // c3
 import { C3_PSEUDO_OBJECTS } from '../Utils/C3PseudoObjects'; // c3
 import { type SearchMatch } from '../UI/Search/UseSearchStructuredItem';
@@ -161,7 +164,9 @@ type Props = {|
   project: gdProject,
   eventsFunctionsExtension: gdEventsFunctionsExtension | null,
   eventsBasedObject: gdEventsBasedObject | null,
-  onObjectTypeSelected: ObjectShortHeader => void,
+  onObjectTypeSelected: (ObjectShortHeader, name?: string) => void,
+  // c3: what the dialog's Insert button runs (null: nothing selected).
+  onSelectionChange: (insert: ?() => void) => void,
   i18n: I18nType,
 |};
 
@@ -170,9 +175,26 @@ export default function NewObjectFromScratch({
   eventsFunctionsExtension,
   eventsBasedObject,
   onObjectTypeSelected,
+  onSelectionChange,
   i18n,
 }: Props): React.Node {
   const preferences = React.useContext(PreferencesContext);
+  // c3: Construct's "Create new object type" - select a tile, name it, Insert.
+  const [c3Selected, setC3Selected] = React.useState<?ObjectShortHeader>(null);
+  const [c3Name, setC3Name] = React.useState<string>('');
+  React.useEffect(
+    () => {
+      onSelectionChange(
+        c3Selected
+          ? () => {
+              sendNewObjectCreated(c3Selected.name);
+              onObjectTypeSelected(c3Selected, c3Name || undefined);
+            }
+          : null
+      );
+    },
+    [c3Selected, c3Name, onSelectionChange, onObjectTypeSelected]
+  );
   const [
     selectedObjectShortHeader,
     setSelectedObjectShortHeader,
@@ -309,21 +331,23 @@ export default function NewObjectFromScratch({
       <ColumnStackLayout expand noMargin useFullHeight>
         <ColumnStackLayout noMargin>
           <ResponsiveLineStackLayout>
-            <SearchBarSelectField
-              value={chosenCategory}
-              onChange={(e, i, value: string) => {
-                setChosenCategory(value);
-              }}
-            >
-              <SelectOption value="" label={t`All categories`} />
-              {allCategories.map(category => (
-                <SelectOption
-                  key={category}
-                  value={category}
-                  label={category}
-                />
-              ))}
-            </SearchBarSelectField>
+            {useC3Grid ? null : ( // c3: Construct has a search box only
+              <SearchBarSelectField
+                value={chosenCategory}
+                onChange={(e, i, value: string) => {
+                  setChosenCategory(value);
+                }}
+              >
+                <SelectOption value="" label={t`All categories`} />
+                {allCategories.map(category => (
+                  <SelectOption
+                    key={category}
+                    value={category}
+                    label={category}
+                  />
+                ))}
+              </SearchBarSelectField>
+            )}
             <Line expand noMargin>
               <Column expand noMargin>
                 <SearchBar
@@ -335,43 +359,61 @@ export default function NewObjectFromScratch({
                   autoFocus="desktop"
                 />
               </Column>
-              <ElementWithMenu
-                key="menu"
-                element={
-                  <IconButton size="small">
-                    <ThreeDotsMenu />
-                  </IconButton>
-                }
-                buildMenuTemplate={(i18n: I18nType) => [
-                  {
-                    label: preferences.values.showExperimentalExtensions
-                      ? i18n._(t`Hide experimental objects`)
-                      : i18n._(t`Show experimental objects`),
-                    click: () => {
-                      preferences.setShowExperimentalExtensions(
-                        !preferences.values.showExperimentalExtensions
-                      );
+              {useC3Grid ? null : ( // c3
+                <ElementWithMenu
+                  key="menu"
+                  element={
+                    <IconButton size="small">
+                      <ThreeDotsMenu />
+                    </IconButton>
+                  }
+                  buildMenuTemplate={(i18n: I18nType) => [
+                    {
+                      label: preferences.values.showExperimentalExtensions
+                        ? i18n._(t`Hide experimental objects`)
+                        : i18n._(t`Show experimental objects`),
+                      click: () => {
+                        preferences.setShowExperimentalExtensions(
+                          !preferences.values.showExperimentalExtensions
+                        );
+                      },
                     },
-                  },
-                ]}
-              />
+                  ]}
+                />
+              )}
             </Line>
           </ResponsiveLineStackLayout>
           {DismissableTutorialMessage}
         </ColumnStackLayout>
         {useC3Grid && filteredSearchResults ? ( // c3
           <C3TileGrid
+            noFooter
             colorVariable="--c3-object-label-color"
             categoryOrder={C3_OBJECT_CATEGORIES.map(category =>
               c3Label(category, preferences.values.language)
             )}
+            onSelect={tile => {
+              const found =
+                tile &&
+                c3Tiles.find(
+                  ({ tile: c3Tile, header }) =>
+                    (c3Tile ? c3Tile.id : header.type) === tile.id
+                );
+              setC3Selected(found ? found.header : null);
+              setC3Name(
+                found ? getC3ObjectDefaultName(found.header.type) || '' : ''
+              );
+            }}
             onChoose={id => {
               const found = c3Tiles.find(
                 ({ tile, header }) => (tile ? tile.id : header.type) === id
               );
               if (found) {
                 sendNewObjectCreated(found.header.name);
-                onObjectTypeSelected(found.header);
+                onObjectTypeSelected(
+                  found.header,
+                  (c3Selected === found.header && c3Name) || undefined
+                );
               }
             }}
             tiles={c3Tiles
@@ -458,6 +500,23 @@ export default function NewObjectFromScratch({
             }}
           />
         )}
+        {useC3Grid ? ( // c3: the selected type's description and its name
+          <LineStackLayout alignItems="center" noMargin>
+            <Column expand noMargin>
+              <Text noMargin size="body2" color="secondary">
+                {c3Selected ? c3Selected.description : ''}
+              </Text>
+            </Column>
+            <TextField
+              id="c3-object-name"
+              margin="dense"
+              floatingLabelText={<Trans>Name</Trans>}
+              value={c3Name}
+              onChange={(e, value) => setC3Name(value)}
+              disabled={!c3Selected}
+            />
+          </LineStackLayout>
+        ) : null}
       </ColumnStackLayout>
       {!!selectedObjectShortHeader && (
         <ExtensionInstallDialog

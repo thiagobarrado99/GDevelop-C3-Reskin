@@ -33,6 +33,8 @@ type Props = {|
   projectScopedContainersAccessor: ProjectScopedContainersAccessor,
   isCondition: boolean,
   onChoose: (objectName: ?string, extensionFilter?: C3ExtensionFilter) => void,
+  // Gives the dialog what its "Next" button should run (null: nothing selected).
+  onSelect: (next: ?() => void) => void,
 |};
 
 const PSEUDO_TILE_PREFIX = 'c3-pseudo-';
@@ -42,10 +44,20 @@ const C3ObjectPicker = ({
   projectScopedContainersAccessor,
   isCondition,
   onChoose,
+  onSelect,
 }: Props): React.Node => {
   const { allObjectsList, allGroupsList } = enumerateObjectsAndGroups(
     projectScopedContainersAccessor.get().getObjectsContainersList()
   );
+  const choose = (id: string) => {
+    if (id === SYSTEM_TILE_ID)
+      return onChoose(null, C3_SYSTEM_EXTENSION_FILTER);
+    const pseudo = C3_PSEUDO_OBJECTS.find(
+      pseudo => PSEUDO_TILE_PREFIX + pseudo.id === id
+    );
+    if (pseudo) return onChoose(null, { include: pseudo.extensionNames });
+    onChoose(id);
+  };
   const tile = (name: string, iconUrl: string) => ({
     id: name,
     name,
@@ -66,18 +78,11 @@ const C3ObjectPicker = ({
             )}
           </Text>
           <C3TileGrid
-            instant
+            searchable
+            noFooter
             colorVariable="--c3-object-label-color"
-            onChoose={id => {
-              if (id === SYSTEM_TILE_ID)
-                return onChoose(null, C3_SYSTEM_EXTENSION_FILTER);
-              const pseudo = C3_PSEUDO_OBJECTS.find(
-                pseudo => PSEUDO_TILE_PREFIX + pseudo.id === id
-              );
-              if (pseudo)
-                return onChoose(null, { include: pseudo.extensionNames });
-              onChoose(id);
-            }}
+            onSelect={tile => onSelect(tile ? () => choose(tile.id) : null)}
+            onChoose={choose}
             tiles={[
               { ...tile(i18n._(t`System`), systemIcon), id: SYSTEM_TILE_ID },
               ...C3_PSEUDO_OBJECTS.filter(

@@ -183,6 +183,8 @@ const InstructionEditorDialog = ({
     systemExtensionFilter,
     setSystemExtensionFilter,
   ] = React.useState<?C3ExtensionFilter>(null);
+  // c3: what the step 1 "Next" button runs (a tile is selected).
+  const [c3Next, setC3Next] = React.useState<?() => void>(null);
   const instructionType: string = instruction.getType();
   const [
     newBehaviorDialogOpen,
@@ -370,7 +372,9 @@ const InstructionEditorDialog = ({
         project={project}
         projectScopedContainersAccessor={projectScopedContainersAccessor}
         isCondition={isCondition}
+        onSelect={next => setC3Next(() => next)}
         onChoose={(objectName, extensionFilter) => {
+          setC3Next(null);
           if (objectName) {
             chooseObject(objectName);
             setStep('object-instructions');
@@ -493,8 +497,20 @@ const InstructionEditorDialog = ({
             onClick={onCancel}
             key="cancel"
           />,
-          // c3: the list steps advance on click, so Ok only shows with the parameters.
-          useC3Steps && step !== 'parameters' ? null : (
+          // c3: step 1 has Next; the list step advances on click, so Ok
+          // only shows with the parameters.
+          useC3Steps &&
+          !systemChosen &&
+          step === 'object-or-free-instructions' ? (
+            <DialogPrimaryButton
+              label={<Trans>Next</Trans>}
+              primary
+              disabled={!c3Next}
+              onClick={() => c3Next && c3Next()}
+              key="next"
+              id="c3-next-button"
+            />
+          ) : useC3Steps && step !== 'parameters' ? null : (
             <DialogPrimaryButton
               label={useC3Steps ? <Trans>Done</Trans> : <Trans>Ok</Trans>}
               primary={true}
@@ -543,8 +559,8 @@ const InstructionEditorDialog = ({
         ]}
         open={open}
         onRequestClose={onCancel}
-        onApply={instructionType ? onSubmit : null}
-        maxWidth={false}
+        onApply={instructionType ? onSubmit : c3Next || null}
+        maxWidth={useC3Steps ? 'md' : false} // c3: a window, not full screen
         flexBody
         fullHeight={
           true /* Always use full height to avoid a very small dialog when there are not a lot of objects. */

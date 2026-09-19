@@ -8,6 +8,7 @@ import ButtonBase from '@material-ui/core/ButtonBase';
 import Text from './Text';
 import ListIcon from './ListIcon';
 import RaisedButton from './RaisedButton';
+import SearchBar from './SearchBar';
 import './C3TileGrid.css';
 
 export type C3Tile = {|
@@ -25,6 +26,9 @@ type Props = {|
   onChoose: (id: string) => void,
   colorVariable: string, // e.g. '--c3-behavior-color'
   instant?: boolean, // a single click chooses; no footer
+  searchable?: boolean, // a search box filters the tiles by name
+  onSelect?: (?C3Tile) => void, // the selected tile changed (not instant)
+  noFooter?: boolean, // the caller renders its own footer / buttons
   // Known categories in this order first; the others alphabetically after a
   // divider (GDevelop-only items the Construct dialog does not have).
   categoryOrder?: Array<string>,
@@ -35,15 +39,27 @@ const C3TileGrid = ({
   onChoose,
   colorVariable,
   instant,
+  searchable,
+  onSelect,
+  noFooter,
   categoryOrder = [],
 }: Props): React.Node => {
   const [selectedId, setSelectedId] = React.useState<?string>(null);
+  const [search, setSearch] = React.useState('');
   const selected = tiles.find(tile => tile.id === selectedId);
+  const select = (tile: ?C3Tile) => {
+    setSelectedId(tile ? tile.id : null);
+    if (onSelect) onSelect(tile);
+  };
+  const searchLower = search.trim().toLowerCase();
+  const visibleTiles = searchLower
+    ? tiles.filter(tile => tile.name.toLowerCase().includes(searchLower))
+    : tiles;
   const rank = (category: string) => {
     const index = categoryOrder.indexOf(category);
     return index === -1 ? Infinity : index;
   };
-  const categories = [...new Set(tiles.map(tile => tile.category))].sort(
+  const categories = [...new Set(visibleTiles.map(tile => tile.category))].sort(
     (a, b) => rank(a) - rank(b) || a.localeCompare(b)
   );
   const firstExtra = categories.find(category => rank(category) === Infinity);
@@ -53,6 +69,15 @@ const C3TileGrid = ({
       className="c3-tile-grid"
       style={{ '--c3-tile-color': `var(${colorVariable}, #e0e0e0)` }}
     >
+      {searchable ? (
+        <SearchBar
+          id="c3-tiles-search"
+          value={search}
+          onChange={setSearch}
+          onRequestSearch={() => {}}
+          autoFocus="desktop"
+        />
+      ) : null}
       <div className="c3-tile-grid-body">
         {categories.map(category => (
           <React.Fragment key={category}>
@@ -65,7 +90,7 @@ const C3TileGrid = ({
               <div className="c3-tile-category">{category}</div>
             ) : null}
             <div className="c3-tile-row">
-              {tiles
+              {visibleTiles
                 .filter(tile => tile.category === category)
                 .map(tile => (
                   <ButtonBase
@@ -80,7 +105,7 @@ const C3TileGrid = ({
                     onClick={() =>
                       instant && tile.enabled && !tile.info
                         ? onChoose(tile.id)
-                        : setSelectedId(tile.id)
+                        : select(tile)
                     }
                     onDoubleClick={() =>
                       tile.enabled && !tile.info && onChoose(tile.id)
@@ -99,7 +124,7 @@ const C3TileGrid = ({
           </React.Fragment>
         ))}
       </div>
-      {instant ? null : (
+      {instant || noFooter ? null : (
         <div className="c3-tile-grid-footer">
           <div className="c3-tile-description">
             {selected ? (

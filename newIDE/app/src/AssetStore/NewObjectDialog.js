@@ -4,6 +4,7 @@ import { I18n } from '@lingui/react';
 import * as React from 'react';
 import Dialog from '../UI/Dialog';
 import FlatButton from '../UI/FlatButton';
+import { DialogPrimaryButton } from '../UI/Dialog'; // c3
 import HelpButton from '../UI/HelpButton';
 import { Tabs } from '../UI/Tabs';
 import { AssetStore, type AssetStoreInterface } from '.';
@@ -261,7 +262,7 @@ type Props = {|
   objectsContainer: gdObjectsContainer,
   resourceManagementProps: ResourceManagementProps,
   onClose: () => void,
-  onCreateNewObject: (type: string) => void,
+  onCreateNewObject: (type: string, name?: string) => void, // c3: name
   onObjectsAddedFromAssets: InstallAssetOutput => void,
   targetObjectFolderOrObjectWithContext?: ?ObjectFolderOrObjectWithContext,
   onWillInstallExtension: (extensionNames: Array<string>) => void,
@@ -288,6 +289,12 @@ function NewObjectDialog({
     getNewObjectDialogDefaultTab,
   } = React.useContext(PreferencesContext);
   const hideAssetStore: boolean = true; // c3: Construct has no store in "add object".
+  // c3: what the Insert button runs (a tile is selected in the grid).
+  const [c3Insert, setC3Insert] = React.useState<?() => void>(null);
+  const onC3SelectionChange = React.useCallback(
+    (insert: ?() => void) => setC3Insert(() => insert),
+    []
+  );
   const [currentTab, setCurrentTab] = React.useState<
     'asset-store' | 'new-object'
   >(hideAssetStore ? 'new-object' : getNewObjectDialogDefaultTab());
@@ -361,7 +368,7 @@ function NewObjectDialog({
   );
 
   const onInstallEmptyCustomObject = React.useCallback(
-    async (enumeratedObjectMetadata: ObjectShortHeader) => {
+    async (enumeratedObjectMetadata: ObjectShortHeader, name?: string) => {
       const { requiredExtensions } = enumeratedObjectMetadata;
       if (!requiredExtensions) return;
       try {
@@ -387,7 +394,7 @@ function NewObjectDialog({
         if (!wasExtensionsInstalled) {
           return;
         }
-        onCreateNewObject(enumeratedObjectMetadata.type);
+        onCreateNewObject(enumeratedObjectMetadata.type, name); // c3
       } catch (error) {
         console.error('Error while creating the object:', error);
         showAlert({
@@ -523,15 +530,15 @@ function NewObjectDialog({
   );
 
   const onObjectTypeSelected = React.useCallback(
-    (enumeratedObjectMetadata: ObjectShortHeader) => {
+    (enumeratedObjectMetadata: ObjectShortHeader, name?: string) => {
       if (enumeratedObjectMetadata.assetStoreTag) {
         // When the object is from an asset store, display the objects from the pack
         // so that the user can either pick a similar object or skip to create a new one.
         setSelectedCustomObjectEnumeratedMetadata(enumeratedObjectMetadata);
       } else if (enumeratedObjectMetadata.requiredExtensions) {
-        onInstallEmptyCustomObject(enumeratedObjectMetadata);
+        onInstallEmptyCustomObject(enumeratedObjectMetadata, name); // c3
       } else {
-        onCreateNewObject(enumeratedObjectMetadata.name);
+        onCreateNewObject(enumeratedObjectMetadata.name, name); // c3
       }
     },
     [onCreateNewObject, onInstallEmptyCustomObject]
@@ -542,19 +549,30 @@ function NewObjectDialog({
       {({ i18n }) => (
         <>
           <Dialog
-            title={<Trans>New object</Trans>}
+            title={<Trans>Create new object type</Trans>} // c3
             secondaryActions={[
               <HelpButton helpPagePath="/objects" key="help" />,
             ]}
             actions={[
               <FlatButton
                 key="close"
-                label={<Trans>Close</Trans>}
+                label={<Trans>Cancel</Trans>} // c3
                 primary={false}
                 onClick={handleClose}
                 id="close-button"
               />,
-              mainAction,
+              // c3: Construct's Insert button for the selected tile.
+              mainAction ||
+                (currentTab === 'new-object' ? (
+                  <DialogPrimaryButton
+                    key="insert"
+                    label={<Trans>Insert</Trans>}
+                    primary
+                    disabled={!c3Insert}
+                    onClick={() => c3Insert && c3Insert()}
+                    id="c3-insert-button"
+                  />
+                ) : null),
             ]}
             onRequestClose={handleClose}
             onApply={
@@ -564,11 +582,12 @@ function NewObjectDialog({
                 ? async () => {
                     await onInstallAsset(openedAssetShortHeader);
                   }
-                : undefined
+                : c3Insert || undefined // c3
             }
             open
             flexBody
             fullHeight
+            maxWidth="md" // c3: a window, not full screen
             id="new-object-dialog"
             fixedContent={
               hideAssetStore ? null : ( // c3
@@ -616,6 +635,7 @@ function NewObjectDialog({
                   eventsFunctionsExtension={eventsFunctionsExtension}
                   eventsBasedObject={eventsBasedObject}
                   onObjectTypeSelected={onObjectTypeSelected}
+                  onSelectionChange={onC3SelectionChange} // c3
                   i18n={i18n}
                 />
               ))}

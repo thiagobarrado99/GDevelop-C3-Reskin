@@ -111,7 +111,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C1. Start page — done 2026-09-18 (`ABRIR ▾` menu = Arquivo… · Projetos recentes ▸, `EXPLORAR EXEMPLOS` third big button, home tab `Página inicial ✕`)
 - `HomePage/C3StartPage.js` + `.css`: `ABRIR ▾` dropdown (Arquivo · Projeto recente…), `EXPLORAR EXEMPLOS` button beside `EXEMPLOS RECOMENDADOS`; home tab labelled `Página inicial ✕` (`MainFrame/EditorTabs`, kind `'start page'`). Recommended examples: pt-BR titles (B9).
 
-### C2. Picker dialogs sized like windows
+### C2. Picker dialogs sized like windows — done 2026-09-18 (`maxWidth="md"`; step 1 search + `Próximo`; add-object = `Criar novo tipo de objeto` with search, `Nome`, `Inserir · Cancelar`)
 - `C3ObjectPicker.js` (step 1) and `AssetStore/NewObjectFromScratch.js`: `maxWidth="sm"`, not full-screen; step 1 gains a search box (filter tiles by label) and a `Próximo` button enabled when a tile is selected; add-object dialog gains a `Nome` field prefilled with the tile's default name (`C3Objects.js` `defaultName`), title `Criar novo tipo de objeto`, buttons `Inserir · Cancelar`.
 
 ### C3. Empty event sheet placeholder — done 2026-09-18 (Construct-style text, no tutorial link)

@@ -39,6 +39,8 @@ const reskinPtBr: { [string]: string } = {
   'Z index': 'Índice Z',
   'Browse examples': 'Explorar exemplos',
   'File…': 'Arquivo…',
+  'Create new object type': 'Criar novo tipo de objeto',
+  Insert: 'Inserir',
   'Preview layout': 'Visualizar layout',
   'Layout variables': 'Variáveis do layout',
   Clone: 'Clonar',

@@ -642,9 +642,10 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
     }, []);
 
     const addObject = React.useCallback(
-      (objectType: string) => {
+      (objectType: string, c3Name?: string) => {
         const defaultName =
-          // c3: Construct names new objects after their type.
+          // c3: Construct names new objects after their type (or as typed).
+          (c3Name && gd.Project.getSafeName(c3Name)) ||
           getC3ObjectDefaultName(objectType) ||
           (project.hasEventsBasedObject(objectType)
             ? 'New' +
