@@ -3,96 +3,100 @@ import Window from '../Utils/Window';
 import { getIDEVersionWithHash } from '../Version';
 
 type FileSet =
-  | 'preview'
-  | 'cordova'
-  | 'electron'
-  | 'web'
-  | 'cocos2d-js'
-  | 'facebook-instant-games';
+    | 'preview'
+    | 'cordova'
+    | 'electron'
+    | 'web'
+    | 'cocos2d-js'
+    | 'facebook-instant-games';
 
 const C3_SELF_HOSTED_GDJS: boolean = true; // c3
 
 const filesToDownload: { [FileSet]: Array<string> } = {
-  preview: ['/Runtime/index.html'],
-  web: ['/Runtime/index.html', '/Runtime/Electron/LICENSE.GDevelop.txt'],
-  'cocos2d-js': [
-    '/Runtime/Cocos2d/cocos2d-js-v3.10.js',
-    '/Runtime/Cocos2d/index.html',
-    '/Runtime/Cocos2d/main.js',
-    '/Runtime/Cocos2d/project.json',
-  ],
-  'facebook-instant-games': [
-    '/Runtime/FacebookInstantGames/fbapp-config.json',
-    '/Runtime/FacebookInstantGames/index.html',
-  ],
-  cordova: [
-    '/Runtime/Cordova/www/index.html',
-    '/Runtime/Cordova/www/LICENSE.GDevelop.txt',
-    '/Runtime/Cordova/config.xml',
-    '/Runtime/Cordova/package.json',
-  ],
-  electron: [
-    '/Runtime/index.html',
-    '/Runtime/Electron/main.js',
-    '/Runtime/Electron/package.json',
-    '/Runtime/Electron/LICENSE.GDevelop.txt',
-  ],
+    preview: ['/Runtime/index.html'],
+    web: ['/Runtime/index.html', '/Runtime/Electron/LICENSE.GDevelop.txt'],
+    'cocos2d-js': [
+        '/Runtime/Cocos2d/cocos2d-js-v3.10.js',
+        '/Runtime/Cocos2d/index.html',
+        '/Runtime/Cocos2d/main.js',
+        '/Runtime/Cocos2d/project.json',
+    ],
+    'facebook-instant-games': [
+        '/Runtime/FacebookInstantGames/fbapp-config.json',
+        '/Runtime/FacebookInstantGames/index.html',
+    ],
+    cordova: [
+        '/Runtime/Cordova/www/index.html',
+        '/Runtime/Cordova/www/LICENSE.GDevelop.txt',
+        '/Runtime/Cordova/config.xml',
+        '/Runtime/Cordova/package.json',
+    ],
+    electron: [
+        '/Runtime/index.html',
+        '/Runtime/Electron/main.js',
+        '/Runtime/Electron/package.json',
+        '/Runtime/Electron/LICENSE.GDevelop.txt',
+    ],
 };
 
 export type TextFileDescriptor = {| text: string, filePath: string |};
 
 export const findGDJS = (
-  fileSet: FileSet
+    fileSet: FileSet
 ): Promise<{|
-  gdjsRoot: string,
-  filesContent: Array<TextFileDescriptor>,
+    gdjsRoot: string,
+    filesContent: Array<TextFileDescriptor>,
 |}> => {
-  // Get GDJS for this version. If you updated the version,
-  // run `newIDE/web-app/scripts/deploy-GDJS-Runtime` script.
-  let gdjsRoot = `https://resources.gdevelop-app.com/GDJS-${getIDEVersionWithHash()}`;
+    // Get GDJS for this version. If you updated the version,
+    // run `newIDE/web-app/scripts/deploy-GDJS-Runtime` script.
+    let gdjsRoot = `https://resources.gdevelop-app.com/GDJS-${getIDEVersionWithHash()}`;
 
-  // c3: Assemble3 is self-hosted - the runtime is bundled with the web build
-  // (`npm run build:editor` copies it to build/GDJS; our fork's version is not
-  // on GDevelop's CDN and the platformer runtime is patched).
-  if (C3_SELF_HOSTED_GDJS && !Window.isDev()) {
-    gdjsRoot = `${process.env.PUBLIC_URL || ''}/GDJS`;
-  }
+    // c3: Assemble3 is self-hosted - the runtime is bundled with the web build
+    // (`npm run build:editor` copies it to build/GDJS; our fork's version is not
+    // on GDevelop's CDN and the platformer runtime is patched).
+    if (C3_SELF_HOSTED_GDJS && !Window.isDev()) {
+        // An absolute URL: the browser file system only downloads http(s) sources.
+        gdjsRoot = `${window.location.origin}${process.env.PUBLIC_URL ||
+            ''}/GDJS`;
+    }
 
-  if (Window.isDev()) {
-    gdjsRoot =
-      window.location.hostname === 'localhost'
-        ? // Served by `watch-serve-GDJS-runtime.js` when running the IDE locally.
-          `http://localhost:5002`
-        : // On a deployed development build (e.g. editor-dev), use the runtime
-          // bundled with the build (see `copy-GDJS-Runtime-to-build.js`).
-          // Fetching localhost from a public origin would trigger the browser
-          // "Local Network Access" permission prompt and fail for anyone
-          // not running a local server.
-          `${window.location.origin}/GDJS`;
-  }
+    if (Window.isDev()) {
+        gdjsRoot =
+            window.location.hostname === 'localhost'
+                ? // Served by `watch-serve-GDJS-runtime.js` when running the IDE locally.
+                  `http://localhost:5002`
+                : // On a deployed development build (e.g. editor-dev), use the runtime
+                  // bundled with the build (see `copy-GDJS-Runtime-to-build.js`).
+                  // Fetching localhost from a public origin would trigger the browser
+                  // "Local Network Access" permission prompt and fail for anyone
+                  // not running a local server.
+                  `${window.location.origin}/GDJS`;
+    }
 
-  return Promise.all(
-    filesToDownload[fileSet].map(relativeFilePath => {
-      const url = gdjsRoot + relativeFilePath;
+    return Promise.all(
+        filesToDownload[fileSet].map(relativeFilePath => {
+            const url = gdjsRoot + relativeFilePath;
 
-      // Don't do any caching, rely on the browser cache only.
-      return fetch(url).then(response => {
-        if (!response.ok) {
-          console.error(`Error while downloading "${url}"`, response);
-          throw new Error(
-            `Error while downloading "${url}" (status: ${response.status})`
-          );
-        }
-        return response.text().then(text => ({
-          filePath: url,
-          text,
-        }));
-      });
-    })
-  ).then(filesContent => {
-    return {
-      gdjsRoot,
-      filesContent,
-    };
-  });
+            // Don't do any caching, rely on the browser cache only.
+            return fetch(url).then(response => {
+                if (!response.ok) {
+                    console.error(`Error while downloading "${url}"`, response);
+                    throw new Error(
+                        `Error while downloading "${url}" (status: ${
+                            response.status
+                        })`
+                    );
+                }
+                return response.text().then(text => ({
+                    filePath: url,
+                    text,
+                }));
+            });
+        })
+    ).then(filesContent => {
+        return {
+            gdjsRoot,
+            filesContent,
+        };
+    });
 };
