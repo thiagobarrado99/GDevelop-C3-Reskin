@@ -203,6 +203,7 @@ const C3StartPage = ({
   const recentFiles = useProjectsListFor(null).slice(0, 8);
   const { removeRecentProjectFile } = React.useContext(PreferencesContext);
   const recentMenu = React.useRef<?ContextMenuInterface>(null);
+  const openMenu = React.useRef<?ContextMenuInterface>(null);
   const cardBackground = gdevelopTheme.paper.backgroundColor.medium;
   const iconColor = gdevelopTheme.palette.secondary;
 
@@ -255,11 +256,27 @@ const C3StartPage = ({
               </ButtonBase>
               <ButtonBase
                 id="c3-open-project"
-                onClick={onChooseProject}
+                onClick={e => {
+                  // Construct's OPEN ▾: a menu under the button.
+                  const {
+                    left,
+                    bottom,
+                  } = e.currentTarget.getBoundingClientRect();
+                  if (openMenu.current) openMenu.current.open(left, bottom, {});
+                }}
                 disabled={!canOpen}
                 style={{ ...styles.bigButton, background: cardBackground }}
               >
-                <Trans>Open</Trans>
+                <Trans>Open</Trans> ▾
+              </ButtonBase>
+              <ButtonBase
+                id="c3-browse-examples"
+                onClick={() =>
+                  onOpenNewProjectSetupDialog({ browseExamples: true })
+                }
+                style={{ ...styles.bigButton, background: cardBackground }}
+              >
+                <Trans>Browse examples</Trans>
               </ButtonBase>
             </div>
 
@@ -422,6 +439,22 @@ const C3StartPage = ({
               </div>
             )}
           </div>
+          <ContextMenu
+            ref={openMenu}
+            buildMenuTemplate={i18n => [
+              { label: i18n._(t`File…`), click: onChooseProject },
+              {
+                label: i18n._(t`Recent projects`),
+                enabled: recentFiles.length > 0,
+                submenu: recentFiles.map(file => ({
+                  label:
+                    file.fileMetadata.name ||
+                    baseName(file.fileMetadata.fileIdentifier),
+                  click: () => onOpenRecentFile(file),
+                })),
+              },
+            ]}
+          />
           <ContextMenu
             ref={recentMenu}
             buildMenuTemplate={(i18n, { file }) => [

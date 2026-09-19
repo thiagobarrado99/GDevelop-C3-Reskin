@@ -830,7 +830,7 @@ const MainFrame = (props: Props): React.MixedElement => {
           : kind === 'ask-ai'
           ? i18n._(t`Ask AI`)
           : kind === 'start page'
-          ? undefined
+          ? i18n._(t`Start page`) // c3: Construct's labelled, closable tab
           : kind === 'debugger'
           ? i18n._(t`Debugger`)
           : kind === 'layout events'
@@ -900,7 +900,7 @@ const MainFrame = (props: Props): React.MixedElement => {
           <RobotIcon size={16} />
         ) : null;
 
-      const closable = kind !== 'start page';
+      const closable = true; // c3: the start page tab closes like any other
       const extraEditorProps =
         kind === 'start page'
           ? { storageProviders: props.storageProviders }

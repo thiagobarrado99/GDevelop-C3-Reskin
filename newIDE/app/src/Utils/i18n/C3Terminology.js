@@ -37,6 +37,8 @@ const reskinPtBr: { [string]: string } = {
   'Grid size': 'Tamanho do grid',
   'Grid offset': 'Deslocamento do grid',
   'Z index': 'Índice Z',
+  'Browse examples': 'Explorar exemplos',
+  'File…': 'Arquivo…',
   'Preview layout': 'Visualizar layout',
   'Layout variables': 'Variáveis do layout',
   Clone: 'Clonar',

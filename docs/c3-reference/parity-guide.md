@@ -108,7 +108,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 
 ## Phase C — Cosmetic (Low)
 
-### C1. Start page
+### C1. Start page — done 2026-09-18 (`ABRIR ▾` menu = Arquivo… · Projetos recentes ▸, `EXPLORAR EXEMPLOS` third big button, home tab `Página inicial ✕`)
 - `HomePage/C3StartPage.js` + `.css`: `ABRIR ▾` dropdown (Arquivo · Projeto recente…), `EXPLORAR EXEMPLOS` button beside `EXEMPLOS RECOMENDADOS`; home tab labelled `Página inicial ✕` (`MainFrame/EditorTabs`, kind `'start page'`). Recommended examples: pt-BR titles (B9).
 
 ### C2. Picker dialogs sized like windows
