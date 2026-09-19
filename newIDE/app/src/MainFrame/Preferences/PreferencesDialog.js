@@ -1279,6 +1279,7 @@ const PreferencesDialog = ({
    */
   const visibleSections: Array<PreferencesSection> = sections.filter(
     section => {
+      if (section.name === 'ask-ai') return false; // c3: no AI features
       const { settings, renderHeader, renderFooter } = getSectionContent(
         section.name
       );
