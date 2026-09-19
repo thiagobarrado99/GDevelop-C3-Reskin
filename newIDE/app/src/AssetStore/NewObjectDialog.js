@@ -531,7 +531,8 @@ function NewObjectDialog({
 
   const onObjectTypeSelected = React.useCallback(
     (enumeratedObjectMetadata: ObjectShortHeader, name?: string) => {
-      if (enumeratedObjectMetadata.assetStoreTag) {
+      // c3: no store - a "3D shape" tile inserts a blank one, like Construct.
+      if (enumeratedObjectMetadata.assetStoreTag && !hideAssetStore) {
         // When the object is from an asset store, display the objects from the pack
         // so that the user can either pick a similar object or skip to create a new one.
         setSelectedCustomObjectEnumeratedMetadata(enumeratedObjectMetadata);
@@ -541,7 +542,7 @@ function NewObjectDialog({
         onCreateNewObject(enumeratedObjectMetadata.name, name); // c3
       }
     },
-    [onCreateNewObject, onInstallEmptyCustomObject]
+    [onCreateNewObject, onInstallEmptyCustomObject, hideAssetStore]
   );
 
   return (
