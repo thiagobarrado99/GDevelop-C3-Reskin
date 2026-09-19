@@ -1759,6 +1759,7 @@ const MainFrame = (props: Props): React.MixedElement => {
 
   // c3: the ☰ button opens a Construct-like menu, anchored under it.
   const c3MainMenuRef = React.useRef<?ContextMenuInterface>(null);
+  const c3BarTitleMenuRef = React.useRef<?ContextMenuInterface>(null); // c3
   const openC3MainMenu = React.useCallback(() => {
     const button = document.getElementById(
       'main-toolbar-project-manager-button'
@@ -6216,7 +6217,15 @@ const MainFrame = (props: Props): React.MixedElement => {
             />
             {c3ProjectBarDocked ? (
               <div className="c3-project-bar">
-                <div className="c3-project-bar-title">
+                <div
+                  className="c3-project-bar-title"
+                  onContextMenu={e => {
+                    // c3: Construct's bar-title menu (Close only).
+                    e.preventDefault();
+                    if (c3BarTitleMenuRef.current)
+                      c3BarTitleMenuRef.current.open(e.clientX, e.clientY, {});
+                  }}
+                >
                   <span>{i18n._(t`Project`)}</span>
                   <IconButton
                     size="small"
@@ -6228,6 +6237,15 @@ const MainFrame = (props: Props): React.MixedElement => {
                 {renderProjectManager('top')}
                 <div id="c3-project-bar-panels" />
                 {renderProjectManager('bottom')}
+                <ContextMenu
+                  ref={c3BarTitleMenuRef}
+                  buildMenuTemplate={i18n => [
+                    {
+                      label: i18n._(t`Close`),
+                      click: () => setC3ProjectBarShown(false),
+                    },
+                  ]}
+                />
               </div>
             ) : null}
           </div>

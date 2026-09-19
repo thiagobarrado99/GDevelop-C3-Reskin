@@ -129,7 +129,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C7. `+` / `⋮` icons — done 2026-09-18 (theme hides `.c3-tree-row-menu`, root `+` buttons and `#add-layer-button`; the labelled `Adicionar objeto` of an empty list stays)
 - `ProjectManager/*TreeViewItemContent.js`, `ObjectsList`, `ObjectGroupsList`, `LayersList`: hide the per-row `⋮` and per-section `+` under the theme (context menu and the `Add…` items cover them). Keep keyboard/right-click paths working.
 
-### C8. Properties bar on the event sheet + bar-title menu
+### C8. Properties bar on the event sheet + bar-title menu — done 2026-09-18 (`EventsSheet/C3EmptyPropertiesBar.js`; right-click on any bar title → `Fechar`)
 - `MainFrame/index.js` / `MosaicEditorsDisplay`: keep the properties column mounted (empty, "Nenhuma seleção") when an event sheet tab is active. Bar titles (`.c3-project-bar-title`, properties header) get a context menu `Fechar` only (no docking system to undock into).
 
 ### C9. Layout framing at 100 %

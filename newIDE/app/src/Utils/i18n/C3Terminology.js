@@ -42,6 +42,7 @@ const reskinPtBr: { [string]: string } = {
   'Create new object type': 'Criar novo tipo de objeto',
   Insert: 'Inserir',
   'Clone object type': 'Clonar tipo de objeto',
+  'No selection': 'Nenhuma seleção',
   'Find all references…': 'Localizar todas as referências…',
   'Preview layout': 'Visualizar layout',
   'Layout variables': 'Variáveis do layout',

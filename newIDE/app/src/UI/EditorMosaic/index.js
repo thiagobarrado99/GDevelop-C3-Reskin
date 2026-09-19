@@ -16,6 +16,8 @@ import { getVisibleLeaves, toggleLeafVisibility } from './Visibility';
 import 'react-mosaic-component/react-mosaic-component.css';
 import './style.css';
 import classNames from 'classnames';
+import ContextMenu, { type ContextMenuInterface } from '../Menu/ContextMenu'; // c3
+import { t } from '@lingui/macro'; // c3
 
 export type Direction = 'row' | 'column';
 
@@ -442,54 +444,82 @@ const EditorMosaic: React.ComponentType<{
       [isResizing, onDragOrResizedEnded]
     );
 
+    // c3: Construct's bar-title menu (Close only - no docking system).
+    const c3TitleMenu = React.useRef<?ContextMenuInterface>(null);
+    const c3OnContextMenu = (e: SyntheticMouseEvent<HTMLElement>) => {
+      const target: any = e.target;
+      const toolbar =
+        target && target.closest && target.closest('.mosaic-window-toolbar');
+      if (!toolbar) return;
+      e.preventDefault();
+      const closeButton = toolbar.querySelector(
+        '.mosaic-window-controls button'
+      );
+      if (c3TitleMenu.current)
+        c3TitleMenu.current.open(e.clientX, e.clientY, {
+          close: () => closeButton && closeButton.click(),
+        });
+    };
+
     return (
       <I18n>
         {({ i18n }) => (
-          <MosaicWithoutDragDropContext
-            className={classNames({
-              'mosaic-gd-theme': true,
-              'mosaic-blueprint-theme': true,
-              opaque: !isTransparent,
-              // Move the entire mosaic up when the soft keyboard is open:
-              'avoid-soft-keyboard': true,
-            })}
-            style={{ position: 'relative', width: '100%', height: '100%' }}
-            renderTile={(editorName: string, path: string) => {
-              const editor = editors[editorName];
-              if (editor === undefined) {
-                console.error(
-                  'Trying to render un unknown editor: ' + editorName
+          <div
+            style={{ width: '100%', height: '100%', position: 'relative' }}
+            onContextMenu={c3OnContextMenu}
+          >
+            <ContextMenu
+              ref={c3TitleMenu}
+              buildMenuTemplate={(i18n, { close }) => [
+                { label: i18n._(t`Close`), click: close },
+              ]}
+            />
+            <MosaicWithoutDragDropContext
+              className={classNames({
+                'mosaic-gd-theme': true,
+                'mosaic-blueprint-theme': true,
+                opaque: !isTransparent,
+                // Move the entire mosaic up when the soft keyboard is open:
+                'avoid-soft-keyboard': true,
+              })}
+              style={{ position: 'relative', width: '100%', height: '100%' }}
+              renderTile={(editorName: string, path: string) => {
+                const editor = editors[editorName];
+                if (editor === undefined) {
+                  console.error(
+                    'Trying to render un unknown editor: ' + editorName
+                  );
+                  return null;
+                }
+                if (editor === null) {
+                  return null;
+                }
+
+                if (editor.noTitleBar) {
+                  return editor.renderEditor();
+                }
+
+                return (
+                  <MosaicWindow
+                    path={path}
+                    title={i18n._(editor.title)}
+                    className={`mosaic-editor-${editorName}`}
+                    onDragStart={onDragOrResizedStarted}
+                    onDragEnd={onDragOrResizedEnded}
+                    toolbarControls={
+                      editor.toolbarControls || defaultToolbarControls
+                    }
+                    renderPreview={renderMosaicWindowPreview}
+                  >
+                    {editor.renderEditor()}
+                  </MosaicWindow>
                 );
-                return null;
-              }
-              if (editor === null) {
-                return null;
-              }
-
-              if (editor.noTitleBar) {
-                return editor.renderEditor();
-              }
-
-              return (
-                <MosaicWindow
-                  path={path}
-                  title={i18n._(editor.title)}
-                  className={`mosaic-editor-${editorName}`}
-                  onDragStart={onDragOrResizedStarted}
-                  onDragEnd={onDragOrResizedEnded}
-                  toolbarControls={
-                    editor.toolbarControls || defaultToolbarControls
-                  }
-                  renderPreview={renderMosaicWindowPreview}
-                >
-                  {editor.renderEditor()}
-                </MosaicWindow>
-              );
-            }}
-            value={mosaicNode}
-            onChange={onChange}
-            onRelease={onRelease}
-          />
+              }}
+              value={mosaicNode}
+              onChange={onChange}
+              onRelease={onRelease}
+            />
+          </div>
         )}
       </I18n>
     );

@@ -1,6 +1,7 @@
 // @flow
 import { Trans } from '@lingui/macro';
 import React from 'react';
+import C3EmptyPropertiesBar from '../../EventsSheet/C3EmptyPropertiesBar'; // c3
 import EventsSheet, { type EventsSheetInterface } from '../../EventsSheet';
 import RaisedButton from '../../UI/RaisedButton';
 import PlaceholderMessage from '../../UI/PlaceholderMessage';
@@ -315,37 +316,43 @@ export class ExternalEventsEditorContainer extends React.Component<
 
     return (
       <div style={styles.container}>
-        {layout && (
-          <EventsSheet
-            ref={editor => (this.editor = editor)}
-            setToolbar={this.props.setToolbar}
-            onOpenLayout={this.props.onOpenLayout}
-            resourceManagementProps={this.props.resourceManagementProps}
-            openInstructionOrExpression={this.props.openInstructionOrExpression}
-            onCreateEventsFunction={this.onCreateEventsFunction}
-            onBeginCreateEventsFunction={this.onBeginCreateEventsFunction}
-            unsavedChanges={this.props.unsavedChanges}
-            project={project}
-            scope={scope}
-            globalObjectsContainer={project.getObjects()}
-            objectsContainer={layout.getObjects()}
-            projectScopedContainersAccessor={projectScopedContainersAccessor}
-            events={externalEvents.getEvents()}
-            onOpenSettings={this.openExternalPropertiesDialog}
-            settingsIcon={editSceneIconReactNode}
-            onOpenExternalEvents={this.props.onOpenExternalEvents}
-            isActive={this.props.isActive}
-            hotReloadPreviewButtonProps={this.props.hotReloadPreviewButtonProps}
-            onWillInstallExtension={this.props.onWillInstallExtension}
-            onExtensionInstalled={this.props.onExtensionInstalled}
-            onCreateNewExtensionWithBehavior={
-              this.props.onCreateNewExtensionWithBehavior
-            }
-            // Scene events don't have parameters nor properties
-            editEventsFunctionParameter={null}
-            openEventsBasedEntityPropertyEditorDialog={null}
-          />
-        )}
+        <C3EmptyPropertiesBar>
+          {layout && (
+            <EventsSheet
+              ref={editor => (this.editor = editor)}
+              setToolbar={this.props.setToolbar}
+              onOpenLayout={this.props.onOpenLayout}
+              resourceManagementProps={this.props.resourceManagementProps}
+              openInstructionOrExpression={
+                this.props.openInstructionOrExpression
+              }
+              onCreateEventsFunction={this.onCreateEventsFunction}
+              onBeginCreateEventsFunction={this.onBeginCreateEventsFunction}
+              unsavedChanges={this.props.unsavedChanges}
+              project={project}
+              scope={scope}
+              globalObjectsContainer={project.getObjects()}
+              objectsContainer={layout.getObjects()}
+              projectScopedContainersAccessor={projectScopedContainersAccessor}
+              events={externalEvents.getEvents()}
+              onOpenSettings={this.openExternalPropertiesDialog}
+              settingsIcon={editSceneIconReactNode}
+              onOpenExternalEvents={this.props.onOpenExternalEvents}
+              isActive={this.props.isActive}
+              hotReloadPreviewButtonProps={
+                this.props.hotReloadPreviewButtonProps
+              }
+              onWillInstallExtension={this.props.onWillInstallExtension}
+              onExtensionInstalled={this.props.onExtensionInstalled}
+              onCreateNewExtensionWithBehavior={
+                this.props.onCreateNewExtensionWithBehavior
+              }
+              // Scene events don't have parameters nor properties
+              editEventsFunctionParameter={null}
+              openEventsBasedEntityPropertyEditorDialog={null}
+            />
+          )}
+        </C3EmptyPropertiesBar>
         {!layout && (
           <Background>
             <PlaceholderMessage>

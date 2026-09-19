@@ -1,0 +1,35 @@
+/* c3: empty Properties bar next to an event sheet (see C3EmptyPropertiesBar.js). */
+.c3-events-with-properties {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+}
+.c3-empty-properties-bar {
+  display: flex;
+  flex-direction: column;
+  width: 20%; /* the layout editor's properties split */
+  flex-shrink: 0;
+  margin-right: 4px;
+  background: var(--mosaic-layout-background-color);
+  font-family: var(--gdevelop-modern-font-family, sans-serif);
+}
+.c3-empty-properties-bar-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding-left: 8px;
+  font-size: 13px;
+  color: var(--mosaic-title-color);
+  background: var(--mosaic-toolbar-background-color);
+}
+.c3-empty-properties-bar-body {
+  padding: 8px;
+}
+.c3-events-with-properties-sheet {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
