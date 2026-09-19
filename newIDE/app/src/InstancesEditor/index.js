@@ -8,6 +8,7 @@ import InstancesRenderer from './InstancesRenderer';
 import ViewPosition from './ViewPosition';
 import SelectedInstances from './SelectedInstances';
 import HighlightedInstance from './HighlightedInstance';
+import C3ObjectInstancesHighlight from './C3ObjectInstancesHighlight'; // c3
 import HiddenInstancesDecorations from './HiddenInstancesDecorations';
 import SelectionRectangle from './SelectionRectangle';
 import InstancesResizer, {
@@ -175,6 +176,7 @@ export default class InstancesEditor extends Component<Props, State> {
   clickInterceptor: ClickInterceptor;
   highlightedInstance: HighlightedInstance;
   hiddenInstancesDecorations: HiddenInstancesDecorations;
+  c3ObjectInstancesHighlight: C3ObjectInstancesHighlight; // c3
   instancesResizer: InstancesResizer;
   instancesRotator: InstancesRotator;
   instancesMover: InstancesMover;
@@ -219,6 +221,19 @@ export default class InstancesEditor extends Component<Props, State> {
     // just after the mount (depends on react-dnd versions?).
     if (this.canvasArea && !this.pixiRenderer) {
       this._initializeCanvasAndRenderer();
+    }
+
+    // c3: outline the instances of the objects selected in the project bar.
+    if (
+      this.c3ObjectInstancesHighlight &&
+      // The array is rebuilt on every render: compare its content.
+      prevProps.selectedObjectNames.join('|') !==
+        this.props.selectedObjectNames.join('|')
+    ) {
+      this.c3ObjectInstancesHighlight.setObjectNames(
+        this.props.selectedObjectNames
+      );
+      this.fpsLimiter.notifyInteractionHappened();
     }
 
     // Track previous tool before picker is activated
@@ -514,6 +529,12 @@ export default class InstancesEditor extends Component<Props, State> {
       );
       this.hiddenInstancesDecorations.delete();
     }
+    if (this.c3ObjectInstancesHighlight) {
+      this.uiPixiContainer.removeChild(
+        this.c3ObjectInstancesHighlight.getPixiObject()
+      );
+      this.c3ObjectInstancesHighlight.delete();
+    }
     if (this.tileMapPaintingPreview) {
       this.uiPixiContainer.removeChild(
         this.tileMapPaintingPreview.getPixiObject()
@@ -622,6 +643,12 @@ export default class InstancesEditor extends Component<Props, State> {
       instanceMeasurer: this.instancesRenderer.getInstanceMeasurer(),
       toCanvasCoordinates: this.viewPosition.toCanvasCoordinates,
     });
+    // c3: instances of the objects selected in the project bar stand out.
+    this.c3ObjectInstancesHighlight = new C3ObjectInstancesHighlight({
+      instances: props.initialInstances,
+      instanceMeasurer: this.instancesRenderer.getInstanceMeasurer(),
+      toCanvasCoordinates: this.viewPosition.toCanvasCoordinates,
+    });
     this.instancesResizer = new InstancesResizer({
       instanceMeasurer: this.instancesRenderer.getInstanceMeasurer(),
       instancesEditorSettings: this.props.instancesEditorSettings,
@@ -656,6 +683,9 @@ export default class InstancesEditor extends Component<Props, State> {
     this.uiPixiContainer.addChild(this.instancesRenderer.getPixiContainer());
     this.uiPixiContainer.addChild(this.windowBorder.getPixiObject());
     this.uiPixiContainer.addChild(this.windowMask.getPixiObject());
+    this.uiPixiContainer.addChild(
+      this.c3ObjectInstancesHighlight.getPixiObject()
+    );
     this.uiPixiContainer.addChild(this.selectedInstances.getPixiContainer());
     this.uiPixiContainer.addChild(this.highlightedInstance.getPixiObject());
     this.uiPixiContainer.addChild(
@@ -693,6 +723,9 @@ export default class InstancesEditor extends Component<Props, State> {
     }
     if (this.hiddenInstancesDecorations) {
       this.hiddenInstancesDecorations.delete();
+    }
+    if (this.c3ObjectInstancesHighlight) {
+      this.c3ObjectInstancesHighlight.delete();
     }
     if (this.instancesRenderer) {
       this.instancesRenderer.delete();
@@ -1838,6 +1871,7 @@ export default class InstancesEditor extends Component<Props, State> {
         this.grid.render();
         this.highlightedInstance.render();
         this.hiddenInstancesDecorations.render();
+        this.c3ObjectInstancesHighlight.render();
         this.tileMapPaintingPreview.render();
         this.clickInterceptor.render();
         this.selectedInstances.render();
