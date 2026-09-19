@@ -540,6 +540,7 @@ type Props = {|
     objectConfiguration: gdObjectConfiguration
   ) => string,
   unsavedChanges?: ?UnsavedChanges,
+  c3OnObjectAddedToGroup?: () => void, // c3
   hotReloadPreviewButtonProps: HotReloadPreviewButtonProps,
   isListLocked: boolean,
 |};
@@ -581,6 +582,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
 
       getThumbnail,
       unsavedChanges,
+      c3OnObjectAddedToGroup,
       hotReloadPreviewButtonProps,
       isListLocked,
     }: Props,
@@ -1175,6 +1177,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
         forceUpdateList,
         forceUpdate,
         isListLocked,
+        onObjectAddedToGroup: c3OnObjectAddedToGroup, // c3
       }),
       [
         project,
@@ -1205,6 +1208,7 @@ const ObjectsList = React.forwardRef<Props, ObjectsListInterface>(
         forceUpdateList,
         forceUpdate,
         isListLocked,
+        c3OnObjectAddedToGroup,
       ]
     );
 

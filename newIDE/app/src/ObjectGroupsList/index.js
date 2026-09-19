@@ -518,7 +518,16 @@ const ObjectGroupsList = React.forwardRef<Props, ObjectGroupsListInterface>(
         index: number
       ): Array<MenuItemTemplate> =>
         item.isRoot || item.isPlaceholder
-          ? []
+          ? // c3: the section "+" is hidden by the theme - right-click adds.
+            item.isRoot
+            ? [
+                {
+                  label: i18n._(t`Add a new group...`),
+                  click: onCreateGroup,
+                  enabled: !isListLocked,
+                },
+              ]
+            : []
           : [
               {
                 label: i18n._(t`Duplicate`),

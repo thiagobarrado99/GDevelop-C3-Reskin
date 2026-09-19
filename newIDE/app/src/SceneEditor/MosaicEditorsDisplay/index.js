@@ -597,6 +597,7 @@ const MosaicEditorsDisplay: React.ComponentType<{
                   props.canObjectOrGroupBeGlobal(i18n, objectName)
                 }
                 onSetAsGlobalObject={props.onSetAsGlobalObject}
+                c3OnObjectAddedToGroup={forceUpdateObjectGroupsList} // c3
                 ref={objectsListRef}
                 unsavedChanges={props.unsavedChanges}
                 hotReloadPreviewButtonProps={props.hotReloadPreviewButtonProps}

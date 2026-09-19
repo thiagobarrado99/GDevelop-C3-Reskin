@@ -107,6 +107,7 @@ export type ObjectTreeViewItemProps = {|
   forceUpdateList: () => void,
   forceUpdate: () => void,
   isListLocked: boolean,
+  onObjectAddedToGroup?: () => void, // c3: refresh the families list
 |};
 
 export const addSerializedObjectToObjectsContainer = ({
@@ -349,6 +350,43 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
     return i18n._(translation);
   }
 
+  _c3AddToFamilyItem(i18n: I18nType): any {
+    const {
+      globalObjectsContainer,
+      objectsContainer,
+      isListLocked,
+      onObjectModified,
+      onObjectAddedToGroup,
+    } = this.props;
+    const object = this._getAliveObject();
+    if (!object) return null;
+    const objectName = object.getName();
+    const containers = [objectsContainer];
+    if (this._isGlobal && globalObjectsContainer)
+      containers.push(globalObjectsContainer);
+    const groups = [];
+    containers.forEach(container => {
+      const objectGroups = container.getObjectGroups();
+      for (let i = 0; i < objectGroups.count(); i++) {
+        const group = objectGroups.getAt(i);
+        if (!group.find(objectName)) groups.push(group);
+      }
+    });
+    const label = i18n._(t`Add to family`);
+    if (isListLocked || groups.length === 0) return { label, enabled: false };
+    return {
+      label,
+      submenu: groups.map(group => ({
+        label: group.getName(),
+        click: () => {
+          group.addObject(objectName);
+          onObjectModified(false);
+          if (onObjectAddedToGroup) onObjectAddedToGroup();
+        },
+      })),
+    };
+  }
+
   buildMenuTemplate(i18n: I18nType, index: number): any {
     const {
       project,
@@ -485,6 +523,9 @@ export class ObjectTreeViewItemContent implements TreeViewItemContent {
         click: () => this.paste(),
       },
       { type: 'separator' },
+      // c3: Construct's "Add to family" - the families that don't hold it yet
+      // (a scene object only goes into its scene's families).
+      this._c3AddToFamilyItem(i18n),
       globalObjectsContainer && {
         label: i18n._(t`Set as global object`),
         enabled: !this._isGlobal && !isListLocked,

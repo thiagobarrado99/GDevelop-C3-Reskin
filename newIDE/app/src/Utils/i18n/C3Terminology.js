@@ -43,6 +43,7 @@ const reskinPtBr: { [string]: string } = {
   Insert: 'Inserir',
   'Clone object type': 'Clonar tipo de objeto',
   'No selection': 'Nenhuma seleção',
+  'Add to family': 'Adicionar à família',
   'Preview project': 'Visualizar projeto',
   'Debug layout': 'Depurar layout',
   'Remote preview (network)': 'Visualização remota (rede)',
