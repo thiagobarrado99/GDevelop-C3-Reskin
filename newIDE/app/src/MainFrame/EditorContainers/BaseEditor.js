@@ -169,6 +169,7 @@ export type RenderEditorContainerProps = {|
   onChooseProject: () => void,
   onOpenRecentFile: (file: FileMetadataAndStorageProviderName) => Promise<void>,
   onOpenProjectManager: () => void,
+  c3FindReferences: (text: string) => void, // c3: events search for a name
   askToCloseProject: () => Promise<boolean>,
   closeProject: () => Promise<void>,
 

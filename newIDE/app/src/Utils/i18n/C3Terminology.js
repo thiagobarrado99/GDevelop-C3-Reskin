@@ -41,6 +41,8 @@ const reskinPtBr: { [string]: string } = {
   'File…': 'Arquivo…',
   'Create new object type': 'Criar novo tipo de objeto',
   Insert: 'Inserir',
+  'Clone object type': 'Clonar tipo de objeto',
+  'Find all references…': 'Localizar todas as referências…',
   'Preview layout': 'Visualizar layout',
   'Layout variables': 'Variáveis do layout',
   Clone: 'Clonar',

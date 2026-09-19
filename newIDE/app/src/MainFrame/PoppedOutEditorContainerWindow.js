@@ -282,6 +282,7 @@ const PoppedOutEditorContainerWindow = (props: Props): React.Node => {
                         onOpenNewProjectSetupDialog: props.openNewProjectDialog,
                         onOpenProjectManager: () =>
                           props.openProjectManager(true),
+                        c3FindReferences: props.c3FindReferences, // c3
                         onOpenVersionHistory: props.openVersionHistoryPanel,
                         askToCloseProject: props.askToCloseProject,
                         closeProject: props.closeProject,

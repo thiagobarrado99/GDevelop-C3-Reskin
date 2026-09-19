@@ -120,7 +120,7 @@ Done already (2026-09-18): new Sprite is a transparent 250×250 placeholder on t
 ### C4. Event sheet toolbar — done 2026-09-18 (only delete · search · settings remain)
 - `EventsSheet/Toolbar.js`: hide the add-event / sub-event / local-variable / comment / choose-and-add buttons once B1–B2 cover them; keep search, undo/redo until B11.
 
-### C5. Instance context menu
+### C5. Instance context menu — done 2026-09-18 (`Clonar tipo de objeto`, `Localizar todas as referências…` → global search, `Ajuda`; Extract ▸ lives in the empty-space menu)
 - `SceneEditor/index.js` instance menu: add `Clonar tipo de objeto` (duplicate object + swap the instance), `Localizar todas as referências…` (opens the events search with the object name), `Ajuda` last; drop `Extrair`, `Editar folha de eventos`, `Propriedades do layout` from the *instance* menu (they stay in the canvas menu).
 
 ### C6. Layers section rows

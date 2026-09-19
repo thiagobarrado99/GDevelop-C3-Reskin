@@ -317,6 +317,7 @@ export class SceneEditorContainer extends React.Component<RenderEditorContainerP
           )
         }
         onOpenEvents={this.props.onOpenEvents}
+        onFindReferences={this.props.c3FindReferences} // c3
         isActive={isActive}
         previewDebuggerServer={this.props.previewDebuggerServer}
         hotReloadPreviewButtonProps={this.props.hotReloadPreviewButtonProps}

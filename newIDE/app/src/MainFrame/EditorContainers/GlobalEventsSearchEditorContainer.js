@@ -57,6 +57,13 @@ export class GlobalEventsSearchEditorContainer extends React.Component<RenderEdi
     }
   }
 
+  // c3: "Find all references…" from the layout view.
+  c3SearchFor(text: string) {
+    if (this._globalEventsSearchEditorRef) {
+      this._globalEventsSearchEditorRef.c3SearchFor(text);
+    }
+  }
+
   onEventsBasedObjectChildrenEdited(
     eventsBasedObject: gdEventsBasedObject,
     options?: {| editedObject?: ?gdObject, hasResourceChanged?: boolean |}

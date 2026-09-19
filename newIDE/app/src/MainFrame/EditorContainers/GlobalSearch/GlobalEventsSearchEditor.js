@@ -46,6 +46,7 @@ type GlobalEventsSearchEditorProps = {|
 
 export type GlobalEventsSearchEditorInterface = {|
   focusInitialField: () => void,
+  c3SearchFor: (text: string) => void, // c3: "Find all references…"
 |};
 
 export const GlobalEventsSearchEditor: React.ComponentType<{
@@ -63,6 +64,11 @@ export const GlobalEventsSearchEditor: React.ComponentType<{
         if (searchBarRef.current) {
           searchBarRef.current.focus();
         }
+      },
+      // c3: blur first - a focused bar keeps its own text.
+      c3SearchFor: text => {
+        if (searchBarRef.current) searchBarRef.current.blur();
+        launchSearch(text);
       },
     }));
 

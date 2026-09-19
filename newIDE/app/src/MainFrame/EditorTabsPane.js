@@ -235,6 +235,7 @@ export type EditorTabsPaneCommonProps = {|
   ) => Promise<void>,
   openNewProjectDialog: () => void,
   openProjectManager: (open: boolean) => void,
+  c3FindReferences: (text: string) => void, // c3
   askToCloseProject: () => Promise<boolean>,
   closeProject: () => Promise<void>,
   onSelectExampleShortHeader: ({|
@@ -407,6 +408,7 @@ const EditorTabsPane: React.ComponentType<{
     openFromFileMetadataWithStorageProvider,
     openNewProjectDialog,
     openProjectManager,
+    c3FindReferences, // c3
     askToCloseProject,
     closeProject,
     onSelectExampleShortHeader,
@@ -859,6 +861,7 @@ const EditorTabsPane: React.ComponentType<{
                     onOpenRecentFile: openFromFileMetadataWithStorageProvider,
                     onOpenNewProjectSetupDialog: openNewProjectDialog,
                     onOpenProjectManager: () => openProjectManager(true),
+                    c3FindReferences, // c3
                     onOpenVersionHistory: openVersionHistoryPanel,
                     askToCloseProject,
                     closeProject,

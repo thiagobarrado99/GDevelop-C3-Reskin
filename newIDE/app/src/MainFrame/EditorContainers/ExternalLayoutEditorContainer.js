@@ -434,6 +434,7 @@ export class ExternalLayoutEditorContainer extends React.Component<
               )
             }
             onOpenEvents={this.props.onOpenEvents}
+            onFindReferences={this.props.c3FindReferences} // c3
             onOpenMoreSettings={this.openExternalPropertiesDialog}
             isActive={isActive}
             previewDebuggerServer={this.props.previewDebuggerServer}

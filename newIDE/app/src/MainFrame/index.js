@@ -3396,7 +3396,7 @@ const MainFrame = (props: Props): React.MixedElement => {
   );
 
   const openGlobalSearch = React.useCallback(
-    () => {
+    (c3SearchText?: string) => {
       setState(state => ({
         ...state,
         editorTabs: openEditorTab(
@@ -3404,7 +3404,20 @@ const MainFrame = (props: Props): React.MixedElement => {
           // $FlowFixMe[incompatible-type]
           getEditorOpeningOptions({ kind: 'global-search', name: '' })
         ),
-      }));
+      })).then(newState => {
+        // c3: "Find all references…" - search at once (menus pass an event).
+        if (typeof c3SearchText !== 'string') return;
+        const opened = getEditorTabOpenedWithKey(
+          newState.editorTabs,
+          'global-search'
+        );
+        const editorRef = opened && opened.editorTab.editorRef;
+        // $FlowFixMe[prop-missing] - only the global search container has it.
+        if (editorRef && editorRef.c3SearchFor) {
+          // $FlowFixMe[not-a-function]
+          editorRef.c3SearchFor(c3SearchText);
+        }
+      });
       // Focus the search bar when re-opening an already opened tab.
       const existingEditor = getEditorTabOpenedWithKey(
         state.editorTabs,
@@ -5952,6 +5965,7 @@ const MainFrame = (props: Props): React.MixedElement => {
     openFromFileMetadataWithStorageProvider: openFromFileMetadataWithStorageProvider,
     openNewProjectDialog: openNewProjectDialog,
     openProjectManager: c3SetProjectBarShown, // c3
+    c3FindReferences: (text: string) => openGlobalSearch(text), // c3
     askToCloseProject: askToCloseProject,
     closeProject: closeProject,
     onSelectExampleShortHeader: onSelectExampleShortHeader,

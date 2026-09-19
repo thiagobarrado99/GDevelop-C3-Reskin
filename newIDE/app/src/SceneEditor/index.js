@@ -22,6 +22,8 @@ import { type ObjectEditorTab } from '../ObjectEditor/ObjectEditorDialog';
 import MosaicEditorsDisplayToolbar from './MosaicEditorsDisplay/Toolbar';
 import SwipeableDrawerEditorsDisplayToolbar from './SwipeableDrawerEditorsDisplay/Toolbar';
 import { serializeToJSObject } from '../Utils/Serializer';
+import { addSerializedObjectToObjectsContainer } from '../ObjectsList/ObjectTreeViewItemContent'; // c3
+import { getHelpLink } from '../Utils/HelpLink'; // c3
 import Clipboard from '../Utils/Clipboard';
 import { SafeExtractor } from '../Utils/SafeExtractor';
 import Window from '../Utils/Window';
@@ -216,6 +218,7 @@ type Props = {|
 
   onOpenMoreSettings?: ?() => void,
   onOpenEvents: (sceneName: string) => void,
+  onFindReferences?: (text: string) => void, // c3
   onObjectEdited: (
     objectWithContext: ObjectWithContext,
     hasResourceChanged?: boolean
@@ -2677,10 +2680,48 @@ export default class SceneEditor extends React.Component<Props, State> {
     );
   };
 
+  // c3: Construct's "Clone object type" - a copy of the object, and the
+  // selected instances now use it.
+  _c3CloneObjectType = (objectName: string) => {
+    const { project, globalObjectsContainer, objectsContainer } = this.props;
+    const global =
+      !objectsContainer.hasObjectNamed(objectName) &&
+      !!globalObjectsContainer &&
+      globalObjectsContainer.hasObjectNamed(objectName);
+    const container =
+      global && globalObjectsContainer
+        ? globalObjectsContainer
+        : objectsContainer;
+    if (!container.hasObjectNamed(objectName)) return;
+    const object = container.getObject(objectName);
+    const { object: newObject } = addSerializedObjectToObjectsContainer({
+      project,
+      globalObjectsContainer,
+      objectsContainer,
+      objectName,
+      positionObjectFolderOrObjectWithContext: {
+        objectFolderOrObject: container
+          .getRootFolder()
+          .getObjectNamed(objectName),
+        global,
+      },
+      objectType: object.getType(),
+      serializedObject: serializeToJSObject(object),
+    });
+    this.instancesSelection
+      .getSelectedInstances()
+      .forEach(instance => instance.setObjectName(newObject.getName()));
+    this.forceUpdateObjectsList();
+    if (this.editorDisplay)
+      this.editorDisplay.instancesHandlers.forceRemountInstancesRenderers();
+    this.forceUpdatePropertiesEditor();
+  };
+
   buildContextMenu = (i18n: I18nType, options: any): any => {
     // c3: Construct's layout context menus - empty space: Insert new object ·
     // View ▸ · Edit event sheet · Paste; instance: Edit · Insert new object ·
-    // Add ▸ · Z Order ▸ · Lock ▸ · View ▸ · Cut · Copy · Paste · Delete.
+    // Add ▸ · Z Order ▸ · Align ▸ · Lock ▸ · View ▸ · Cut · Copy · Paste ·
+    // Clone object type · Delete · Find all references… · Help.
     const hasSelectedInstances = this.instancesSelection.hasSelectedInstances();
     const insertItem = {
       label: i18n._(t`Insert new object`),
@@ -2703,11 +2744,34 @@ export default class SceneEditor extends React.Component<Props, State> {
         this.getContextMenuLockItems(i18n), // c3: reach "Unlock all"
         ...this.getContextMenuLayoutItems(i18n),
         pasteItem,
+        ...(hasSelectedInstances // c3: Extract ▸ moved here from the instance menu
+          ? [
+              { type: 'separator' },
+              {
+                label: i18n._(t`Extract`),
+                submenu: [
+                  {
+                    label: i18n._(t`Extract as a custom object`),
+                    click: () =>
+                      this.setState({ extractAsCustomObjectDialogOpen: true }),
+                  },
+                  this.props.layout && {
+                    label: i18n._(t`Extract as an external layout`),
+                    click: () =>
+                      this.setState({
+                        extractAsExternalLayoutDialogOpen: true,
+                      }),
+                  },
+                ].filter(Boolean),
+              },
+            ]
+          : []),
       ];
     }
     const instances = this.instancesSelection.getSelectedInstances();
     const editItems: Array<any> = [];
     const addItems: Array<any> = [];
+    const c3ObjectItems: Array<any> = []; // c3: clone · references · help
     if (
       instances.length === 1 ||
       uniq(instances.map(instance => instance.getObjectName())).length === 1
@@ -2769,6 +2833,29 @@ export default class SceneEditor extends React.Component<Props, State> {
           },
         });
       }
+      c3ObjectItems.push(
+        {
+          label: i18n._(t`Clone object type`),
+          click: () => this._c3CloneObjectType(objectName),
+        },
+        {
+          label: i18n._(t`Find all references…`),
+          enabled: !!this.props.onFindReferences,
+          click: () => {
+            if (this.props.onFindReferences)
+              this.props.onFindReferences(objectName);
+          },
+        },
+        {
+          label: i18n._(t`Help`),
+          click: () =>
+            Window.openExternalURL(
+              getHelpLink(
+                objectMetadata ? objectMetadata.getHelpPath() : '/objects'
+              )
+            ),
+        }
+      );
       addItems.push({
         label: i18n._(t`Add`),
         submenu: [
@@ -2868,28 +2955,15 @@ export default class SceneEditor extends React.Component<Props, State> {
         click: () => this.duplicateSelection(),
         accelerator: 'CmdOrCtrl+D',
       },
+      ...c3ObjectItems.slice(0, 1),
       {
         label: i18n._(t`Delete`),
         click: () => this.deleteSelection(),
         accelerator: 'Delete',
       },
-      { type: 'separator' },
-      {
-        label: i18n._(t`Extract`),
-        submenu: [
-          {
-            label: i18n._(t`Extract as a custom object`),
-            click: () =>
-              this.setState({ extractAsCustomObjectDialogOpen: true }),
-          },
-          this.props.layout && {
-            label: i18n._(t`Extract as an external layout`),
-            click: () =>
-              this.setState({ extractAsExternalLayoutDialogOpen: true }),
-          },
-        ].filter(Boolean),
-      },
-      ...this.getContextMenuLayoutItems(i18n),
+      // c3: Extract ▸ and the layout items live in the empty-space menu.
+      ...(c3ObjectItems.length ? [{ type: 'separator' }] : []),
+      ...c3ObjectItems.slice(1),
     ];
   };
 
