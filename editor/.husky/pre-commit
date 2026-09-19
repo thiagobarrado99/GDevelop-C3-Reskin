@@ -1,0 +1,2 @@
+cd editor/newIDE/app # c3: the fork lives in editor/ of the Assemble3 repo
+npx lint-staged
